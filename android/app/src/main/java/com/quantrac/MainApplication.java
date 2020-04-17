@@ -5,6 +5,8 @@ import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.github.wuxudong.rncharts.MPAndroidChartPackage;
+import com.github.wuxudong.rncharts.MPAndroidChartPackage;
+import com.github.wuxudong.rncharts.MPAndroidChartPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
