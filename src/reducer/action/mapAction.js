@@ -12,6 +12,14 @@ const addPH = (index,num) => {
       indexAt: index
     }
   }
+  export const getDataKhiTuDong = (index,value) => {
+    
+    return {
+      type: "getDataKhiTuDong",
+      
+      data: value
+    }
+  }
   export const xacdinhmau = (index,value) => {
 
 

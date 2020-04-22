@@ -36,7 +36,6 @@ class Splash extends Component {
     
   }
   clickWQI=()=>{
-    console.log('W')
     this.setState({
       isAQI:false,
       isWQI:true
@@ -75,19 +74,19 @@ class Splash extends Component {
         >
         <View style={styles.silde}>
           <View style={styles.header}>
-            <Image
-              source={require('../assets/image/nghia.png')}
-              style={styles.image}></Image>
+            {/* <Image
+              source={require('../assets/image/logo.png')}
+              style={styles.image}></Image> */}
           </View>
           <View style={styles.footer}>
-            <Text style={styles.title}>IT</Text>
+            <Text style={styles.title}>TRUNG TÂM CÔNG NGHỆ THÔNG TIN</Text>
           </View>
         </View>
         <View style={styles.silde}>
           <View style={styles.header}>
-            <Image
-               source={require('../assets/image/splash2.png')}
-              style={styles.image}></Image>
+            {/* <Image
+               source={require('../assets/image/logo.png')}
+              style={styles.image}></Image> */}
           </View>
 
           <View style={styles.footer}>
@@ -140,8 +139,8 @@ export default Splash;
 const windowWidth = Dimensions.get('screen').width;
 const windowHeight = Dimensions.get('screen').height;
 
-const heightImage = windowWidth * 0.5 * 0.9;
-const weightImage = heightImage * 1.2;
+const heightImage = windowWidth * 0.6 * 0.9;
+const weightImage = heightImage * 1;
 
 const widthButton = windowHeight * 0.2;
 

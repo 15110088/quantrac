@@ -9,6 +9,8 @@ class Login extends Component {
     super(props);
     this.state = {
         secureTextEntry:true,
+        userName:'',
+        passWord:'',
     };
   }
 
@@ -18,17 +20,17 @@ class Login extends Component {
         <Text style={styles.title}> Login </Text>
          <View style={styles.section}>
              <AntDesign name="user" size={20} color={'#fff'}></AntDesign>
-             <TextInput style={styles.textInput} placeholder={"user"}></TextInput>
+             <TextInput style={styles.textInput} onChangeText={(userName)=>this.setState({userName:userName})} placeholder={"user"}></TextInput>
          </View>
          <View style={styles.section}>
              <AntDesign name="lock" size={20} color={'#fff'}></AntDesign>
-             <TextInput secureTextEntry={this.state.secureTextEntry} style={styles.textInput} placeholder={"password"}></TextInput>
+             <TextInput secureTextEntry={this.state.secureTextEntry}  onChangeText={(passWord)=>this.setState({passWord:passWord})} style={styles.textInput} placeholder={"password"}></TextInput>
              <TouchableOpacity onPress={()=>this.setState({secureTextEntry:!this.state.secureTextEntry})}>
               <Feather name={this.state.secureTextEntry?'eye-off':'eye'} size={20} color={theme.colors.gray}></Feather>
              </TouchableOpacity>
          </View>
 
-         <TouchableOpacity>
+         <TouchableOpacity onPress={()=>console.log(this.state.userName+this.state.passWord)}>
              <View style={styles.Login}>
              <Text style={styles.textLogin}>LOGIN</Text>
              </View>

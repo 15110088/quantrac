@@ -7,9 +7,9 @@ import {
 } from 'react-native';
 
 import {BarChart} from 'react-native-charts-wrapper'; 
-import * as theme from '../constants/theme';
+import * as theme from '../../constants/theme';
 
-class Chart extends React.Component {
+class ChartAQI extends React.Component {
 
   constructor() {
     super();
@@ -18,7 +18,7 @@ class Chart extends React.Component {
       legend: {
         enabled: true,
         textSize: 14,
-        form: "SQUARE",
+        form: "Circle",
         formSize: 14,
         xEntrySpace: 10,
         yEntrySpace: 5,
@@ -26,39 +26,26 @@ class Chart extends React.Component {
       },
       data: {
         dataSets: [{
-          values: [55, 51, 20, 33, 89],
-            
-          label: 'PH',
+          values: [55, 53, 20, 33, 89],
+          label: 'AQI',
           config: {
             drawValues: false,
-            colors: [processColor('#8C54FF')],
+            colors: [processColor('#08be51')],
           }
-        }, {
-          values: [40, 5, 50, 23, 79],
-          label: 'DO',
-          config: {
-            drawValues: false, 
-            colors: [processColor('#2E5BFF')],
-            
-          } 
         }
+        
         ],
         config: {
-          barWidth: 0.2,
-          group: {
-            fromX: 0,
-            groupSpace: 0.4,
-            barSpace: 0.1,
-          },
+          barWidth: 0.3,
+         
         }
       },
       xAxis: {
         valueFormatter: ['12:00', '12:30', '13:00', '13:30', '14:00'],
         granularityEnabled: true,
         granularity: 1,
-        axisMaximum: 5,
-        axisMinimum: 0,
-        centerAxisLabels: true
+       
+      
       },
 
       marker: {
@@ -80,7 +67,7 @@ class Chart extends React.Component {
     // if there is only bar, bubble in this combined chart.
     // 1 should be used as dataIndex to highlight bubble data.
 
-    this.setState({...this.state, highlights: [{x: 1, y:40}, {x: 2, y:50}]})
+    this.setState({...this.state, highlights: [{x: 1, y:40}]})
   }
 
   handleSelect(event) {
@@ -124,4 +111,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default Chart;
+export default ChartAQI;

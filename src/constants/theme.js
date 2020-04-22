@@ -24,8 +24,10 @@ const colors = {
 const sizes = {
   base: 16,
   font: 14,
-  radius: 6,
-  padding: 25,
+  margin: 36,
+  title: 24,
+  radius: 12,
+  padding: 36,
   font: 15,
   h1: 48,
   h2: 34,

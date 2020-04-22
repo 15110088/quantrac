@@ -1,3 +1,35 @@
+//let appState = null;
+
+// loaddata = async () => {
+//   try {
+//     let response = await fetch(
+//       'http://25.36.7.253/DuLieuQuanTracServices.svc/GetRandomNuocTuDong?record=4',
+//     );
+//     let json = await response.json();
+//     console.log('========open======');
+//     appState.data[0].dataPoint = json;
+
+//     appState.data[0].dataPoint.map((v, i) => {
+//       appState.data[0].dataPoint[i] = {
+//         ...appState.data[0].dataPoint[i],
+//         colorHerder: '#fff',
+//       };
+
+//       console.log(appState.data[0].dataPoint[i]);
+//     });
+//     appState.
+//     console.log('========close======');
+//     return JSON.stringify(json);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
+// console.log('========on======');
+
+// appState = {
+//   data: null
+// };
+
 let appState = {
   data: [
     {
@@ -16,7 +48,6 @@ let appState = {
         },
       ],
     },
-
 
     {
       id:2,
@@ -99,43 +130,40 @@ let appState = {
         },
       ],
     },
-    
+
   ],
 };
 
 const MapReducer = (state = appState, action) => {
   let newData = state.data;
-  
+  console.log('value')
+  console.log(action.data)
   switch (action.type) {
-    case 'Tot':
-      //console.log("=tot")
-      newData[action.indexAt].colorHerder='#3333FF'
-      return {...state,data:newData};
-    case 'Trungbinh':
-     // console.log("=tb")
-      newData[action.indexAt].colorHerder='#FFCC00'
-      return {...state,data:newData};
-    case 'Rattot':
-     // console.log("=rattot")
-      newData[action.indexAt].colorHerder='#33FF33'
-      return {...state,data:newData};
-      
-    case 'Onhiemnang':
-     // console.log("=Onhiemnang")
-      newData[action.indexAt].colorHerder='#660000'
-      return {...state,data:newData};
-    case 'Onhiem':
-     // console.log("=Onhiem")
-      newData[action.indexAt].colorHerder='#EE0000' 
-      return {...state,data:newData};
-    case 'addPH':
-      newData[action.indexAt].PH= newData[action.indexAt].PH+action.num
-       return {...state,data:newData};
-    case 'subPH':
-      newData[action.indexAt].PH-=1
-       return {...state,data:newData}
+    // case 'Tot':
+    //   newData[action.indexAt].colorHerder = '#3333FF';
+    //   return {...state, data: newData};
+    // case 'Trungbinh':
+    //   newData[action.indexAt].colorHerder = '#FFCC00';
+    //   return {...state, data: newData};
+    // case 'Rattot':
+    //   newData[action.indexAt].colorHerder = '#33FF33';
+    //   return {...state, data: newData};
 
-
+    // case 'Onhiemnang':
+    //   newData[action.indexAt].colorHerder = '#660000';
+    //   return {...state, data: newData};
+    // case 'Onhiem':
+    //   newData[action.indexAt].colorHerder = '#EE0000';
+    //   return {...state, data: newData};
+    // case 'addPH':
+    //   newData[action.indexAt].PH = newData[action.indexAt].PH + action.num;
+    //   return {...state, data: newData};
+    // case 'subPH':
+    //   newData[action.indexAt].PH -= 1;
+    //   return {...state, data: newData};
+    case 'getDataKhiTuDong':
+      console.log('getDataKhiTuDong')
+       return {...state,data:action.data};
   }
   return state;
 };
