@@ -1,12 +1,20 @@
 import React, {Component, useState, useEffect} from 'react';
-import {TouchableWithoutFeedback, StyleSheet, Dimensions,ImageBackground,ActivityIndicator} from 'react-native';
+import {
+  TouchableWithoutFeedback,
+  StyleSheet,
+  Dimensions,
+  ImageBackground,
+  ActivityIndicator,
+  SafeAreaView,
+  ScrollView,
+  KeyboardAvoidingView
+} from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Polyline} from 'react-native-maps';
 import {Image, Button, Overlay} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import {Block, Card, Label, Input} from '../components';
 import * as theme from '../constants/theme';
-import {Autocomplete, AutocompleteItem} from '@ui-kitten/components';
-
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome5'
 import {
   Text,
   View,
@@ -19,9 +27,9 @@ import {
   Constants,
 } from 'react-native-ui-lib'; // eslint-disable-line
 import {Icon} from 'react-native-elements';
-import {TouchableNativeFeedback} from 'react-native-gesture-handler';
 import DialogAQI from './AQI/DialogAQI';
 import TodayAQI from './AQI/TodayAQI';
+import LevelAQI from './AQI/LevelAQI';
 
 const {width, height} = Dimensions.get('window');
 
@@ -56,7 +64,7 @@ class D extends Component {
     this.state = {
       isVisible: true,
       isShow: false,
-      isLoading:true,
+      isLoading: true,
       //dialog
       panDirection: PanningProvider.Directions.UP,
       position: 'center',
@@ -72,15 +80,13 @@ class D extends Component {
       DO: 0,
       active: null,
       value: null,
-      //AQI 
-      NgayTinh:null,
-      chiSo:0,
-      keyColor:'#fff123',
-      tenTram:'NULL',
-      noidungCanhBao:null,
-      chatluongMT:null,
-
-
+      //AQI
+      NgayTinh: null,
+      chiSo: 0,
+      keyColor: '#fff123',
+      tenTram: 'NULL',
+      noidungCanhBao: null,
+      chatluongMT: null,
     };
   }
   xulysolieu() {
@@ -90,7 +96,6 @@ class D extends Component {
   }
   componentDidMount() {
     //this.xulysolieu()
-     
     this.fetchData();
   }
   showDialog = (data) => {
@@ -99,9 +104,9 @@ class D extends Component {
       keyColor: '#fff123',
       chiSo: data.chiSo,
       NgayTinh: data.NgayTinh,
-      tenTram:data.tenTram,
+      tenTram: data.tenTram,
       chatluongMT: data.chatluongMT,
-      noidungCanhBao:data.noidungCanhBao,
+      noidungCanhBao: data.noidungCanhBao,
     });
   };
   showDialogTypeMonitoring = (data) => {
@@ -122,14 +127,12 @@ class D extends Component {
   };
   renderHeader() {
     return (
-      <View style={styles.header}>
+      <View
+       style={styles.header}>
         <Block animated middle style={styles.search}>
-          <Input placeholder="Search" />
+          <Input placeholder="Search" style={{borderRadius:30,backgroundColor:theme.colors.white}}></Input><FontAwesome size={25} name='search' color={theme.colors.green} style={{position:'absolute',right:10,top:15}}></FontAwesome>
         </Block>
-        <TouchableWithoutFeedback
-          onPress={() => this.showDialogTypeMonitoring('1')}>
-          <Icon name="wrench" type="foundation" color="#517fa4" />
-        </TouchableWithoutFeedback>
+    
       </View>
     );
   }
@@ -280,7 +283,7 @@ class D extends Component {
         containerStyle={{
           backgroundColor: 'transparent',
           marginBottom: Constants.isIphoneX ? 0 : 20,
-         // borderRadius: 12,
+          // borderRadius: 12,
           borderWidth: 1,
           borderColor: keyColor,
         }}
@@ -290,21 +293,33 @@ class D extends Component {
         pannableHeaderProps={this.pannableTitle}
         //supportedOrientations={this.supportedOrientations}
       >
-      <TouchableWithoutFeedback onPress={this.showToday}>
-        <View flex-1>
-          <DialogAQI chiSo={chiSo} NgayTinh={NgayTinh} noidungCanhBao={noidungCanhBao} chatluongMT={chatluongMT} tenTram={tenTram} navigation={this.props.navigation} ></DialogAQI> 
-        </View>
-      </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={this.showToday}>
+          <View flex-1>
+            <DialogAQI
+              chiSo={chiSo}
+              NgayTinh={NgayTinh}
+              noidungCanhBao={noidungCanhBao}
+              chatluongMT={chatluongMT}
+              tenTram={tenTram}
+              navigation={this.props.navigation}></DialogAQI>
+          </View>
+        </TouchableWithoutFeedback>
       </Dialog>
     );
   };
-  showToday=()=>{
+  showToday = () => {
     this.setState({
       showDialog: !this.state.showDialog,
     });
-    this.props.navigation.navigate('TodayAQI', {chiSo: this.state.chiSo,NgayTinh:this.state.NgayTinh,noidungCanhBao:this.state.noidungCanhBao,tenTram:this.state.tenTram,chatluongMT:this.state.chatluongMT})
-  }
- 
+    this.props.navigation.navigate('TodayAQI', {
+      chiSo: this.state.chiSo,
+      NgayTinh: this.state.NgayTinh,
+      noidungCanhBao: this.state.noidungCanhBao,
+      tenTram: this.state.tenTram,
+      chatluongMT: this.state.chatluongMT,
+    });
+  };
+
   handleType = (id) => {
     const {active} = this.state;
     console.log(id);
@@ -441,20 +456,20 @@ class D extends Component {
   fetchData = async () => {
     try {
       let response = await fetch(
-       // 'http://25.36.7.253/DuLieuQuanTracServices.svc/GetRandomKhiTuDong?record=0',
-       'http://25.36.7.253/DuLieuQuanTracServices.svc/GetRandomNuocTuDong'
+        // 'http://25.36.7.253/DuLieuQuanTracServices.svc/GetRandomKhiTuDong?record=0',
+        'http://25.36.7.253/DuLieuQuanTracServices.svc/GetRandomKhiTuDong',
       );
       await this.setState({
-        isLoading:true
-      })
+        isLoading: true,
+      });
       let reponseJson = await response.json();
       console.log(reponseJson);
       await this.props.getDataKhiTuDong(2, reponseJson);
       console.log('sau khi thay doi');
       await console.log(this.props.data);
       await this.setState({
-        isLoading:false
-      })
+        isLoading: false,
+      });
     } catch (error) {
       console.error(error);
     }
@@ -464,104 +479,143 @@ class D extends Component {
     var {addNumber, subNumber, xacdinhmau, navigation} = this.props;
     const {typeMonitoring} = this.state;
     return (
-      
-      //       <>
-      //       {this.state.isLoading? <ActivityIndicator size="large" color="#0000ff" />:
-      //       <>
-      //       {this.renderHeader()}
-      //       <MapView
-      //       provider={PROVIDER_GOOGLE} // remove if not using Google Maps
-      //       style={{flex:1}}
-      //       region={region2}>
-      //       {
-      //         this.props.data.map((marker,index)=>{
-      //           console.log('=====')
-      //           console.log(parseFloat(marker.toaDoX))
-      //           console.log(parseFloat(marker.toaDoY))
-      //           return (
-                    
-      //                 <MapView.Marker onPress={() => this.showDialog(marker)} key={marker.id} coordinate={{latitude:parseFloat(marker.toaDoX), longitude: parseFloat(marker.toaDoY)}} >
-      //                <TouchableWithoutFeedback >
-
-      //                       <View style={{  alignItems: "center",
-      //                               justifyContent: "center",
-      //                               width: 40,
-      //                               height: 40,
-      //                               borderRadius: 20,
-      //                               backgroundColor: marker.colorHerder,
-      //                              position: "absolute",
-      //                              marginTop: -60,
-      //                                 shadowColor: "#7F58FF",
-      //                                 shadowRadius: 5,
-      //                                 shadowOffset: { height: 10 },
-      //                                 shadowOpacity: 0.3,
-      //                                 borderWidth: 3,
-      //                                 borderColor: "#FFFFFF"}}>
-      //                       <Text style={{ fontWeight:'bold',fontSize:18 ,color:'white' }}>{marker.PH}</Text>
-      //                   </View>
-
-      //                 </TouchableWithoutFeedback>
-      //                 </MapView.Marker>
-
-      //           );
-      //         })
-      //       }
-
-      //     </MapView> 
-      //     {this.renderDialogAQI()}
-      //     {this.renderDialogTypeMonitoring()}
-      //     </>
-      //     }
-      // </>
-
       <>
-        {this.renderHeader()}
-        <Text>D</Text>
-   
-        
-        {this.state.isLoading? <ActivityIndicator size="large" color="#0000ff" />:null}
-        
-        {this.props.data.map((marker, index) => {
-          console.log(marker);
-          //console.log(marker.COORDINATES[0])
-          return (
-            <TouchableWithoutFeedback
-              key={index}
-              onPress={() => this.showDialog(marker)}>
-              <View
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: '#fff',
-                  shadowColor: '#7F58FF',
-                  shadowRadius: 5,
-                  shadowOffset: {height: 10},
-                  shadowOpacity: 0.3,
-                  borderWidth: 3,
-                  borderColor: '#FFFFFF',
-                }}>
-                <Text
-                  style={{fontWeight: 'bold', fontSize: 18, color: '#fff123'}}>
-                  {marker.chiSo}
-                </Text>
-              </View>
-            </TouchableWithoutFeedback>
-          );
-        })}
+        {this.state.isLoading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          <>
+                
 
-        {this.renderDialogAQI()}
-        {this.renderDialogTypeMonitoring()}
-        <Button
-          title="B"
-          onPress={() => this.props.navigation.navigate('History')}></Button>
-        <Button
-          title="Setting"
-          onPress={() => this.showDialogTypeMonitoring('1')}></Button>
-          
+            <SafeAreaView style={styles.container}>
+             
+              {this.renderHeader()}
+            
+
+                
+
+
+               <View style={{flex:3,borderWidth:1}}><Text>ss</Text></View> 
+
+
+             {/* <MapView
+               // provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+                 ref={ref => {
+                  this.map = ref;
+                }}
+                style={{flex: 3}}
+                region={region2}>
+                {this.props.data.map((marker, index) => {
+                  console.log('=====');
+                  console.log(parseFloat(marker.toaDoX));
+                  console.log(parseFloat(marker.toaDoY));
+                  return (
+                    <MapView.Marker
+                      onPress={() => this.showDialog(marker)}
+                      key={1}
+                      coordinate={{
+                      latitude: parseFloat(marker.toaDoX),
+                    longitude: parseFloat(marker.toaDoY), 
+                      }}>
+                      <TouchableWithoutFeedback>
+                        <View
+                          style={{
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: 40,
+                            height: 40,
+                            borderRadius: 20,
+                            backgroundColor: '#7F58FF',
+                            shadowColor: '#7F58FF',
+                            shadowRadius: 5,
+                            shadowOffset: {height: 10},
+                            shadowOpacity: 0.3,
+                            borderWidth: 3,
+                            borderColor: '#FFFFFF',
+                          }}>
+                          <Text
+                            style={{
+                              fontWeight: 'bold',
+                              fontSize: 18,
+                              color: 'white',
+                            }}>
+                            125
+                          </Text>
+                        </View>
+                      </TouchableWithoutFeedback>
+                    </MapView.Marker>
+                  );
+                })}
+              </MapView> */}
+           
+            {this.renderDialogAQI()}
+            {this.renderDialogTypeMonitoring()}
+            <View style={{ position: "absolute",
+              right: 0,
+              left: 0,
+              bottom: 0,
+              paddingBottom: theme.sizes.base * 2}}>
+                <LevelAQI></LevelAQI>
+                               </View>
+                               </SafeAreaView>        
+          </>
+        )}
       </>
+
+      // <>
+      // <View style={styles.container}>
+
+      //   {this.renderHeader()}
+      //   <View style={{flex:3 , borderWidth:2}}>
+      //   <TouchableWithoutFeedback
+      //     onPress={() => this.showDialogTypeMonitoring('1')}>
+      //     <Icon name="wrench" type="foundation" color="#517fa4" />
+      //   </TouchableWithoutFeedback>
+
+      //   {this.state.isLoading? <ActivityIndicator size="large" color="#0000fr" />:null}
+
+      //   {this.props.data.map((marker, index) => {
+      //     console.log(marker);
+      //     //console.log(marker.COORDINATES[0])
+      //     return (
+      //       <TouchableWithoutFeedback
+      //         key={index}
+      //         onPress={() => this.showDialog(marker)}>
+      //         <View
+      //           style={{
+      //             alignItems: 'center',
+      //             justifyContent: 'center',
+      //             width: 40,
+      //             height: 40,
+      //             borderRadius: 20,
+      //             backgroundColor: '#fff',
+      //             shadowColor: '#7F58FF',
+      //             shadowRadius: 5,
+      //             shadowOffset: {height: 10},
+      //             shadowOpacity: 0.3,
+      //             borderWidth: 3,
+      //             borderColor: '#FFFFFF',
+      //           }}>
+      //           <Text
+      //             style={{fontWeight: 'bold', fontSize: 18, color: '#fff123'}}>
+      //             {marker.chiSo}
+      //           </Text>
+      //         </View>
+      //       </TouchableWithoutFeedback>
+      //     );
+      //   })}
+
+      //   {this.renderDialogAQI()}
+      //   {this.renderDialogTypeMonitoring()}
+      //   <Button
+      //     title="B"
+      //     onPress={() => this.props.navigation.navigate('History')}></Button>
+      //   <Button
+      //     title="Setting"
+      //     onPress={() => this.showDialogTypeMonitoring('1')}></Button>
+      //     </View>
+      //         <View style={{position:'absolute'}}><Text>ssss</Text></View>
+      //   </View>
+      // </>
     );
   }
 }
@@ -569,6 +623,7 @@ class D extends Component {
 export default D;
 
 const styles = StyleSheet.create({
+  container: {flex: 1},
   marker: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -626,7 +681,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.41,
     shadowRadius: 9.11,
-    borderWidth:1,
+    borderWidth: 1,
 
     elevation: 14,
   },
@@ -660,10 +715,11 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-
+    flex: 0.3,
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 10 * 1.5,
+    backgroundColor:theme.colors.green
   },
   headerTitle: {
     color: theme.colors.gray,
@@ -672,6 +728,7 @@ const styles = StyleSheet.create({
   search: {
     height: theme.sizes.base * 2,
     width: width - theme.sizes.base * 2,
+    
   },
   searchInput: {
     fontSize: theme.sizes.caption,
@@ -691,7 +748,4 @@ const styles = StyleSheet.create({
     right: theme.sizes.base / 1.333,
     top: theme.sizes.base / 1.6,
   },
-
-
-  
 });
