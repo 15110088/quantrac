@@ -11,8 +11,8 @@ import * as theme from '../../constants/theme';
 
 class ChartAQI extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       legend: {
@@ -26,7 +26,7 @@ class ChartAQI extends React.Component {
       },
       data: {
         dataSets: [{
-          values: [55, 53, 20, 33, 89],
+          values: this.props.xChart,
           label: 'AQI',
           config: {
             drawValues: false,
@@ -41,7 +41,7 @@ class ChartAQI extends React.Component {
         }
       },
       xAxis: {
-        valueFormatter: ['12:00', '12:30', '13:00', '13:30', '14:00'],
+        valueFormatter: this.props.yChart,
         granularityEnabled: true,
         granularity: 1,
        
@@ -50,8 +50,8 @@ class ChartAQI extends React.Component {
 
       marker: {
         enabled: true,
-        markerColor: processColor('#F0C0FF8C'),
-        textColor: processColor('#000'),
+        markerColor: processColor('#fff'),
+        textColor: processColor('#08be51'),
         markerFontSize: 14,
         
       },
@@ -67,7 +67,7 @@ class ChartAQI extends React.Component {
     // if there is only bar, bubble in this combined chart.
     // 1 should be used as dataIndex to highlight bubble data.
 
-    this.setState({...this.state, highlights: [{x: 1, y:40}]})
+    this.setState({...this.state, highlights: [{x: 2, y:40}]})
   }
 
   handleSelect(event) {
@@ -82,6 +82,8 @@ class ChartAQI extends React.Component {
   }
 
   render() {
+    console.log('====Chart====')
+    console.log(this.props.xChart)
     return (
       
           <BarChart
@@ -90,6 +92,7 @@ class ChartAQI extends React.Component {
             data={this.state.data}
             legend={this.state.legend}
             drawValueAboveBar={false}
+           visibleRange={{x: { min: 3, max: 4 }}}
             onSelect={this.handleSelect.bind(this)}
             onChange={(event) => console.log(event.nativeEvent)}
             highlights={this.state.highlights}

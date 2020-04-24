@@ -27,6 +27,7 @@ import Login from './Login';
 
 import * as theme from '../constants/theme';
 import TodayAQI from './AQI/TodayAQI';
+import Search from './Search';
 
 
 const Stack = createStackNavigator();
@@ -89,7 +90,8 @@ const StackMenu = () => (
     <Stack.Screen name="B" component={Container}></Stack.Screen>
     <Stack.Screen name="Today" component={Today}></Stack.Screen>
     <Stack.Screen name="TodayAQI" component={TodayAQI}></Stack.Screen>
-  
+    <Stack.Screen name="Search" component={Search}></Stack.Screen>
+
   </Stack.Navigator>
 );
 

@@ -136,8 +136,8 @@ let appState = {
 
 const MapReducer = (state = appState, action) => {
   let newData = state.data;
-  console.log('value')
-  console.log(action.data)
+  //console.log('value')
+  //console.log(action.data)
   switch (action.type) {
     // case 'Tot':
     //   newData[action.indexAt].colorHerder = '#3333FF';
