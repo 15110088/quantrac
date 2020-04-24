@@ -147,7 +147,7 @@ class D extends Component {
           <Text style={{textAlign:'center', color:theme.colors.white,fontSize:19}}>Bản Đồ</Text>
                   </View>
           </TouchableWithoutFeedback>
-           <TouchableWithoutFeedback onPress={()=>console.log('nghia1')}>
+           <TouchableWithoutFeedback onPress={()=>this.props.navigation.navigate('B')}>
           <View  style={{borderWidth:2, width:30}}>
           <MaterialIcons  size={25} name='notifications-none' color={theme.colors.white} style={{position:'absolute'}}></MaterialIcons> 
                     </View>
@@ -489,6 +489,7 @@ class D extends Component {
         isLoading: true,
       });
       let reponseJson = await response.json();
+      
       //console.log(reponseJson);
       await this.props.getDataKhiTuDong(2, reponseJson);
      // console.log('sau khi thay doi');
@@ -500,8 +501,10 @@ class D extends Component {
       console.error(error);
     }
   };
+
   render() {
     var {data} = this.props.data;
+    
     var {addNumber, subNumber, xacdinhmau, navigation} = this.props;
     const {typeMonitoring} = this.state;
     return (
