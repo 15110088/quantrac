@@ -24,6 +24,7 @@ const Search = () => {
   const [display, setDisplay] = useState(false);
   const [option, setOption] = useState([]);
   const [search, setSearch] = useState('');
+  const [dataTemp, setdataTemp] = useState([]);
 
   const selectIndex = (data) => {
     setSearch(data);
@@ -34,11 +35,8 @@ const Search = () => {
     fetch('http://25.36.7.253/DuLieuQuanTracServices.svc/GetRandomKhiTuDong')
       .then((response) => response.json())
       .then((json) => {
-        // json.map((v,i)=>{
-        //     setOption()
-
-        // })
         setOption(json);
+        setdataTemp(json)
       })
       .catch((error) => {
         console.error(error);
@@ -50,6 +48,24 @@ const Search = () => {
       return el.toLowerCase().indexOf(query.toLowerCase()) > -1;
     });
   };
+  const  SearchFilterFunction=(text)=> {
+    //passing the inserted text in textinput
+    const newData = option.filter((item)=> {
+      const itemData = item.maTram ? item.maTram.toUpperCase() : ''.toUpperCase();
+      const textData = text.toUpperCase();
+      return itemData.indexOf(textData) > -1;
+    });
+    setOption(newData);
+    setSearch(text)
+    console.log('========tex2========')
+    console.log(text.is)
+    if(!text)
+    {
+        console.log('========text========')
+        console.log(text)
+            setOption(dataTemp)
+    }
+  }
   const test = () => {
     console.log(filterItems('a'));
   };
@@ -60,7 +76,7 @@ const Search = () => {
           <TextInput
             placeholder="Search"
             value={search}
-            onChangeText={(data) => setSearch(data)}
+            onChangeText={(data) => SearchFilterFunction(data)}
             style={{
               borderRadius: 30,
               borderWidth: 2,
@@ -84,12 +100,7 @@ const Search = () => {
           </TouchableWithoutFeedback>
           <ScrollView style={{borderWidth: 2, flex: 1}}>
             {display
-              ? option
-                .filter((item)=> {
-   
-      return item.chiSo.indexOf(search) > -1;
-    })
-                  .map((v, i) => {
+              ? option.map((v, i) => {
                     return (
                       <TouchableWithoutFeedback
                         onPress={() => selectIndex(v.maTram)}>
