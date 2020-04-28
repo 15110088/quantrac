@@ -3,6 +3,18 @@ import { View, Text,StyleSheet , TextInput,TouchableOpacity} from 'react-native'
 import * as theme from '../constants/theme';
 import AntDesign from 'react-native-vector-icons/dist/AntDesign';
 import Feather from 'react-native-vector-icons/dist/Feather';
+import { RSA } from 'react-native-rsa-native';
+import config from '../ultilities/config';
+
+const  PublicKey=`-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmXVVi3z9APO77sFSqrIg
+Z4s38eC43UYuveN29MOGzMmlvIoRdef3zDWZ1Fj/Y65K8DYgcidQhMl6Z5QrSds8
+hQZ/tWxosoy5P2uDUmpegQBvd+002wYSFYIMJfBEIUhcZqLxB6OT+jYVaOpGcXUr
+lhoeA7cgk6qhDlmWvY+GX0FxPF7wxEhqIE6UmQFpPF5H46+EaDncK5/4Ld2CuM6V
+Z8YOntzDYpRzn57dKTgcrZTwq20wStMX1EvdeZiA8O0+mR25earq1nMm35Bpe2vV
+UOvbZKFPHM3muyshmX0iT/A8as3sgj+r61tmZgd+TeH3G/U5ic3XhTEaNxkHmuDw
+mQIDAQAB
+-----END PUBLIC KEY-----`
 
 class Login extends Component {
   constructor(props) {
@@ -12,6 +24,39 @@ class Login extends Component {
         userName:'',
         passWord:'',
     };
+  }
+  LoginSubmit=async()=>{
+        var dataLogin={
+            tenDangNhap:this.state.userName,
+            matKhau:this.state.passWord
+        }
+        let EncodedLogin=""
+        await RSA.generateKeys(2048) // set key size
+        .then(keys => {
+            RSA.encrypt(JSON.stringify(dataLogin),  PublicKey)
+            .then(encodedMessage => {
+                console.log(dataLogin)
+                EncodedLogin=encodedMessage;
+                //console.log(`the encoded message is ${encodedMessage}`);
+            });
+        });
+    //    fetch(`http://127.0.0.1:12679/DuLieuQuanTracServices.svc/GetDangNhap?parameter=V9oFgSWxltSxnqPlJiscbtoUGzR00pae6PpiCTBfZ2vjvlWmkyR4eUhnPPLffOlRcuYGD7rFpDdSW3fN0Xd5fG%2BQLF%2F06pjqXtbdyTCS2HZXFeC5CbI5nK53AtpRwWU5wkeX%2FbSbd1uz5ibNd7Ax4a0Zew%2BGtNPG9XDbdcT%2BgydNtT23tYUz%2B%2B%2FAFTm4xXg22MgbiariiVGW%2FoeUAydeV7zG3vPKdl%2FxI%2FnRG790oqMoSBx6FDQ6IHJQ7VRmkJluv%2F7ifHayjyavFm4C%2BXHqjO1VXdPpyMoYdxJ%2B9X6mzQdcfLkH%2B4q2R9sbmCHW0xbsbK8S%2F%2F51Lw9nM6Qyyh127w%3D%3D`)
+    //                         .then((response) => response.json())
+    //                         .then((json) => {
+    //                              console.log(json)
+    //                         })
+    //                         .catch((error) => {
+    //                         console.error(error);
+    //                         });
+        if(this.state.userName==this.state.passWord)
+        {
+            console.log("true")
+        }
+        else{
+          //  this.props.navigation.navigate('Duyet');
+          console.log("========login=======")
+            console.log(this.props)
+        }
   }
 
   render() {
@@ -30,7 +75,7 @@ class Login extends Component {
              </TouchableOpacity>
          </View>
 
-         <TouchableOpacity onPress={()=>console.log(this.state.userName+this.state.passWord)}>
+         <TouchableOpacity onPress={this.LoginSubmit}>
              <View style={styles.Login}>
              <Text style={styles.textLogin}>LOGIN</Text>
              </View>

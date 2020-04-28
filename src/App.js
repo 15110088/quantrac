@@ -11,6 +11,8 @@ import { mapping, light as lightTheme } from '@eva-design/eva';
 import B from './screens/B';
 import Container from '../src/reducer/Container' 
 import MapReducer from './reducer/MapReducer';
+import LoginReducer from './reducer/LoginReducer';
+import MenuContainer from './reducer/container/menuContainer';
 
 
 //import MapReducer from './reducer/MapReducer';
@@ -66,7 +68,8 @@ const store = createStore(
   combineReducers({
   
     nghia1: showQuanTrac,
-    mapRedux:MapReducer
+    mapRedux:MapReducer,
+    loginRedux:LoginReducer,
   })
 );
 
@@ -83,8 +86,7 @@ class App extends Component {
         <View style={{ flex: 1 }}>
           <ApplicationProvider mapping={mapping} theme={lightTheme}>
             <NavigationContainer>
-                  <Menu></Menu>
-                
+                  <MenuContainer></MenuContainer>
             </NavigationContainer>
           </ApplicationProvider>
         </View>

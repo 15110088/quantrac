@@ -66,6 +66,8 @@ const Search = () => {
             setOption(dataTemp)
     }
   }
+
+
   const test = () => {
     console.log(filterItems('a'));
   };

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component,useEffect,useState} from 'react';
 import {View, Text,StyleSheet,Image,Dimensions} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator,DrawerContentScrollView,DrawerItem} from '@react-navigation/drawer';
@@ -28,6 +28,8 @@ import Login from './Login';
 import * as theme from '../constants/theme';
 import TodayAQI from './AQI/TodayAQI';
 import Search from './Search';
+import Duyet from './Duyet';
+import loginContainer from '../reducer/container/loginContainer';
 
 
 const Stack = createStackNavigator();
@@ -91,6 +93,7 @@ const StackMenu = () => (
     <Stack.Screen name="Today" component={Today}></Stack.Screen>
     <Stack.Screen name="TodayAQI" component={TodayAQI}></Stack.Screen>
     <Stack.Screen name="Search" component={Search}></Stack.Screen>
+    <Stack.Screen name="Duyet" component={Duyet}></Stack.Screen>
 
   </Stack.Navigator>
 );
@@ -150,11 +153,14 @@ const CustomDrawerContent=props=> {
 
 
 
-const DrawerMenu = () => {
+const DrawerMenu = (props) => {
+  console.log('=====DrawMenu=======')
+
+  console.log(props)
   return (
     <Drawer.Navigator
 
-    drawerType="slide" 
+    drawerType="front" 
         initialRouteName="Stack" 
         overlayColor="transparent"
        drawerStyle={styles.drawerStyles}
@@ -173,18 +179,21 @@ const DrawerMenu = () => {
     >
     
        <Drawer.Screen name="Tabs" component={StackMenu}></Drawer.Screen>
-      <Drawer.Screen name="Login" component={Login}></Drawer.Screen>
+      <Drawer.Screen name="Login" component={loginContainer}></Drawer.Screen>
       <Drawer.Screen name="C" component={C}></Drawer.Screen>
       <Drawer.Screen name="E" component={E}></Drawer.Screen>
       <Drawer.Screen name="Splash" component={Splash}></Drawer.Screen> 
     </Drawer.Navigator>
   );
 };
-
-const Menu = () => {
+const Menu = (props) => {
+  console.log('=====Menu=======')
+  const [isLogin,SetLogin]=useState(true);
+  console.log(props.data.isLogin)
+  //isLogin=props.
   return (
     <RootStack.Navigator headerMode="none">
-      <RootStack.Screen name="Drawer" component={DrawerMenu}></RootStack.Screen>
+      <RootStack.Screen name="Drawer" data={props.data} component={DrawerMenu}></RootStack.Screen>
     </RootStack.Navigator>
   );
 };

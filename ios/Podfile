@@ -60,6 +60,8 @@ target 'quantrac' do
 
   pod 'ReactNativeUiLib', :path => '../node_modules/react-native-ui-lib'
 
+  pod 'react-native-rsa-native', :path => '../node_modules/react-native-rsa-native'
+
   target 'quantracTests' do
     inherit! :complete
     # Pods for testing
