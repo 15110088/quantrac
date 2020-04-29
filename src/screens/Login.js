@@ -35,7 +35,7 @@ class Login extends Component {
         .then(keys => {
             RSA.encrypt(JSON.stringify(dataLogin),  PublicKey)
             .then(encodedMessage => {
-                console.log(dataLogin)
+               // console.log(dataLogin)
                 EncodedLogin=encodedMessage;
                 //console.log(`the encoded message is ${encodedMessage}`);
             });
@@ -48,15 +48,21 @@ class Login extends Component {
     //                         .catch((error) => {
     //                         console.error(error);
     //                         });
-        if(this.state.userName==this.state.passWord)
-        {
-            console.log("true")
-        }
-        else{
-          //  this.props.navigation.navigate('Duyet');
-          console.log("========login=======")
-            console.log(this.props)
-        }
+        // if(this.state.userName==this.state.passWord)
+        // {
+        //     console.log("true")
+        // }
+        // else{
+        //   //  this.props.navigation.navigate('Duyet');
+        //   console.log("========login=======")
+        //   this.props.CheckLogin(true)
+        //     console.log(this.props)
+        // }
+       // console.log(this.props)
+       // this.props.CheckLogin(true)
+    //    await AsyncStorage.setItem('loginDetails', JSON.stringify(dataLogin));
+    //    let loginDetails = await AsyncStorage.getItem('loginDetails')
+    //    console.log(loginDetails)
   }
 
   render() {

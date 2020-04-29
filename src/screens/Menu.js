@@ -37,6 +37,7 @@ const RootStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
+
 const TabMenu = () => (
   <Tab.Navigator
     screenOptions={({route}) => ({
@@ -74,7 +75,7 @@ const TabMenu = () => (
 
     
     >
-      
+       
     <Tab.Screen name="Map" component={mapContainer}></Tab.Screen> 
     {/* <Tab.Screen name="Map" component={StackMenu}></Tab.Screen> */}
     <Tab.Screen name="List" component={C}></Tab.Screen>
@@ -102,15 +103,17 @@ const StackMenu = () => (
 
 
 const CustomDrawerContent=props=> {
- 
+  console.log('=====DrawMenu2=======')
+  console.log(props)
   return (
     <DrawerContentScrollView {...props} contentContainerStyle={{flex:1}}>
-      <Block flex={0.5} >
+      {props.isLogin?<Block flex={0.5} >
             <Image
                     source={require('../assets/image/logo.png')}
                     style={[styles.image]}></Image>
                     <Text style={[styles.textUser,{alignSelf:"center"}]}>xxxxxx</Text>
       </Block>
+      :null}      
       <DrawerItem
         label="Home"
         labelStyle={styles.text}
@@ -153,50 +156,102 @@ const CustomDrawerContent=props=> {
 
 
 
-const DrawerMenu = (props) => {
-  console.log('=====DrawMenu=======')
+// const DrawerMenu = (props) => {
+//   console.log('=====DrawMenu1=======')
+//   console.log(props.isLogin)
+  
+//   return (
+//     <Drawer.Navigator
+//       drawerType="front" 
+//       initialRouteName="Stack" 
+//       overlayColor="transparent"
+//       drawerStyle={styles.drawerStyles}
+//       contentContainerStyle={{ flex: 1 }}
+//       drawerContentOptions={{
+//           activeBackgroundColor: 'transparent',
+//           activeTintColor: 'white',
+//           inactiveTintColor: 'white',
+//         }}
+//       sceneContainerStyle={{ backgroundColor: 'transparent' }}
+//       drawerContent={(props) => {
+//          // setProgress(props.progress);
+//           return <CustomDrawerContent {...props}  />;
+//         }}
+//     >
+//       <Drawer.Screen name="Tabs" component={StackMenu}></Drawer.Screen>
+//       <Drawer.Screen name="Login" component={loginContainer}></Drawer.Screen>
+//       <Drawer.Screen name="C" component={C}></Drawer.Screen>
+//       <Drawer.Screen name="E" component={E}></Drawer.Screen>
+//       <Drawer.Screen name="Splash" component={Splash}></Drawer.Screen> 
+//     </Drawer.Navigator>
+//   );
+// };
+// const Menu = (props) => {
+//   console.log('=====Menu=======')
+//   const [isLogin,SetLogin]=useState(true);
+//   console.log(props.data.isLogin)
+//   //isLogin=props.
+//   return (
+//     <RootStack.Navigator headerMode="none">
+//       <RootStack.Screen name="Drawer"  component={()=><DrawerMenu isLogin={props.data.isLogin}/>}></RootStack.Screen>
+//     </RootStack.Navigator>
+//   );
+// };
 
-  console.log(props)
-  return (
-    <Drawer.Navigator
 
-    drawerType="front" 
-        initialRouteName="Stack" 
+
+
+class Menu extends Component {
+  
+  constructor(props) {
+    super(props); 
+    this.state = { 
+    };
+  }
+  
+  DrawerMenu = (props) => {
+    console.log("======DrawMenu======")
+    console.log(this.props)
+    return (
+      <Drawer.Navigator
+        drawerType="front" 
+        initialRouteName="Stack"  
         overlayColor="transparent"
-       drawerStyle={styles.drawerStyles}
+        drawerStyle={styles.drawerStyles}
         contentContainerStyle={{ flex: 1 }}
         drawerContentOptions={{
-          activeBackgroundColor: 'transparent',
-          activeTintColor: 'white',
-          inactiveTintColor: 'white',
-        }}
+            activeBackgroundColor: 'transparent',
+            activeTintColor: 'white',
+            inactiveTintColor: 'white',
+          }} 
         sceneContainerStyle={{ backgroundColor: 'transparent' }}
-        drawerContent={props => {
-         
-         // setProgress(props.progress);
-          return <CustomDrawerContent {...props} />;
-        }}
-    >
+        drawerContent={(props) => {
+                    // setProgress(props.progress);
+                     return <CustomDrawerContent {...props} isLogin={this.props.data.isLogin} />;
+                   }}
+      > 
+        <Drawer.Screen name="Tabs" component={StackMenu}></Drawer.Screen>
+        <Drawer.Screen name="Login" component={loginContainer}></Drawer.Screen>
+        <Drawer.Screen name="C" component={C}></Drawer.Screen>
+        <Drawer.Screen name="E" component={E}></Drawer.Screen>
+        <Drawer.Screen name="Splash" component={Splash}></Drawer.Screen> 
+      </Drawer.Navigator>
+    );
+  };
+  componentWillReceiveProps(){
     
-       <Drawer.Screen name="Tabs" component={StackMenu}></Drawer.Screen>
-      <Drawer.Screen name="Login" component={loginContainer}></Drawer.Screen>
-      <Drawer.Screen name="C" component={C}></Drawer.Screen>
-      <Drawer.Screen name="E" component={E}></Drawer.Screen>
-      <Drawer.Screen name="Splash" component={Splash}></Drawer.Screen> 
-    </Drawer.Navigator>
-  );
-};
-const Menu = (props) => {
-  console.log('=====Menu=======')
-  const [isLogin,SetLogin]=useState(true);
-  console.log(props.data.isLogin)
-  //isLogin=props.
-  return (
-    <RootStack.Navigator headerMode="none">
-      <RootStack.Screen name="Drawer" data={props.data} component={DrawerMenu}></RootStack.Screen>
-    </RootStack.Navigator>
-  );
-};
+  }
+  render() {
+    return (
+        <RootStack.Navigator headerMode="none">
+          <RootStack.Screen name="Drawer"  component={this.DrawerMenu}></RootStack.Screen>
+        </RootStack.Navigator>
+      
+    ); 
+  }
+}
+
+
 
 export default Menu;
 

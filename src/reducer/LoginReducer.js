@@ -5,13 +5,19 @@ let LoginState = {
 };
 
 const LoginReducer=(state=LoginState,action)=>{
+  
+    console.log("====state redux=======")
+    console.log(state)
     switch(action.type){
         case 'checkLogin':
-            return {...state,isLogin:action.isCheck};
+         state.data={
+             isLogin:action.isCheck
+         }
+         break;
     }
     return state
 }
 export default LoginReducer;
-
+ 
 
 

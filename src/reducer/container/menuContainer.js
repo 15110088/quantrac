@@ -12,6 +12,8 @@ class menuContainer extends Component {
 
   render() {
     const { data } = this.props.data;
+    console.log("======data menu======")
+    console.log(this.props.data)
     return (
         <Menu data={data}></Menu>
     );
