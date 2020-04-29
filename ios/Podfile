@@ -62,6 +62,8 @@ target 'quantrac' do
 
   pod 'react-native-rsa-native', :path => '../node_modules/react-native-rsa-native'
 
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
   target 'quantracTests' do
     inherit! :complete
     # Pods for testing

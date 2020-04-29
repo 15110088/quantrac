@@ -72,10 +72,7 @@ const TabMenu = () => (
       }
      
     }}
-
-    
-    >
-       
+    >  
     <Tab.Screen name="Map" component={mapContainer}></Tab.Screen> 
     {/* <Tab.Screen name="Map" component={StackMenu}></Tab.Screen> */}
     <Tab.Screen name="List" component={C}></Tab.Screen>
@@ -85,7 +82,7 @@ const TabMenu = () => (
 );
 
 const StackMenu = () => (
-  <Stack.Navigator    headerMode="none">
+  <Stack.Navigator headerMode="none">
    <Stack.Screen name="Splash" component={Splash}></Stack.Screen> 
     <Stack.Screen name="MapStack" component={TabMenu}></Stack.Screen>
     <Stack.Screen name="A" component={A}></Stack.Screen>
@@ -95,7 +92,6 @@ const StackMenu = () => (
     <Stack.Screen name="TodayAQI" component={TodayAQI}></Stack.Screen>
     <Stack.Screen name="Search" component={Search}></Stack.Screen>
     <Stack.Screen name="Duyet" component={Duyet}></Stack.Screen>
-
   </Stack.Navigator>
 );
 
@@ -239,7 +235,7 @@ class Menu extends Component {
     );
   };
   componentWillReceiveProps(){
-    
+
   }
   render() {
     return (

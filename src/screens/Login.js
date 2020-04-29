@@ -5,6 +5,7 @@ import AntDesign from 'react-native-vector-icons/dist/AntDesign';
 import Feather from 'react-native-vector-icons/dist/Feather';
 import { RSA } from 'react-native-rsa-native';
 import config from '../ultilities/config';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const  PublicKey=`-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmXVVi3z9APO77sFSqrIg
@@ -60,9 +61,9 @@ class Login extends Component {
         // }
        // console.log(this.props)
        // this.props.CheckLogin(true)
-    //    await AsyncStorage.setItem('loginDetails', JSON.stringify(dataLogin));
-    //    let loginDetails = await AsyncStorage.getItem('loginDetails')
-    //    console.log(loginDetails)
+       await AsyncStorage.setItem('loginDetails', "data");
+       let loginDetails = await AsyncStorage.getItem('loginDetails')
+       await console.log(loginDetails)
   }
 
   render() {
