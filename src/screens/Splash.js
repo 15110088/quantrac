@@ -24,14 +24,17 @@ class Splash extends Component {
     };
   }
   clickAQI=()=>{
-    console.log('A')
+  
     this.setState({
       isAQI:true,
       isWQI:false
     })
     this.props.navigation.navigate('MapStack',{
        screen:'Map', 
-       params:{typeMonitoring:2}
+       params:{
+         typeMonitoring:2,
+         keySearch:'se ne'
+      }
     })
     
   }

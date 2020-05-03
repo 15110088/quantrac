@@ -61,7 +61,8 @@ class Login extends Component {
         // }
        // console.log(this.props)
        // this.props.CheckLogin(true)
-       await AsyncStorage.setItem('loginDetails', "data");
+       var data={islogin:true}
+       await AsyncStorage.setItem('loginDetails', JSON.stringify(data) );
        let loginDetails = await AsyncStorage.getItem('loginDetails')
        await console.log(loginDetails)
   }

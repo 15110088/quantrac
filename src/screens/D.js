@@ -101,6 +101,10 @@ class D extends Component {
   componentDidMount() {
     //this.xulysolieu()
     this.fetchData();
+    console.log("======search key=====")
+    console.log(this.props.route.params)
+
+    
   }
   showDialog = (data) => {
     this.setState({
@@ -501,12 +505,15 @@ class D extends Component {
       console.error(error);
     }
   };
-
+componentWillUnmount() {
+    
+  }
   render() {
     var {data} = this.props.data;
     
     var {addNumber, subNumber, xacdinhmau, navigation} = this.props;
     const {typeMonitoring} = this.state;
+    
     return (
       // <>
       //   {this.state.isLoading ? (
@@ -635,6 +642,7 @@ class D extends Component {
 
         {this.renderDialogAQI()}
         {this.renderDialogTypeMonitoring()}
+      <Text>1-{this.props.route.params.keySearch}</Text>
         <Button
           title="B"
           onPress={() => this.props.navigation.navigate('History')}></Button>
