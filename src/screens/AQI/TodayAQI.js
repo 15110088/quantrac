@@ -44,8 +44,7 @@ class TodayAQI extends Component {
         isLoading: true,
       });
       let reponseJson = await response.json();
-      console.log("===MaTram====")
-      console.log(reponseJson);
+      
       reponseJson.map((value,index)=>{
         var  Ngay=value.NgayTinh.substring(0,5)+value.NgayTinh.substring(9,11);
          this.setState({
@@ -62,7 +61,7 @@ class TodayAQI extends Component {
       console.error(error);
     }
   };
-  componentDidMount(){
+  componentWillMount(){
     this.fetchDataOneDay();
    
   }
@@ -82,7 +81,7 @@ class TodayAQI extends Component {
     const noidungCanhBao = this.props.route.params.noidungCanhBao;
     const maTram = this.props.route.params.maTram;
     const {xChart,yChart} = this.state
-    console.log(this.state.yChart); 
+     
 
     return (
    

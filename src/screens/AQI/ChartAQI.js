@@ -15,6 +15,13 @@ class ChartAQI extends React.Component {
     super(props);
 
     this.state = {
+      nghia:{
+        dataSets:[{
+          value:[0,2,33,1,22,566,222,12]
+        }
+      ]
+        
+      },
       legend: {
         enabled: true,
         textSize: 14,
@@ -26,7 +33,7 @@ class ChartAQI extends React.Component {
       },
       data: {
         dataSets: [{
-          values: this.props.xChart,
+          values:  Array.from(this.props.xChart), //[10, 24, 24, 17, 22],  // ["12:00AM", "01:00AM", "02:00AM", "03:00AM", "04:00AM"],
           label: 'AQI',
           config: {
             drawValues: false,
@@ -41,7 +48,8 @@ class ChartAQI extends React.Component {
         }
       },
       xAxis: {
-        valueFormatter: this.props.yChart,
+        valueFormatter:Array.from(this.props.yChart),
+//[29, 24, 24, 17, 22, 33],
         granularityEnabled: true,
         granularity: 1,            
       },
@@ -52,15 +60,28 @@ class ChartAQI extends React.Component {
         textColor: processColor('#08be51'),
         markerFontSize: 14,
         
-      },
+      },  
 
     };
   }
 
-    componentDidMount() {
+  componentWillMount() {
     console.log("==========Chart AIQ========")
-    console.log(this.props)
+    console.log(this.props.xChart)
     this.setState({...this.state, highlights: [{x: 2, y:40}]})
+    this.setState({
+        nghia:{
+            ...this.state.nghia,
+            ...this.state.nghia.dataSets,
+            value:this.props.xChart
+        }
+    })
+    console.log(this.state.nghia.dataSets)
+  }
+  componentDidMount(){
+     console.log('==============================')
+      console.log(this.state.nghia.dataSets)
+    console.log(this.state.data.dataSets)
   }
 
   handleSelect(event) {
@@ -73,10 +94,10 @@ class ChartAQI extends React.Component {
 
     console.log(event.nativeEvent)
   }
-
+ 
   render() {
-    console.log('====Chart====')
-    console.log(this.props.xChart)
+   
+  
     return (
       
           <BarChart
