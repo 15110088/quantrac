@@ -17,6 +17,7 @@ import History from './History';
 import {Icon} from 'react-native-elements';
 import AntDesign from 'react-native-vector-icons/dist/AntDesign';
 import SimpleLineIcons from 'react-native-vector-icons/dist/SimpleLineIcons';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 import Today from './Today';
@@ -96,15 +97,23 @@ const StackMenu = () => (
 );
 
 
-
-
-const CustomDrawerContent=props=> {
-  console.log('=====DrawMenu2=======')
+const LogoutSubmit=async(props)=>{
+  var data={islogin:false}
+  await AsyncStorage.setItem('checkLogin', JSON.stringify(data) );
+  props.navigation.closeDrawer();
   console.log(props)
-  return (
-    <DrawerContentScrollView {...props} contentContainerStyle={{flex:1}}>
-      {props.isLogin?<Block flex={0.5} >
-            <Image
+}
+
+
+
+const CustomDrawerContent=(props)=>{
+  return(
+  <View style={{flex:1}}>
+  <DrawerContentScrollView {...props}>
+      <View style={styles.drawerContent}>
+          <View style={styles.drawerSection}>
+                 {props.isLogin?<Block flex={0.5} >
+          <Image
                     source={require('../assets/image/logo.png')}
                     style={[styles.image]}></Image>
                     <Text style={[styles.textUser,{alignSelf:"center"}]}>xxxxxx</Text>
@@ -119,11 +128,10 @@ const CustomDrawerContent=props=> {
         icon={() => <AntDesign name="home" color={theme.colors.white} size={16} />}
       />
        <DrawerItem
-        label="Login"
+        label="Sign In"
         labelStyle={styles.text}
         onPress={() => props.navigation.navigate('Login')}
         style={styles.lineItemMenu}
-
         icon={() => <SimpleLineIcons name="login" color={theme.colors.white} size={16} />}
 
       />
@@ -135,79 +143,45 @@ const CustomDrawerContent=props=> {
         icon={() => <AntDesign name="setting" color={theme.colors.white} size={16} />}
 
       />
-        <Block flex={0.5}>
-        <DrawerItem
-        label="Logout"
-        labelStyle={styles.text}
-        style={{paddingTop:200}}
-        //onPress={() => props.navigation.navigate('C')}
+        
+          </View>
+        
+      </View>
+  </DrawerContentScrollView>
+  <DrawerItem
+        label="Sing Out"
+        labelStyle={styles.text} 
+        style={{marginBottom:15}}
+        onPress={() => LogoutSubmit(props)}
         icon={() => <SimpleLineIcons name="logout" color={theme.colors.white} size={16} />}/>
-        </Block>
-     
-
-    
-    </DrawerContentScrollView>
-  );
+</View>)
 }
 
 
-
-// const DrawerMenu = (props) => {
-//   console.log('=====DrawMenu1=======')
-//   console.log(props.isLogin)
-  
-//   return (
-//     <Drawer.Navigator
-//       drawerType="front" 
-//       initialRouteName="Stack" 
-//       overlayColor="transparent"
-//       drawerStyle={styles.drawerStyles}
-//       contentContainerStyle={{ flex: 1 }}
-//       drawerContentOptions={{
-//           activeBackgroundColor: 'transparent',
-//           activeTintColor: 'white',
-//           inactiveTintColor: 'white',
-//         }}
-//       sceneContainerStyle={{ backgroundColor: 'transparent' }}
-//       drawerContent={(props) => {
-//          // setProgress(props.progress);
-//           return <CustomDrawerContent {...props}  />;
-//         }}
-//     >
-//       <Drawer.Screen name="Tabs" component={StackMenu}></Drawer.Screen>
-//       <Drawer.Screen name="Login" component={loginContainer}></Drawer.Screen>
-//       <Drawer.Screen name="C" component={C}></Drawer.Screen>
-//       <Drawer.Screen name="E" component={E}></Drawer.Screen>
-//       <Drawer.Screen name="Splash" component={Splash}></Drawer.Screen> 
-//     </Drawer.Navigator>
-//   );
-// };
-// const Menu = (props) => {
-//   console.log('=====Menu=======')
-//   const [isLogin,SetLogin]=useState(true);
-//   console.log(props.data.isLogin)
-//   //isLogin=props.
-//   return (
-//     <RootStack.Navigator headerMode="none">
-//       <RootStack.Screen name="Drawer"  component={()=><DrawerMenu isLogin={props.data.isLogin}/>}></RootStack.Screen>
-//     </RootStack.Navigator>
-//   );
-// };
-
-
-
-
 class Menu extends Component {
-  
   constructor(props) {
     super(props); 
     this.state = { 
+      isLogin:null
     };
   }
-  
-  DrawerMenu = (props) => {
-    console.log("======DrawMenu======")
-    console.log(this.props)
+  componentWillMount() {
+    console.log('componentWillMount');
+  }
+  componentWillUpdate(){
+    console.log('componentUpdate');
+  }
+  getLogin=async()=>{
+    let checkLogin = await AsyncStorage.getItem('checkLogin')
+    var jsoncheckLogin =  JSON.parse(checkLogin)
+    console.log(jsoncheckLogin.islogin);
+     this.setState({
+       isLogin:jsoncheckLogin.islogin
+   })
+  }
+  DrawerMenu =  (props) => {
+    
+    this.getLogin()
     return (
       <Drawer.Navigator
         drawerType="front" 
@@ -222,8 +196,7 @@ class Menu extends Component {
           }} 
         sceneContainerStyle={{ backgroundColor: 'transparent' }}
         drawerContent={(props) => {
-                    // setProgress(props.progress);
-                     return <CustomDrawerContent {...props} isLogin={this.props.data.isLogin} />;
+                     return <CustomDrawerContent {...props} isLogin={this.state.isLogin} />;
                    }}
       > 
         <Drawer.Screen name="Tabs" component={StackMenu}></Drawer.Screen>
@@ -234,9 +207,7 @@ class Menu extends Component {
       </Drawer.Navigator>
     );
   };
-  componentWillReceiveProps(){
-
-  }
+  
   render() {
     return (
         <RootStack.Navigator headerMode="none">
@@ -285,7 +256,50 @@ const styles = StyleSheet.create({
 
   elevation: 0.9  ,
   //borderBottomWidth:1,borderBottomColor:'#fff'
-  }
+  },
+  drawerContent: {
+    flex: 1,
+  },
+  userInfoSection: {
+    paddingLeft: 20,
+  },
+  title: {
+    fontSize: 16,
+    marginTop: 3,
+    fontWeight: 'bold',
+  },
+  caption: {
+    fontSize: 14,
+    lineHeight: 14,
+  },
+  row: {
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  section: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  paragraph: {
+    fontWeight: 'bold',
+    marginRight: 3,
+  },
+  drawerSection: {
+    marginTop: 15,
+  },
+  bottomDrawerSection: {
+      marginBottom: 15,
+      borderTopColor: '#f4f4f4',
+      borderTopWidth: 1
+  },
+  preference: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
   
   
 });

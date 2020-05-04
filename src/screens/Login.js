@@ -26,6 +26,9 @@ class Login extends Component {
         passWord:'',
     };
   }
+  componentWillMount(){
+     console.log(this.props)
+  }
   LoginSubmit=async()=>{
         var dataLogin={
             tenDangNhap:this.state.userName,
@@ -49,22 +52,23 @@ class Login extends Component {
     //                         .catch((error) => {
     //                         console.error(error);
     //                         });
-        // if(this.state.userName==this.state.passWord)
-        // {
-        //     console.log("true")
-        // }
-        // else{
-        //   //  this.props.navigation.navigate('Duyet');
-        //   console.log("========login=======")
-        //   this.props.CheckLogin(true)
-        //     console.log(this.props)
-        // }
-       // console.log(this.props)
-       // this.props.CheckLogin(true)
-       var data={islogin:true}
-       await AsyncStorage.setItem('loginDetails', JSON.stringify(data) );
-       let loginDetails = await AsyncStorage.getItem('loginDetails')
-       await console.log(loginDetails)
+        if(this.state.userName==this.state.passWord)
+        {
+            var data={islogin:true}
+            await AsyncStorage.setItem('checkLogin', JSON.stringify(data) );
+            let checkLogin = await AsyncStorage.getItem('checkLogin')
+            await console.log(checkLogin)
+            await this.props.navigation.openDrawer();
+            await this.props.navigation.closeDrawer();
+            await this.props.navigation.navigate('Duyet');
+        }
+        else{
+           
+          console.log("========login False=======")
+         
+        }
+      
+      
   }
 
   render() {

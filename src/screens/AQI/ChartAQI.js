@@ -43,9 +43,7 @@ class ChartAQI extends React.Component {
       xAxis: {
         valueFormatter: this.props.yChart,
         granularityEnabled: true,
-        granularity: 1,
-       
-      
+        granularity: 1,            
       },
 
       marker: {
@@ -60,13 +58,8 @@ class ChartAQI extends React.Component {
   }
 
     componentDidMount() {
-    // in this example, there are line, bar, candle, scatter, bubble in this combined chart.
-    // according to MpAndroidChart, the default data sequence is line, bar, scatter, candle, bubble.
-    // so 4 should be used as dataIndex to highlight bubble data.
-
-    // if there is only bar, bubble in this combined chart.
-    // 1 should be used as dataIndex to highlight bubble data.
-
+    console.log("==========Chart AIQ========")
+    console.log(this.props)
     this.setState({...this.state, highlights: [{x: 2, y:40}]})
   }
 
