@@ -136,33 +136,27 @@ let appState = {
 
 const MapReducer = (state = appState, action) => {
   let newData = state.data;
-  //console.log('value')
-  //console.log(action.data)
+  console.log('value')
+  console.log(action.data)
   switch (action.type) {
-    // case 'Tot':
-    //   newData[action.indexAt].colorHerder = '#3333FF';
-    //   return {...state, data: newData};
-    // case 'Trungbinh':
-    //   newData[action.indexAt].colorHerder = '#FFCC00';
-    //   return {...state, data: newData};
-    // case 'Rattot':
-    //   newData[action.indexAt].colorHerder = '#33FF33';
-    //   return {...state, data: newData};
+    case 'Tot':
+      newData[action.indexAt].keyColor = '#3333FF';
+      return {...state, data: newData};
+    case 'Trungbinh':
+      newData[action.indexAt].keyColor = '#FFCC00';
+      return {...state, data: newData};
+    case 'Rattot':
+      newData[action.indexAt].keyColor = '#33FF33';
+      return {...state, data: newData};
 
-    // case 'Onhiemnang':
-    //   newData[action.indexAt].colorHerder = '#660000';
-    //   return {...state, data: newData};
-    // case 'Onhiem':
-    //   newData[action.indexAt].colorHerder = '#EE0000';
-    //   return {...state, data: newData};
-    // case 'addPH':
-    //   newData[action.indexAt].PH = newData[action.indexAt].PH + action.num;
-    //   return {...state, data: newData};
-    // case 'subPH':
-    //   newData[action.indexAt].PH -= 1;
-    //   return {...state, data: newData};
+    case 'Onhiemnang':
+      newData[action.indexAt].keyColor = '#660000';
+      return {...state, data: newData};
+    case 'Onhiem':
+      newData[action.indexAt].keyColor = '#EE0000';
+      return {...state, data: newData};
     case 'getDataKhiTuDong':
-      console.log('getDataKhiTuDong')
+      console.log('getDataKhiTuDong')//set du lieu data moi
        return {...state,data:action.data};
   }
   return state;

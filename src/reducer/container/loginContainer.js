@@ -14,8 +14,7 @@ class loginContainer extends Component {
   
   render() {
     const { data } = this.props.data;
-    console.log('======Login Data=====')
-    console.log(this.props.data)
+
     const {CheckLogin,navigation}=this.props
     return (
       <Login data={data} CheckLogin={CheckLogin} navigation={navigation}></Login>

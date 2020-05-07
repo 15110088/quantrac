@@ -70,9 +70,9 @@ const  DialogAQI=(props) =>  {
         <Text style={{fontFamily:'Rubik', fontSize: 12, fontWeight: '600', paddingBottom: 8,position: 'relative',textAlign: 'center'}}>
         {props.tenTram}
           </Text>
-          <Text style={{fontFamily:'Rubik', fontSize: 12, fontWeight: '600', paddingBottom: 8,position: 'relative',textAlign: 'center'}}>
+          {/* <Text style={{fontFamily:'Rubik', fontSize: 12, fontWeight: '600', paddingBottom: 8,position: 'relative',textAlign: 'center'}}>
                     {props.tenTram}
-          </Text>
+          </Text> */}
           
         </View>
         </View>

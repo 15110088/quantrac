@@ -5,9 +5,6 @@ let LoginState = {
 };
 
 const LoginReducer=(state=LoginState,action)=>{
-  
-    console.log("====state redux=======")
-    console.log(state)
     switch(action.type){
         case 'checkLogin':
          state.data={

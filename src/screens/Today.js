@@ -37,42 +37,50 @@ class Today extends Component {
   
   render() {
     const colorPiont = this.props.route.params.colorPoint
+    const PH = this.props.route.params.PH
+    const DO = this.props.route.params.DO
+    const NgayTinh = this.props.route.params.NgayTinh
+    const tenTram = this.props.route.params.tenTram
+    const maTram = this.props.route.params.maTram
+
+
+
     console.log(colorPiont)
     return (
         <SafeAreaView style={styles.overview}>
-        <ScrollView contentContainerStyle={{ paddingVertical: 25} }>
-            <Card  row middle style={{ marginHorizontal: 25, backgroundColor:colorPiont} }>
-                <Block flex={1} center middle style={{ marginRight: 20 }}>
+              <View style={{flex: 1, paddingVertical: 30}}>
+
+            <Card  row middle style={{ marginHorizontal: 25, backgroundColor:colorPiont,flex:0.2} } >
+                {/* <Block flex={1} center middle style={{ marginRight: 20 }}>
                     <Text light  color={'white'} height={43} size={36} spacing={-0.45}>0</Text>
                     <Text ligth color={'white'} caption center style={{ paddingHorizontal: 16, marginTop: 3 }}>
                         WQI
                     </Text>
-                </Block>
+                </Block> */}
                 <Block flex={2}  center middle  >
                     <Text  size={22} paragraph ligth color="white">
-                    Hà Nội
+                    {tenTram}
                     </Text>
                     <Text   paragraph ligth color="white">
-                    10h30 20/20/2020
+                    {NgayTinh}
                     </Text>
                 </Block>
             </Card>
 
-            <Block row style={[styles.margin, { marginTop: 18 }]}>
+            <Block row style={[styles.margin, { marginTop: 5 ,flex:0.35}]}>
             <Card middle style={{ marginRight: 7 }}>
              
-              <Text h3  style={{ marginTop: 0 }}>8.75</Text>
+    <Text h3  style={{ marginTop: 0 }}>{PH}</Text>
      
-              <Block row center >
+              <Block row center style={{marginTop:5}} >
                 <Label purple />
                 <Text paragraph color="gray">PH</Text>
               </Block>
             </Card>
             <Card middle style={{ marginLeft: 7 }}>
-              <Text h3  style={{ marginTop: 0 }}>3.85</Text>
-            
-
-              <Block row center >
+    <Text h3  style={{ marginTop: 0 }}>{DO}</Text>
+          
+              <Block row center style={{marginTop:5}} >
                 <Label blue />
                 <Text paragraph color="gray">DO</Text>
               </Block>
@@ -81,7 +89,7 @@ class Today extends Component {
           </Block>
 
 
-          <Card  middle style={[styles.margin, { marginTop: 18 }]}>
+        <Card  middle style={[styles.margin, { marginTop: 18 }]}>
         
          <Chart></Chart>
               
@@ -92,7 +100,7 @@ class Today extends Component {
 
 
 
-        </ScrollView>
+        </View>
       </SafeAreaView>
     );
   }

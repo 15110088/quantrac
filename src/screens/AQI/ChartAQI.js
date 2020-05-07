@@ -15,17 +15,11 @@ class ChartAQI extends React.Component {
     super(props);
 
     this.state = {
-      nghia:{
-        dataSets:[{
-          value:[0,2,33,1,22,566,222,12]
-        }
-      ]
-        
-      },
+     
       legend: {
         enabled: true,
         textSize: 14,
-        form: "Circle",
+        form: "SQUARE",
         formSize: 14,
         xEntrySpace: 10,
         yEntrySpace: 5,
@@ -33,7 +27,7 @@ class ChartAQI extends React.Component {
       },
       data: {
         dataSets: [{
-          values:  Array.from(this.props.xChart), //[10, 24, 24, 17, 22],  // ["12:00AM", "01:00AM", "02:00AM", "03:00AM", "04:00AM"],
+          values: Array.from(this.props.xChart), 
           label: 'AQI',
           config: {
             drawValues: false,
@@ -49,7 +43,6 @@ class ChartAQI extends React.Component {
       },
       xAxis: {
         valueFormatter:Array.from(this.props.yChart),
-//[29, 24, 24, 17, 22, 33],
         granularityEnabled: true,
         granularity: 1,            
       },
@@ -59,7 +52,6 @@ class ChartAQI extends React.Component {
         markerColor: processColor('#fff'),
         textColor: processColor('#08be51'),
         markerFontSize: 14,
-        
       },  
 
     };
@@ -67,22 +59,10 @@ class ChartAQI extends React.Component {
 
   componentWillMount() {
     console.log("==========Chart AIQ========")
-    console.log(this.props.xChart)
-    this.setState({...this.state, highlights: [{x: 2, y:40}]})
-    this.setState({
-        nghia:{
-            ...this.state.nghia,
-            ...this.state.nghia.dataSets,
-            value:this.props.xChart
-        }
-    })
-    console.log(this.state.nghia.dataSets)
+    this.setState({...this.state, highlights: [{x: this.props.xChart.length-1, y:10}]})
+    
   }
-  componentDidMount(){
-     console.log('==============================')
-      console.log(this.state.nghia.dataSets)
-    console.log(this.state.data.dataSets)
-  }
+ 
 
   handleSelect(event) {
     let entry = event.nativeEvent
@@ -106,7 +86,7 @@ class ChartAQI extends React.Component {
             data={this.state.data}
             legend={this.state.legend}
             drawValueAboveBar={false}
-           visibleRange={{x: { min: 3, max: 4 }}}
+            visibleRange={{x: { min: 3, max: 4 }}}
             onSelect={this.handleSelect.bind(this)}
             onChange={(event) => console.log(event.nativeEvent)}
             highlights={this.state.highlights}

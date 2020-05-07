@@ -1,12 +1,15 @@
 import * as theme from '../../constants/theme';
 import React, {Component} from 'react';
-import {View, StyleSheet, SafeAreaView, ScrollView} from 'react-native';
+import {View, StyleSheet, SafeAreaView, ScrollView,ActivityIndicator} from 'react-native';
 import {Block, Card, Text, Icon, Label} from '../../components';
 import ChartAQI from './ChartAQI';
 import DialogAQI from './DialogAQI';
 import Entypo from 'react-native-vector-icons/Entypo'
 import MaterialCommunityIcons from 'react-native-vector-icons/dist/MaterialCommunityIcons'
 import * as Animatable from 'react-native-animatable';
+import Loading from '../Loading';
+import config from '../../ultilities/config';
+import { CheckBox } from 'react-native-elements'
 
 const styles = StyleSheet.create({
   overview: {
@@ -34,44 +37,102 @@ const styles = StyleSheet.create({
 });
 
 class TodayAQI extends Component {
-  fetchDataOneDay = async () => {
+  fetchDataOneHour = async () => {
     try {
-      let response = await fetch(
-        // 'http://25.36.7.253/DuLieuQuanTracServices.svc/GetRandomKhiTuDong?record=0',
-        'http://25.36.7.253/DuLieuQuanTracServices.svc/GetDataHistoryNowKhiTuDong?maTram=AI-A-HA-04',
-      );
+      var URL = `http://${config.URLIP}/DuLieuQuanTracServices.svc/GetDataHistoryNowKhiTuDong?maTram=${this.props.route.params.maTram}`
+      let response = await fetch(URL);
       await this.setState({
         isLoading: true,
       });
       let reponseJson = await response.json();
-      
       reponseJson.map((value,index)=>{
         var  Ngay=value.NgayTinh.substring(0,5)+value.NgayTinh.substring(9,11);
          this.setState({
           xChart: [...this.state.xChart,value.chiSo],
           yChart: [...this.state.yChart,Ngay],
+          xChartHour: [...this.state.xChartHour,value.chiSo],
+          yChartHour: [...this.state.yChartHour,Ngay],
         });
       })
       await this.setState({
         isLoading: false,
       });
-  
 
     } catch (error) {
       console.error(error);
     }
   };
+
+  fetchDataOneDay = async () => {
+    try {
+      var URL = `http://${config.URLIP}/DuLieuQuanTracServices.svc/GetDataHistoryDayKhiTuDong?maTram=${this.props.route.params.maTram}`
+      let response = await fetch(URL);
+      await this.setState({
+        isLoading: true,
+      });
+      let reponseJson = await response.json();
+      reponseJson.map((value,index)=>{
+        var  Ngay=value.NgayTinh.substring(13);
+         this.setState({
+          xChartDay: [...this.state.xChartDay,value.chiSo],
+          yChartDay: [...this.state.yChartDay,Ngay],
+        });
+      })
+      await this.setState({
+        isLoading: false,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
   componentWillMount(){
-    this.fetchDataOneDay();
+    this.fetchDataOneHour();
    
+  }
+  componentDidMount(){
+    this.fetchDataOneDay();
   }
   constructor(props) {
     super(props);
     this.state = {
         xChart:[],
         yChart:[],
+        xChartDay:[],
+        yChartDay:[],
+        xChartHour:[],
+        yChartHour:[],
         isLoading:true,
+        isCheckDay:true,
+        timeDayorHour:1 //1 gio 2 ngay
     };
+  }
+  CheckSelectDay=(time)=>{
+   
+    //1 giờ  -  2 ngày
+    if(time==1 && !this.state.isCheckDay)
+    {
+      this.setState({
+        isCheckDay:!this.state.isCheckDay,
+        xChart:this.state.xChartHour,
+        yChart:this.state.yChartHour,
+        timeDayorHour:1
+      })
+     
+    }
+    if(time==2 && this.state.isCheckDay)
+    {
+      this.setState({
+        isCheckDay:!this.state.isCheckDay,
+        xChart:this.state.xChartDay,
+        yChart:this.state.yChartDay,
+        timeDayorHour:2
+      })
+    
+    }
+
+
   }
   render() {
     const chiSo = this.props.route.params.chiSo;
@@ -80,38 +141,51 @@ class TodayAQI extends Component {
     const NgayTinh = this.props.route.params.NgayTinh;
     const noidungCanhBao = this.props.route.params.noidungCanhBao;
     const maTram = this.props.route.params.maTram;
-    const {xChart,yChart} = this.state
+    const {xChart,yChart,xChartDay,yChartDay,xChartHour,yChartHour} = this.state
      
 
     return (
    
       <SafeAreaView style={styles.overview}>
         <View style={{flex: 2, paddingVertical: 30}}>
-
           <Card
             row
             middle
             style={{
               marginHorizontal: 25,
               backgroundColor: '#fff',
-              flex: 0.3,
+              flex: 0.2,
             }}>
             <Block flex={1} center middle style={{marginRight: 20}}>
               <Text light color={'green'} height={43} size={36} spacing={-0.45}>
                 {maTram}
               </Text>
-              <Text
-                ligth
-                color={'white'}
-                caption
-                center
-                style={{paddingHorizontal: 16, marginTop: 3}}>
-                AQI
-              </Text>
             </Block>
           </Card>
-          <Card middle style={[styles.margin, {marginTop: 18, flex: 0.7}]}>
-            <ChartAQI xChart={xChart} yChart={yChart}  ></ChartAQI>
+          <Card middle style={[styles.margin, {marginTop: 9, flex: 0.8}]}>
+           {
+           this.state.isLoading?  
+            <Loading></Loading>:
+            <>
+            <View style={{flexDirection:'row'}}>
+            <CheckBox
+              title='Giờ'
+              checked={this.state.isCheckDay}
+              checkedColor={theme.colors.green}
+              onPress={()=>this.CheckSelectDay(1)}
+            />
+            <CheckBox
+              title='Ngày'
+              checked={!this.state.isCheckDay}
+              checkedColor={theme.colors.green}
+              onPress={()=>this.CheckSelectDay(2)}
+            />
+            </View>
+            {this.state.timeDayorHour==1?<ChartAQI xChart={xChartHour} yChart={yChartHour} ></ChartAQI>:null }
+            {this.state.timeDayorHour==2?<ChartAQI xChart={xChartDay} yChart={yChartDay}  ></ChartAQI>:null }
+
+             </>
+             }
           </Card>
         </View>
       

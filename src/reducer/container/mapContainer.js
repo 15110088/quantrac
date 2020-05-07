@@ -14,8 +14,7 @@ class mapContainer extends Component {
   }
   
   render() {
-    console.log("=========")
-    console.log(this.props)
+
     const { data } = this.props.data;
     const {addNumber,subNumber,xacdinhmau,navigation,route,getDataKhiTuDong}=this.props
   

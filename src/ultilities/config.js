@@ -1,3 +1,3 @@
 export default {
-     URLIP:`127.0.0.1:12679`,
+     URLIP:`25.36.7.253`,
 }
