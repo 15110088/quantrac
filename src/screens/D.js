@@ -229,12 +229,15 @@ class D extends Component {
       >
         <TouchableWithoutFeedback
           onPress={this.showTodayWQI}>
-          <DialogWQI PH={PH} DO={DO} 
+             <View flex-1>
+             <DialogWQI PH={PH} DO={DO} 
           NgayTinh={NgayTinh}
           tenTram={tenTram}
           maTram={maTram}
           colorPoint={colorPoint}
           ></DialogWQI>
+          </View>
+         
         </TouchableWithoutFeedback>
       </Dialog>
     );
@@ -454,10 +457,13 @@ class D extends Component {
       if(this.state.typeMonitoring==1)
       {
         URL=`http://${config.URLIP}/DuLieuQuanTracServices.svc/GetRandomNuocTuDong?record=0`
+        console.log(URL)
       }
       if(this.state.typeMonitoring==2)
       {
         URL=`http://${config.URLIP}/DuLieuQuanTracServices.svc/GetRandomKhiTuDong?record=0`
+        console.log(URL)
+
       }
       let response = await fetch(URL);
       await this.setState({
@@ -486,7 +492,7 @@ class D extends Component {
       var URL=""
       if(this.state.typeMonitoring==1)
       {
-        //URL=`http://${config.URLIP}/DuLieuQuanTracServices.svc/GetRandomNuocTuDong?record=0`
+        URL=`http://${config.URLIP}/DuLieuQuanTracServices.svc/GetDataGiaTriDo?maTram=${this.state.maTramSearch}`
       }
       if(this.state.typeMonitoring==2)
       {
@@ -564,153 +570,54 @@ class D extends Component {
 
     return (
 
-      <>
-      <View style={{flex: 1, backgroundColor: theme.colors.green}}>
-        {this.renderHeader()}
-        <View style={{flex: 1, backgroundColor: '#fff'}}>
-          {this.state.isLoading ? (
-            <ActivityIndicator size="large" color="#0000fr" style={{position:'absolute'}} />
-          ) : 
-              <MapView
-               // provider={PROVIDER_GOOGLE} // remove if not using Google Maps
-                 ref={ref => {
-                  this.map = ref;
-                }}
-                style={{flex: 3}}
-                region={this.state.region}>
-                {this.props.data.map((marker, index) => {
-                  console.log(    'x '+ parseFloat(marker.toaDoX)+
-                'y '+parseFloat(marker.toaDoY))
-                  return (
-                    <MapView.Marker
-                      onPress={() => this.showDialog(marker)}
-                      key={index}
-                      coordinate={{
-                      latitude: parseFloat(marker.toaDoX),
-                      longitude: parseFloat(marker.toaDoY),
-                      }}>
-                      <TouchableWithoutFeedback>
-                        <View
-                          style={[styles.diemquantrac,{backgroundColor: marker.keyColor}]
-                          }>
-                          <Text
-                            style={{
-                              fontWeight: 'bold',
-                              fontSize: 18,
-                              color: 'white',
-                            }}>
-                           {this.state.typeMonitoring==1?marker.PH:marker.chiSo} 
-                          </Text>
-                        </View>
-                      </TouchableWithoutFeedback>
+    //   <>
+    //   <View style={{flex: 1, backgroundColor: theme.colors.green}}>
+    //     {this.renderHeader()}
+    //     <View style={{flex: 1, backgroundColor: '#fff'}}>
+    //       {this.state.isLoading ? (
+    //         <ActivityIndicator size="large" color="#0000fr" style={{position:'absolute'}} />
+    //       ) : 
+    //           <MapView
+    //            // provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+    //              ref={ref => {
+    //               this.map = ref;
+    //             }}
+    //             style={{flex: 3}}
+    //             region={this.state.region}>
+    //             {this.props.data.map((marker, index) => {
+    //               console.log(    'x '+ parseFloat(marker.toaDoX)+
+    //             'y '+parseFloat(marker.toaDoY))
+    //               return (
+    //                 <MapView.Marker
+    //                   onPress={() => this.showDialog(marker)}
+    //                   key={index}
+    //                   coordinate={{
+    //                   latitude: parseFloat(marker.toaDoX),
+    //                   longitude: parseFloat(marker.toaDoY),
+    //                   }}>
+    //                   <TouchableWithoutFeedback>
+    //                     <View
+    //                       style={[styles.diemquantrac,{backgroundColor: marker.keyColor}]
+    //                       }>
+    //                       <Text
+    //                         style={{
+    //                           fontWeight: 'bold',
+    //                           fontSize: 18,
+    //                           color: 'white',
+    //                         }}>
+    //                        {this.state.typeMonitoring==1?marker.PH:marker.chiSo} 
+    //                       </Text>
+    //                     </View>
+    //                   </TouchableWithoutFeedback>
 
                       
-                    </MapView.Marker>
-                  );
-                })}
+    //                 </MapView.Marker>
+    //               );
+    //             })}
                   
-              </MapView>
-           }          
-          {this.state.displaySearch?
-          <View
-            style={{
-              backgroundColor: 'transparent',
-              flex: 1,
-              width: '100%',
-              height: 200,
-              position: 'absolute',
-              paddingLeft: 50,
-              paddingRight: 10,
-            }}>
-            <ScrollView
-              style={{
-                width: '100%',
-                height: 200,
-                paddingLeft: 30,
-                paddingHorizontal: 50,
-                backgroundColor: 'transparent',
-              }}>     
-              {this.state.displaySearch
-                ? this.state.dataSearch.map((v, i) => {
-                    return (
-                      <TouchableWithoutFeedback
-                        onPress={() => this.selectIndex(v.maTram,v.tenTram)}>
-                         <Card containerStyle={{borderWidth:2,borderBottomColor:theme.colors.green}} >
-                          <View style={{flex:1,flexDirection:'row'}}>
-                          <Text>
-                        <Entypo name="location"></Entypo> {v.tenTram} 
-                         </Text>
-                          </View>
-                        </Card>
-                      </TouchableWithoutFeedback>
-                    );
-                  })
-                : null}
-            </ScrollView>
-          </View>:null}
-          {this.state.typeMonitoring==1?   this.renderDialogWQI(): this.renderDialogAQI()}
-          {this.renderDialogTypeMonitoring()}
-                         <View style={{ position: "absolute",
-              right: 0,
-              left: 0,
-              bottom: 0,
-              paddingBottom: theme.sizes.base * 2}}>
-                <LevelAQI></LevelAQI>
-                               </View>
-         
-        </View>
-      </View>
-    </>
-
-
-
-    //   <>
-    //     <View style={{flex: 1, backgroundColor: theme.colors.green}}>
-    //       {this.renderHeader()}
-    //       <View style={{flex: 1, backgroundColor: '#fff'}}>
-    //         {this.state.isLoading ? (
-    //           <ActivityIndicator size="large" color="#0000fr" />
-    //         ) : null}
-    //         {
-    //         this.props.data.map((marker, index) => {
-    //           console.log(parseFloat(marker.toaDoX))
-    //           console.log(parseFloat(marker.toaDoY))
-    //           //console.log(marker.COORDINATES[0])
-    //           return (
-    //             <TouchableWithoutFeedback
-    //               key={index}
-    //               onPress={() => this.showDialog(marker)}>
-    //               <View
-    //                 style={{
-    //                   alignItems: 'center',
-    //                   justifyContent: 'center',
-    //                   width: 50,
-    //                   height: 50,
-    //                   borderRadius: 25,
-    //                   backgroundColor: marker.keyColor,
-    //                   shadowColor: '#7F58FF',
-    //                   shadowRadius: 5,
-    //                   shadowOffset: {height: 10},
-    //                   shadowOpacity: 0.3,
-    //                   borderWidth: 3,
-    //                   borderColor: '#FFFFFF',
-    //                 }}>
-    //                 <Text
-    //                   style={{
-    //                     fontWeight: 'bold',
-    //                     fontSize: 18,
-    //                     color: '#000',
-    //                   }}>
-    //                  {this.state.typeMonitoring==1?marker.PH:marker.chiSo} 
-    //                 </Text>
-    //               </View>
-    //             </TouchableWithoutFeedback>
-    //           );
-    //         })
-    //         }
-
-
-    //  {this.state.displaySearch?
+    //           </MapView>
+    //        }          
+    //       {this.state.displaySearch?
     //       <View
     //         style={{
     //           backgroundColor: 'transparent',
@@ -747,28 +654,124 @@ class D extends Component {
     //             : null}
     //         </ScrollView>
     //       </View>:null}
-            
-    //        {this.state.typeMonitoring==1?   this.renderDialogWQI(): this.renderDialogAQI()}
-    //         {this.renderDialogTypeMonitoring()}
-
-    //         <Button
-    //           title="B"
-    //           onPress={() =>
-    //             this.props.navigation.navigate('History')
-    //           }></Button>
-    //         <Button
-    //           title="Setting"
-    //           onPress={() => this.showDialogTypeMonitoring('1')}></Button>
-    //                 <View style={{ position: "absolute",
+    //       {this.state.typeMonitoring==1?   this.renderDialogWQI(): this.renderDialogAQI()}
+    //       {this.renderDialogTypeMonitoring()}
+    //                      <View style={{ position: "absolute",
     //           right: 0,
     //           left: 0,
     //           bottom: 0,
     //           paddingBottom: theme.sizes.base * 2}}>
     //             <LevelAQI></LevelAQI>
     //                            </View>
-    //       </View>
+         
     //     </View>
-    //   </>
+    //   </View>
+    // </>
+
+
+
+      <>
+        <View style={{flex: 1, backgroundColor: theme.colors.green}}>
+          {this.renderHeader()}
+          <View style={{flex: 1, backgroundColor: '#fff'}}>
+            {this.state.isLoading ? (
+              <ActivityIndicator size="large" color="#0000fr" />
+            ) : null}
+            {
+            this.props.data.map((marker, index) => {
+              //console.log(parseFloat(marker.toaDoX))
+              //console.log(parseFloat(marker.toaDoY))
+              //console.log(marker.COORDINATES[0])
+              return (
+                <TouchableWithoutFeedback
+                  key={index}
+                  onPress={() => this.showDialog(marker)}>
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: 50,
+                      height: 50,
+                      borderRadius: 25,
+                      backgroundColor: marker.keyColor,
+                      shadowColor: '#7F58FF',
+                      shadowRadius: 5,
+                      shadowOffset: {height: 10},
+                      shadowOpacity: 0.3,
+                      borderWidth: 3,
+                      borderColor: '#FFFFFF',
+                    }}>
+                    <Text
+                      style={{
+                        fontWeight: 'bold',
+                        fontSize: 18,
+                        color: '#000',
+                      }}>
+                     {this.state.typeMonitoring==1?marker.PH:marker.chiSo} 
+                    </Text>
+                  </View>
+                </TouchableWithoutFeedback>
+              );
+            })
+            }
+
+
+     {this.state.displaySearch?
+          <View
+            style={{
+              backgroundColor: 'transparent',
+              flex: 1,
+              width: '100%',
+              height: 200,
+              position: 'absolute',
+              paddingLeft: 50,
+              paddingRight: 10,
+            }}>
+            <ScrollView
+              style={{
+                width: '100%',
+                height: 200,
+                paddingLeft: 30,
+                paddingHorizontal: 50,
+                backgroundColor: 'transparent',
+              }}>     
+              {this.state.displaySearch
+                ? this.state.dataSearch.map((v, i) => {
+                    return (
+                      <TouchableWithoutFeedback
+                        onPress={() => this.selectIndex(v.maTram,v.tenTram)}>
+                         <Card containerStyle={{borderWidth:2,borderBottomColor:theme.colors.green}} >
+                          <View style={{flex:1,flexDirection:'row'}}>
+                          <Text>
+                        <Entypo name="location"></Entypo> {v.tenTram} 
+                         </Text>
+                          </View>
+                        </Card>
+                      </TouchableWithoutFeedback>
+                    );
+                  })
+                : null}
+            </ScrollView>
+          </View>:null}
+            
+            {this.state.typeMonitoring==1?this.renderDialogWQI(): this.renderDialogAQI()}
+            {this.renderDialogTypeMonitoring()}
+
+            <Button
+              title="B"
+              onPress={() =>
+                this.props.navigation.navigate('History')
+              }></Button>
+            <Button
+              title="Setting"
+              onPress={() => this.showDialogTypeMonitoring('1')}></Button>
+              <View style={{ position: "absolute",
+              right: 0,left: 0,bottom: 0,
+              paddingBottom: theme.sizes.base * 2}}>
+              <LevelAQI></LevelAQI></View>
+          </View>
+        </View>
+      </>
     );
   }
 }

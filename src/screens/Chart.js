@@ -11,9 +11,8 @@ import * as theme from '../constants/theme';
 
 class Chart extends React.Component {
 
-  constructor() {
-    super();
-
+  constructor(props) {
+    super(props);     
     this.state = {
       legend: {
         enabled: true,
@@ -26,7 +25,7 @@ class Chart extends React.Component {
       },
       data: {
         dataSets: [{
-          values: [55, 51, 20, 33, 89],
+          values: Array.from(this.props.xChartPH),
             
           label: 'PH',
           config: {
@@ -34,7 +33,7 @@ class Chart extends React.Component {
             colors: [processColor('#8C54FF')],
           }
         }, {
-          values: [40, 5, 50, 23, 79],
+          values: Array.from(this.props.xChartDO),
           label: 'DO',
           config: {
             drawValues: false, 
@@ -49,15 +48,15 @@ class Chart extends React.Component {
             fromX: 0,
             groupSpace: 0.4,
             barSpace: 0.1,
+          
           },
         }
       },
       xAxis: {
-        valueFormatter: ['12:00', '12:30', '13:00', '13:30', '14:00'],
+        valueFormatter: Array.from(this.props.yChartPH),
         granularityEnabled: true,
         granularity: 1,
-        axisMaximum: 5,
-        axisMinimum: 0,
+      
         centerAxisLabels: true
       },
 
@@ -68,6 +67,8 @@ class Chart extends React.Component {
         markerFontSize: 14,
         
       },
+
+      
 
     };
   }
@@ -98,11 +99,16 @@ class Chart extends React.Component {
     return (
       
           <BarChart
+           
+            
+     
+
             style={styles.chart}
             xAxis={this.state.xAxis}
             data={this.state.data}
             legend={this.state.legend}
             drawValueAboveBar={false}
+            visibleRange={{x: { min: 3, max: 4 }}}// dùng để sroll
             onSelect={this.handleSelect.bind(this)}
             onChange={(event) => console.log(event.nativeEvent)}
             highlights={this.state.highlights}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text,StyleSheet , TextInput,TouchableOpacity} from 'react-native';
+import { View, Text,StyleSheet,Alert , TextInput,TouchableOpacity} from 'react-native';
 import * as theme from '../constants/theme';
 import AntDesign from 'react-native-vector-icons/dist/AntDesign';
 import Feather from 'react-native-vector-icons/dist/Feather';
@@ -24,10 +24,28 @@ class Login extends Component {
         secureTextEntry:true,
         userName:'',
         passWord:'',
+        isAlterLogin:null,
     };
   }
   componentWillMount(){
      console.log(this.props)
+  }
+  CheckLogin=async()=>{
+    let checkLogin =await  AsyncStorage.getItem('checkLogin')
+    var jsoncheckLogin =  JSON.parse(checkLogin)
+    if(jsoncheckLogin.trangThai=="True")
+    {  
+        console.log('=============')
+        console.log(jsoncheckLogin)
+
+        await this.props.navigation.openDrawer();
+        await this.props.navigation.closeDrawer();
+        await this.props.navigation.navigate('Duyet');
+    }
+    else{
+        Alert.alert(jsoncheckLogin.ketQua)
+    }
+   
   }
   LoginSubmit=async()=>{
         var dataLogin={
@@ -41,26 +59,28 @@ class Login extends Component {
             .then(encodedMessage => {
                // console.log(dataLogin)
                 EncodedLogin=encodedMessage;
-                //console.log(`the encoded message is ${encodedMessage}`);
+                console.log(`the encoded message is ${encodeURIComponent(encodedMessage)}`);
+                fetch(`http://${config.URLIP}/DuLieuQuanTracServices.svc/GetDangNhap?parameter=${encodeURIComponent(encodedMessage)}`)
+                            .then((response) => response.json())
+                            .then((json) => {
+                                 AsyncStorage.setItem('checkLogin', JSON.stringify(json) );
+                                this.CheckLogin();
+                            })
+                            .catch((error) => {
+                            console.error(error);
+                            });
             });
         });
-    //    fetch(`http://127.0.0.1:12679/DuLieuQuanTracServices.svc/GetDangNhap?parameter=V9oFgSWxltSxnqPlJiscbtoUGzR00pae6PpiCTBfZ2vjvlWmkyR4eUhnPPLffOlRcuYGD7rFpDdSW3fN0Xd5fG%2BQLF%2F06pjqXtbdyTCS2HZXFeC5CbI5nK53AtpRwWU5wkeX%2FbSbd1uz5ibNd7Ax4a0Zew%2BGtNPG9XDbdcT%2BgydNtT23tYUz%2B%2B%2FAFTm4xXg22MgbiariiVGW%2FoeUAydeV7zG3vPKdl%2FxI%2FnRG790oqMoSBx6FDQ6IHJQ7VRmkJluv%2F7ifHayjyavFm4C%2BXHqjO1VXdPpyMoYdxJ%2B9X6mzQdcfLkH%2B4q2R9sbmCHW0xbsbK8S%2F%2F51Lw9nM6Qyyh127w%3D%3D`)
-    //                         .then((response) => response.json())
-    //                         .then((json) => {
-    //                              console.log(json)
-    //                         })
-    //                         .catch((error) => {
-    //                         console.error(error);
-    //                         });
+         
         if(this.state.userName==this.state.passWord)
         {
             var data={islogin:true}
-            await AsyncStorage.setItem('checkLogin', JSON.stringify(data) );
-            let checkLogin = await AsyncStorage.getItem('checkLogin')
-            await console.log(checkLogin)
-            await this.props.navigation.openDrawer();
-            await this.props.navigation.closeDrawer();
-            await this.props.navigation.navigate('Duyet');
+           // await AsyncStorage.setItem('checkLogin', JSON.stringify(data) );
+           // let checkLogin = await AsyncStorage.getItem('checkLogin')
+            //await console.log(checkLogin)
+            // await this.props.navigation.openDrawer();
+            // await this.props.navigation.closeDrawer();
+            // await this.props.navigation.navigate('Duyet');
         }
         else{
            

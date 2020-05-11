@@ -98,9 +98,15 @@ const StackMenu = () => (
 
 
 const LogoutSubmit=async(props)=>{
-  var data={islogin:false}
+  var data={
+    ketQua: "Đăng Xuất Thành Công",
+    trangThai: false,
+    tenDangNhap: "",
+    matKhau: ""
+    }
   await AsyncStorage.setItem('checkLogin', JSON.stringify(data) );
   props.navigation.closeDrawer();
+  props.navigation.popToTop().
   console.log(props)
 }
 
@@ -127,33 +133,38 @@ const CustomDrawerContent=(props)=>{
 
         icon={() => <AntDesign name="home" color={theme.colors.white} size={16} />}
       />
-       <DrawerItem
+       {props.isLogin?null:<DrawerItem
         label="Sign In"
         labelStyle={styles.text}
         onPress={() => props.navigation.navigate('Login')}
         style={styles.lineItemMenu}
         icon={() => <SimpleLineIcons name="login" color={theme.colors.white} size={16} />}
-
-      />
+      />}
+      {props.isLogin?<DrawerItem
+        label="Monitoring"
+        labelStyle={styles.text} 
+        style={styles.lineItemMenu}
+        onPress={() => props.navigation.navigate('Duyet')}
+        icon={() => <SimpleLineIcons name="logout" color={theme.colors.white} size={16} />}/>:null}
        <DrawerItem
         label="Setting"
         labelStyle={styles.text}
         style={styles.lineItemMenu}
         onPress={() => props.navigation.navigate('C')}
         icon={() => <AntDesign name="setting" color={theme.colors.white} size={16} />}
-
       />
-        
+      
+      
           </View>
         
       </View>
   </DrawerContentScrollView>
-  <DrawerItem
+  {props.isLogin?<DrawerItem
         label="Sing Out"
         labelStyle={styles.text} 
         style={{marginBottom:15}}
         onPress={() => LogoutSubmit(props)}
-        icon={() => <SimpleLineIcons name="logout" color={theme.colors.white} size={16} />}/>
+        icon={() => <SimpleLineIcons name="logout" color={theme.colors.white} size={16} />}/>:null}
 </View>)
 }
 
@@ -174,9 +185,9 @@ class Menu extends Component {
   getLogin=async()=>{
     let checkLogin = await AsyncStorage.getItem('checkLogin')
     var jsoncheckLogin =  JSON.parse(checkLogin)
-    console.log(jsoncheckLogin.islogin);
+    console.log(jsoncheckLogin.trangThai);
      this.setState({
-       isLogin:jsoncheckLogin.islogin
+       isLogin:jsoncheckLogin.trangThai
    })
   }
   DrawerMenu =  (props) => {

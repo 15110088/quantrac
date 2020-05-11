@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     paddingHorizontal:40
   }
 });
-
+// load chart sử dụng feech data 2 lần . lần 1 hiển thị  lần 2 dợi load xong
 class TodayAQI extends Component {
   fetchDataOneHour = async () => {
     try {
