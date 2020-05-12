@@ -9,6 +9,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   TextInput,
+  Keyboard
 } from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Polyline} from 'react-native-maps';
 import {Image, Button, Overlay, Card} from 'react-native-elements';
@@ -164,6 +165,24 @@ class D extends Component {
           }}
           placeholder="search"
         />
+        {this.state.displaySearch?<TouchableWithoutFeedback
+        style={{position: 'absolute', flex: 1}}
+        onPress={this.hideDataSearch}>
+        <MaterialIcons
+          size={25}
+          name="close"
+          color={theme.colors.green}
+          style={{
+            position: 'absolute',
+            paddingRight: 0,
+            marginRight:0,
+            right:0,
+            paddingTop: 5,
+          }}>
+          </MaterialIcons>
+        </TouchableWithoutFeedback>:null}
+        
+        
       </View>
       <TouchableWithoutFeedback
         style={{position: 'absolute', flex: 1}}
@@ -551,6 +570,13 @@ class D extends Component {
   showDataSearch = () => {
     this.setState({
       displaySearch: true,
+    });
+  };
+  hideDataSearch = () => {
+    console.log("ok test")
+    Keyboard.dismiss()
+    this.setState({
+      displaySearch: false,
     });
   };
   selectIndex = async(maTram,tenTram) => {
