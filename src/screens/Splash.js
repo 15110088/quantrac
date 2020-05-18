@@ -91,7 +91,6 @@ class Splash extends Component {
                source={require('../assets/image/logo.png')}
               style={styles.image}></Image> */}
           </View>
-
           <View style={styles.footer}>
             <Text style={styles.title}>THÔNG TIN QUAN TRẮC</Text>
             {this.state.show?
