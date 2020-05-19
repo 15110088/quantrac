@@ -61,7 +61,7 @@ import {
                     style={{
                       top: -10,
                       color: 'gray',
-                      fontSize: 30,
+                      fontSize: 20,
                       fontWeight: 'bold',
                     }}>
                     {props.PH}
@@ -77,7 +77,7 @@ import {
                     style={{
                       top: -10,
                       color: 'gray',
-                      fontSize: 30,
+                      fontSize: 20,
                       fontWeight: 'bold',
                     }}>
                     {props.DO}

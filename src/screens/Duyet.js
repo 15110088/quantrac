@@ -42,6 +42,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import BackgroundHeader from '../components/BackgroundHeader';
 import Icon from 'react-native-vector-icons/Fontisto';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const dataTest = [
   {
@@ -59,10 +60,9 @@ const dataTest = [
 ];
 
 function ItemThongSo({data}) {
-  
   return (
     <>
-    <View
+      <View
         style={{
           flex: 1,
           flexDirection: 'column',
@@ -79,16 +79,14 @@ function ItemThongSo({data}) {
           );
         })}
       </View>
-     
     </>
   );
 }
 
 function ItemTableHeaderLeft({data}) {
-  
   return (
     <>
-          <View
+      <View
         style={{
           flex: 1,
           flexDirection: 'column',
@@ -97,26 +95,24 @@ function ItemTableHeaderLeft({data}) {
           margin: 16,
           borderRadius: 16,
         }}>
-            <View style={{width: 50}}>
-              <Text style={styles.title}>data</Text>
-            </View>
+        <View style={{width: 50}}>
+          <Text style={styles.title}>data</Text>
+        </View>
       </View>
     </>
   );
 }
 
 function ItemTableHeader(props) {
-  
   return (
     <>
-          {props.data.map((v,i)=>{
-              return(
-                <View style={{width: 50}}>
-              <Text style={styles.title}>{v}</Text>
-            </View>
-              )
-          })}
-        
+      {props.data.map((v, i) => {
+        return (
+          <View style={{width: 50}}>
+            <Text style={styles.title}>{v}</Text>
+          </View>
+        );
+      })}
     </>
   );
 }
@@ -136,62 +132,94 @@ const Rating = ({rating}) => {
     </View>
   );
 };
+export const setColor=(data)=>{
+    if(data=='_BlackStyle')
+    {
+      return '#000'
+    }
+    if(data=='_SilverStyle')
+    {
+      return theme.colors.gray
+    }
+    if(data=='_RedStyle')
+    {
+      return '#de2302'
+    }
+    if(data=='_BlueStyle')
+    {
+      return '#0a9dff'
+    }
+    console.log(data)
+    
+}
 export const CardHome = (props) => {
-  console.log('=home=')
-  console.log(props.data)
   return (
     <View style={styles.cardContainer}>
-    <View style={styles.cardBody}>
-      <View style={styles.cardBodyTop}>
-           <ScrollView style={{flex: 1 }}>
-             <View style={{flex:1 ,flexDirection:'row'}}>
-                <View style={{paddingTop:30}}>
-                      {props.dataHeaderLeft.map((v,i)=>{
-                              return(
-                                <View
-                                style={{
-                                  backgroundColor: '#e4e6eb',
-                                  width:100,
-                                  padding:5
-
-                                }}>
-                                    <View style={{width: 100}}>
-                                            <Text style={{ fontSize: 15}}>{v}</Text>
-                                    </View>
-                              </View>
-                              
-                              )
-                      })}
+      <View style={styles.cardBody}>
+        <View style={styles.cardBodyTop}>
+          <ScrollView style={{flex: 1}}>
+            <View style={{flex: 1, flexDirection: 'row'}}>
+              <View style={{}}>
+              <View
+                      style={{
+                        backgroundColor: theme.colors.green,
+                        width: 100,
+                       
+                      }}>
+                      <View style={{width: 100}}>
+                        <Text style={{fontSize: 17}}></Text>
+                      </View>
+                    </View>
+                {props.dataHeaderLeft.map((v, i) => {
+                  return (
+                    <View
+                      style={{
+                        backgroundColor: '#e4e6eb',
+                        width: 100,
+                        padding:5
+                      }}>
+                      <View style={{width: 100}}>
+                        <Text style={{fontSize: 15,fontWeight:'bold',color:theme.colors.black}}>{v}</Text>
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+              <ScrollView horizontal={true}>
+                <View style={{flexDirection: 'column'}}>
+                  <View style={{flexDirection: 'row'}}>
+                    {props.dataHeader.map((v, i) => {
+                      return (
+                        <View style={{width: 100,borderBottomWidth:0.5,backgroundColor:theme.colors.green}}>
+                        <Text style={{fontSize: 17,color:theme.colors.white , textAlign:'center'}}><MaterialIcons name="access-time"></MaterialIcons> {v}</Text>
+                        </View>
+                      );
+                    })}
                   </View>
-               <ScrollView horizontal={true}>
-               <View style={{flexDirection:'column'}}>
-                 
-                          <View style={{flexDirection:'row' }}>
-                            {props.dataHeader.map((v,i)=>{
-                                return(
-                                  <Text style={{ fontSize: 15,paddingLeft:20}}>{v}</Text>
-                                )
-                            })}
-                          </View>
-                          <View style={{flexDirection:'column',padding:20}}>
-                                <Text style={{ fontSize: 15}}>15</Text>
-                                <Text style={{ fontSize: 15}}>15</Text>
-                                {props.data.map(v=>{
-                                  console.log("in v")
-                                  console.log(v)
-                                })}
-                          </View>
+                  <View style={{flexDirection: 'row'}}>
+                    {props.data.map((v, i) => {
 
-
-                           
-                          </View>
+                      return    <View style={{flexDirection: 'column', width: 100}}>
+                        { v.map(x=>{
+                        return(
+                        <View style={{width: 100,padding:5,borderBottomWidth:0.5}}>
+                        <Text style={{fontSize: 15,textAlign:"center",color:setColor(x.keyColor)}}>{x.GIATRISO}</Text>
+                        </View>
+                        )
+                       })}
+                        </View>
                      
-               </ScrollView>
-             </View>
-            </ScrollView>
+                    })}
+
+                 
+                  </View>
+                </View>
+              </ScrollView>
+            </View>
+          </ScrollView>
+        </View>
       </View>
     </View>
-  </View>
   );
 };
 
@@ -222,231 +250,199 @@ class Duyet extends Component {
     dataThongSo: [],
     dataTableHeader: [],
     dataTableLeft: [],
-
   };
-  CardHome1 = (data,dataHeaderLeft,dataHeader) => {
-    console.log('=home=')
-    console.log(data[0][0].id)
-    return (
-      <View style={styles.cardContainer}>
-        <View style={styles.cardBody}>
-          <View style={styles.cardBodyTop}>
-               <ScrollView style={{flex: 1 }}>
-                 <View style={{flex:1 ,flexDirection:'row'}}>
-                    <View style={{paddingTop:30}}>
-                          {dataHeaderLeft.map((v,i)=>{
-                                  return(
-                                    <View
-                                    style={{
-                                      backgroundColor: '#e4e6eb',
-                                      width:100,
-                                      padding:5
 
-                                    }}>
-                                        <View style={{width: 100}}>
-                                                <Text style={{ fontSize: 15}}>{v}</Text>
-                                        </View>
-                                  </View>
-                                  
-                                  )
-                          })}
-                      </View>
-                   <ScrollView horizontal={true}>
-                   <View style={{flexDirection:'column'}}>
-                     
-                              <View style={{flexDirection:'row' }}>
-                                {dataHeader.map((v,i)=>{
-                                    return(
-                                      <Text style={{ fontSize: 15,paddingLeft:20}}>{v}</Text>
-                                    )
-                                })}
-                              </View>
-                              <View style={{flexDirection:'column',padding:20}}>
-                                    <Text style={{ fontSize: 15}}>15</Text>
-                                    <Text style={{ fontSize: 15}}>15</Text>
-
-                              </View>
-
-
-                               
-                              </View>
-                         
-                   </ScrollView>
-                 </View>
-                </ScrollView>
-          </View>
-        </View>
-      </View>
-    );
-  };
   header = () => {
     return (
-      <View style={{height:200,width:windowWidth,paddingHorizontal:10}}>
-      <View style={styles.header}>
-        <Entypo name="chevron-left" size={32} color="#fff" />
-        <View style={styles.headerBody}>
-          <Text style={styles.headerText}>
-            Duyệt dữ liệu quan trắc nước
-          </Text>
-          <View style={styles.headerRightContainer}>
-            <Entypo name="map" size={25} color="#fff" />
-            <Octicons
-              name="settings"
-              size={25}
-              color="#fff"
-              style={styles.icon}
-            />
+      <View style={{height: 200, width: windowWidth, paddingHorizontal: 10}}>
+        <View style={styles.header}>
+          <Entypo name="chevron-left" size={32} color="#fff" />
+          <View style={styles.headerBody}>
+            <Text style={styles.headerText}>Duyệt dữ liệu quan trắc nước</Text>
+            <View style={styles.headerRightContainer}>
+              <Entypo name="map" size={25} color="#fff" />
+              <Octicons
+                name="settings"
+                size={25}
+                color="#fff"
+                style={styles.icon}
+              />
+            </View>
           </View>
         </View>
-      </View>
 
-       <Swiper
-    loop={true}
-    style={{height: 170}}>
-    <View style={{height: 100}}>
-      <View style={styles.wrapperInput}>
-        <AntDesign name="search1" size={18} color="gray" />
-        {/* <TextInput style={styles.inputText} value="Ho Chi Minh" /> */}
-        <Picker
-          style={styles.inputText}
-          selectedValue={this.state.indexTram}
-          mode="dialog"
-          onValueChange={this.updateLoaiTram}>
-          <Picker.Item label="Nước Mặt Nhà Nước" value="1" />
-          <Picker.Item label="Nước Mặt Doanh Nghiệp" value="2" />
-          <Picker.Item label="Nước Thải Nhà Nước" value="3" />
-          <Picker.Item label="Nước Thải Doanh Nghiệp" value="4" />
-        </Picker>
+        <Swiper loop={true} style={{height: 170}}>
+          <View style={{height: 100}}>
+            <View style={styles.wrapperInput}>
+              <AntDesign name="search1" size={18} color="gray" />
+              {/* <TextInput style={styles.inputText} value="Ho Chi Minh" /> */}
+              <Picker
+                style={styles.inputText}
+                selectedValue={this.state.indexTram}
+                mode="dialog"
+                onValueChange={this.updateLoaiTram}>
+                <Picker.Item label="Nước Mặt Nhà Nước" value="1" />
+                <Picker.Item label="Nước Mặt Doanh Nghiệp" value="2" />
+                <Picker.Item label="Nước Thải Nhà Nước" value="3" />
+                <Picker.Item label="Nước Thải Doanh Nghiệp" value="4" />
+              </Picker>
+            </View>
+            <View style={styles.wrapperInput}>
+              <Feather name="map-pin" size={18} color="gray" />
+              <TextInput
+                style={[styles.inputText, {color: '#9770A3'}]}
+                placeholder="Tên Trạm"
+                onFocus={this.showDataSearch}
+                onKeyPress={this.handleChangeAndDelete}
+                containerStyle={{height: 30}}
+                value={this.state.search}
+                onChangeText={(data) => this.searchFilterFunction(data)}
+              />
+              {this.state.isDisplay ? (
+                <TouchableWithoutFeedback
+                  style={{position: 'absolute', flex: 1}}
+                  onPress={this.hideDataSearch}>
+                  <MaterialIcons
+                    size={25}
+                    name="close"
+                    color={theme.colors.green}
+                    style={{
+                      position: 'absolute',
+                      paddingRight: 0,
+                      marginRight: 0,
+                      right: 0,
+                      paddingTop: 5,
+                    }}></MaterialIcons>
+                </TouchableWithoutFeedback>
+              ) : null}
+            </View>
+          </View>
+          <View style={{height: 250}}>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <DatePicker
+                style={{width: windowWidth / 2 - 20, padding: 5}}
+                date={this.state.dateFrom}
+                mode="date"
+                placeholder="select date"
+                format="DD/MM/YYYY"
+                androidMode="calendar"
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                  dateIcon: {
+                    position: 'absolute',
+                    left: 0,
+                    top: 4,
+                    marginLeft: 0,
+                  },
+                  dateInput: {
+                    marginLeft: 36,
+                    height: 20,
+                    borderRadius: 5,
+                    backgroundColor: theme.colors.white,
+                    height: 30,
+                  },
+                }}
+                onDateChange={(date) => {
+                  this.setState({dateFrom: date});
+                }}
+              />
+              <DatePicker
+                style={{width: windowWidth / 2 - 20, padding: 5}}
+                date={this.state.dateTo}
+                mode="date"
+                placeholder="select date"
+                format="DD/MM/YYYY"
+                androidMode="calendar"
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                  dateIcon: {
+                    position: 'absolute',
+                    left: 0,
+                    top: 4,
+                    marginLeft: 0,
+                  },
+                  dateInput: {
+                    marginLeft: 36,
+                    height: 20,
+                    borderRadius: 5,
+                    backgroundColor: theme.colors.white,
+                    height: 30,
+                  },
+                }}
+                onDateChange={(date) => {
+                  this.setState({dateTo: date});
+                }}
+              />
+            </View>
+            <Text style={styles.inputText}>
+              Khoảng Thời Gian: {this.state.dateFrom} - {this.state.dateTo}
+            </Text>
+            <DatePicker
+                style={{width: windowWidth / 2 - 20, padding: 5}}
+                date={this.state.dateTo}
+                mode="time"
+                placeholder="select date"
+                //format="DD/MM/YYYY"
+                androidMode="calendar"
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                  dateIcon: {
+                    position: 'absolute',
+                    left: 0,
+                    top: 4,
+                    marginLeft: 0,
+                  },
+                  dateInput: {
+                    marginLeft: 36,
+                    height: 20,
+                    borderRadius: 5,
+                    backgroundColor: theme.colors.white,
+                    height: 30,
+                  },
+                }}
+                onDateChange={(date) => {
+                  this.setState({dateTo: date});
+                }}
+              />
+          </View>
+        </Swiper>
       </View>
-      <View style={styles.wrapperInput}>
-        <Feather name="map-pin" size={18} color="gray" />
-        <TextInput
-          style={[styles.inputText, {color: '#9770A3'}]}
-          placeholder="Tên Trạm"
-          onFocus={this.showDataSearch}
-          onKeyPress={this.handleChangeAndDelete}
-          containerStyle={{height: 30}}
-          value={this.state.search}
-          onChangeText={(data) => this.searchFilterFunction(data)}
-        />
-        {this.state.isDisplay ? (
-          <TouchableWithoutFeedback
-            style={{position: 'absolute', flex: 1}}
-            onPress={this.hideDataSearch}>
-            <MaterialIcons
-              size={25}
-              name="close"
-              color={theme.colors.green}
-              style={{
-                position: 'absolute',
-                paddingRight: 0,
-                marginRight: 0,
-                right: 0,
-                paddingTop: 5,
-              }}></MaterialIcons>
-          </TouchableWithoutFeedback>
-        ) : null}
-      </View>
-    </View>
-    <View style={{height: 250}}>
-      <View
-        style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <DatePicker
-          style={{width: windowWidth / 2 - 20, padding: 5}}
-          date={this.state.dateFrom}
-          mode="date"
-          placeholder="select date"
-          format="DD/MM/YYYY"
-          androidMode="calendar"
-          confirmBtnText="Confirm"
-          cancelBtnText="Cancel"
-          customStyles={{
-            dateIcon: {
-              position: 'absolute',
-              left: 0,
-              top: 4,
-              marginLeft: 0,
-            },
-            dateInput: {
-              marginLeft: 36,
-              height: 20,
-              borderRadius: 5,
-              backgroundColor: theme.colors.white,
-              height: 30,
-            },
-          }}
-          onDateChange={(date) => {
-            this.setState({dateFrom: date});
-          }}
-        />
-        <DatePicker
-          style={{width: windowWidth / 2 - 20, padding: 5}}
-          date={this.state.dateTo}
-          mode="date"
-          placeholder="select date"
-          format="DD/MM/YYYY"
-          androidMode="calendar"
-          confirmBtnText="Confirm"
-          cancelBtnText="Cancel"
-          customStyles={{
-            dateIcon: {
-              position: 'absolute',
-              left: 0,
-              top: 4,
-              marginLeft: 0,
-            },
-            dateInput: {
-              marginLeft: 36,
-              height: 20,
-              borderRadius: 5,
-              backgroundColor: theme.colors.white,
-              height: 30,
-            },
-          }}
-          onDateChange={(date) => {
-            this.setState({dateTo: date});
-          }}
-        />
-      </View>
-      <Text style={styles.inputText}>
-        Khoảng Thời Gian: {this.state.dateFrom} - {this.state.dateTo}
-      </Text>
-    </View>
-    </Swiper>
-    </View>
     );
   };
-  ButtonDuyet = ()=>{
-    return(
-    <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-    <TouchableOpacity
-      style={[
-        styles.button,
-        {
-          borderColor: theme.colors.green,
-          borderRadius: 50,
-          borderWidth: 1,
-          backgroundColor: theme.colors.white,
-        },
-      ]}>
-      <Text style={{color: theme.colors.green}}>Xem</Text>
-    </TouchableOpacity>
-    <TouchableOpacity
-      style={[
-        styles.button,
-        {
-          borderColor: theme.colors.green,
-          borderRadius: 50,
-          borderWidth: 1,
-          backgroundColor: theme.colors.white,
-        },
-      ]}>
-      <Text style={{color: theme.colors.green}}>Duyệt</Text>
-    </TouchableOpacity>
-  </View>
-    )
-    
-  }
+  ButtonDuyet = () => {
+    return (
+      <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+        <TouchableOpacity
+          style={[
+            styles.button,
+            {
+              borderColor: theme.colors.green,
+              borderRadius: 50,
+              borderWidth: 1,
+              backgroundColor: theme.colors.white,
+            },
+          ]}>
+          <Text style={{color: theme.colors.green}}>Xem</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.button,
+            {
+              borderColor: theme.colors.green,
+              borderRadius: 50,
+              borderWidth: 1,
+              backgroundColor: theme.colors.white,
+            },
+          ]}>
+          <Text style={{color: theme.colors.green}}>Duyệt</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
   updateLoaiTram = async (data) => {
     console.log(data);
     this.setState({indexTram: data});
@@ -478,7 +474,6 @@ class Duyet extends Component {
   componentWillMount() {
     this.fetchData();
     this.fetchDataTram();
-
   }
   keyExtractor = (item, index) => index.toString();
   fetchData = async () => {
@@ -505,8 +500,11 @@ class Duyet extends Component {
   fetchDataTram = async () => {
     try {
       var URL = '';
-      URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=03%2F01%2F2018%2010%3A00&to=03%2F01%2F2018%2010%3A30`;
-      console.log(URL);
+   //   URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=03%2F01%2F2018%2010%3A00&to=03%2F01%2F2018%2010%3A30`;
+   URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=29%2F07%2F2018%2008%3A30&to=29%2F07%2F2018%2020%3A30`;
+   
+   
+   console.log(URL);
       let response = await fetch(URL);
       await this.setState({
         isLoading: true,
@@ -520,15 +518,18 @@ class Duyet extends Component {
       await this.state.dataTram.map((v, i) => {
         this.setState({
           dataThongSo: [...this.state.dataThongSo, v.ThongSo],
-          dataTableHeader: [...this.state.dataTableHeader, v.THOIDIEMDO.substr(11)],
+          dataTableHeader: [
+            ...this.state.dataTableHeader,
+            v.THOIDIEMDO.substr(11,5)+' '+ v.THOIDIEMDO.substr(20),
+          ],
         });
       });
       console.log(this.state.dataThongSo);
-      await this.state.dataThongSo[0].map((v,i)=>{
-          this.setState({
-              dataTableLeft:[...this.state.dataTableLeft,v.KYHIEU_THONGSO]
-          })
-      })
+      await this.state.dataThongSo[0].map((v, i) => {
+        this.setState({
+          dataTableLeft: [...this.state.dataTableLeft, v.KYHIEU_THONGSO],
+        });
+      });
       console.log('===============');
       console.log(this.state.dataTableHeader);
     } catch (error) {
@@ -606,7 +607,7 @@ class Duyet extends Component {
         <SafeAreaView style={styles.container}>
           <BackgroundHeader style={styles.bg} />
           {this.header()}
-           <ScrollView style={styles.scrollView}>
+          <ScrollView style={styles.scrollView}>
             {this.ButtonDuyet()}
             {this.state.isDisplay ? (
               <Animatable.View
@@ -635,11 +636,11 @@ class Duyet extends Component {
             ) : null}
             <View>
               <CardHome
-                  data={this.state.dataThongSo}
-                  dataHeader={this.state.dataTableHeader}
-                  dataHeaderLeft={this.state.dataTableLeft}
+                data={this.state.dataThongSo}
+                dataHeader={this.state.dataTableHeader}
+                dataHeaderLeft={this.state.dataTableLeft}
               />
-                {/* {this.CardHome(this.state.dataThongSo,this.state.dataTableLeft,this.state.dataTableHeader)} */}
+              {/* {this.CardHome(this.state.dataThongSo,this.state.dataTableLeft,this.state.dataTableHeader)} */}
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -648,18 +649,51 @@ class Duyet extends Component {
   }
 }
 
-
 [
-
- {id: 48657925, GIATRISO: 6.83, KYHIEU_THONGSO: "pH", keyColor: "_BlackStyle"},
- {id: 48657931, GIATRISO: 7.16, KYHIEU_THONGSO: "DO", keyColor: "_SilverStyle"},
- {id: 48657926, GIATRISO: 0.75, KYHIEU_THONGSO: "AMONI", keyColor: "_BlackStyle"},
- {id: 48657927, GIATRISO: 4.98, KYHIEU_THONGSO: "NITRAT", keyColor: "_BlackStyle"},
- {id: 48657930, GIATRISO: 41.41, KYHIEU_THONGSO: "FL", keyColor: "_BlackStyle"},
- {id: 48657928, GIATRISO: 9.66, KYHIEU_THONGSO: "TSS", keyColor: "_BlackStyle"},
-{id: 48657929, GIATRISO: 20.4, KYHIEU_THONGSO: "COD", keyColor: "_BlackStyle"},
- {id: 48657932, GIATRISO: 28.09, KYHIEU_THONGSO: "NHIETDO", keyColor: "_BlackStyl"}
-]
+  {id: 48657925, GIATRISO: 6.83, KYHIEU_THONGSO: 'pH', keyColor: '_BlackStyle'},
+  {
+    id: 48657931,
+    GIATRISO: 7.16,
+    KYHIEU_THONGSO: 'DO',
+    keyColor: '_SilverStyle',
+  },
+  {
+    id: 48657926,
+    GIATRISO: 0.75,
+    KYHIEU_THONGSO: 'AMONI',
+    keyColor: '_BlackStyle',
+  },
+  {
+    id: 48657927,
+    GIATRISO: 4.98,
+    KYHIEU_THONGSO: 'NITRAT',
+    keyColor: '_BlackStyle',
+  },
+  {
+    id: 48657930,
+    GIATRISO: 41.41,
+    KYHIEU_THONGSO: 'FL',
+    keyColor: '_BlackStyle',
+  },
+  {
+    id: 48657928,
+    GIATRISO: 9.66,
+    KYHIEU_THONGSO: 'TSS',
+    keyColor: '_BlackStyle',
+  },
+  {
+    id: 48657929,
+    GIATRISO: 20.4,
+    KYHIEU_THONGSO: 'COD',
+    keyColor: '_BlackStyle',
+  },
+  {
+    id: 48657932,
+    GIATRISO: 28.09,
+    KYHIEU_THONGSO: 'NHIETDO',
+    keyColor: '_BlackStyl',
+  },
+];
 const IconTenTram = (
   <Image
     source={require('../assets/image/station.png')}
@@ -766,7 +800,7 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    top:10
+    top: 10,
   },
 
   //
