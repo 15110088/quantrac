@@ -176,12 +176,7 @@ class Menu extends Component {
       isLogin:null
     };
   }
-  componentWillMount() {
-    console.log('componentWillMount');
-  }
-  componentWillUpdate(){
-    console.log('componentUpdate');
-  }
+  
   getLogin=async()=>{
     let checkLogin = await AsyncStorage.getItem('checkLogin')
     var jsoncheckLogin =  JSON.parse(checkLogin)

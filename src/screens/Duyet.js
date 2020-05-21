@@ -14,22 +14,13 @@ import {
   StatusBar,
   TouchableOpacity,
 } from 'react-native';
-import {
-  Layout,
-  Tab,
-  TabView,
-  IndexPath,
-  Select,
-  SelectGroup,
-  SelectItem,
-} from '@ui-kitten/components';
+import {RangeDatepicker, Icon,NativeDateService } from '@ui-kitten/components';
 import {SearchBar, Image, Input, ListItem} from 'react-native-elements';
-import {Divider, List} from '@ui-kitten/components';
 import Swiper from 'react-native-swiper';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import * as theme from '../constants/theme';
 
-import DatePicker from 'react-native-datepicker';
 import * as Animatable from 'react-native-animatable';
 import {ScrollView} from 'react-native-gesture-handler';
 import Loading from './Loading';
@@ -41,81 +32,9 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import BackgroundHeader from '../components/BackgroundHeader';
-import Icon from 'react-native-vector-icons/Fontisto';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 
-const dataTest = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-];
-
-function ItemThongSo({data}) {
-  return (
-    <>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: 'column',
-          backgroundColor: '#e4e6eb',
-          padding: 20,
-          margin: 16,
-          borderRadius: 16,
-        }}>
-        {data.map((v, i) => {
-          return (
-            <View style={{width: 50}}>
-              <Text style={styles.title}>{v.GIATRISO}</Text>
-            </View>
-          );
-        })}
-      </View>
-    </>
-  );
-}
-
-function ItemTableHeaderLeft({data}) {
-  return (
-    <>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: 'column',
-          backgroundColor: '#e4e6eb',
-          padding: 20,
-          margin: 16,
-          borderRadius: 16,
-        }}>
-        <View style={{width: 50}}>
-          <Text style={styles.title}>data</Text>
-        </View>
-      </View>
-    </>
-  );
-}
-
-function ItemTableHeader(props) {
-  return (
-    <>
-      {props.data.map((v, i) => {
-        return (
-          <View style={{width: 50}}>
-            <Text style={styles.title}>{v}</Text>
-          </View>
-        );
-      })}
-    </>
-  );
-}
+const CalendarIcon = (props) => <Icon {...props} name="calendar" />;
 const Rating = ({rating}) => {
   return (
     <View style={styles.rating}>
@@ -132,26 +51,21 @@ const Rating = ({rating}) => {
     </View>
   );
 };
-export const setColor=(data)=>{
-    if(data=='_BlackStyle')
-    {
-      return '#000'
-    }
-    if(data=='_SilverStyle')
-    {
-      return theme.colors.gray
-    }
-    if(data=='_RedStyle')
-    {
-      return '#de2302'
-    }
-    if(data=='_BlueStyle')
-    {
-      return '#0a9dff'
-    }
-    console.log(data)
-    
-}
+export const setColor = (data) => {
+  if (data == '_BlackStyle') {
+    return '#000';
+  }
+  if (data == '_SilverStyle') {
+    return theme.colors.gray;
+  }
+  if (data == '_RedStyle') {
+    return '#de2302';
+  }
+  if (data == '_BlueStyle') {
+    return '#0a9dff';
+  }
+  console.log(data);
+};
 export const CardHome = (props) => {
   return (
     <View style={styles.cardContainer}>
@@ -160,26 +74,32 @@ export const CardHome = (props) => {
           <ScrollView style={{flex: 1}}>
             <View style={{flex: 1, flexDirection: 'row'}}>
               <View style={{}}>
-              <View
-                      style={{
-                        backgroundColor: theme.colors.green,
-                        width: 100,
-                       
-                      }}>
-                      <View style={{width: 100}}>
-                        <Text style={{fontSize: 17}}></Text>
-                      </View>
-                    </View>
+                <View
+                  style={{
+                    backgroundColor: theme.colors.green,
+                    width: 100,
+                  }}>
+                  <View style={{width: 100}}>
+                    <Text style={{fontSize: 17}}></Text>
+                  </View>
+                </View>
                 {props.dataHeaderLeft.map((v, i) => {
                   return (
-                    <View
+                    <View key={i}
                       style={{
                         backgroundColor: '#e4e6eb',
                         width: 100,
-                        padding:5
+                        padding: 5,
                       }}>
                       <View style={{width: 100}}>
-                        <Text style={{fontSize: 15,fontWeight:'bold',color:theme.colors.black}}>{v}</Text>
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            fontWeight: 'bold',
+                            color: theme.colors.black,
+                          }}>
+                          {v}
+                        </Text>
                       </View>
                     </View>
                   );
@@ -190,8 +110,22 @@ export const CardHome = (props) => {
                   <View style={{flexDirection: 'row'}}>
                     {props.dataHeader.map((v, i) => {
                       return (
-                        <View style={{width: 100,borderBottomWidth:0.5,backgroundColor:theme.colors.green}}>
-                        <Text style={{fontSize: 17,color:theme.colors.white , textAlign:'center'}}><MaterialIcons name="access-time"></MaterialIcons> {v}</Text>
+                        <View
+                        key={i}
+                          style={{
+                            width: 100,
+                            borderBottomWidth: 0.5,
+                            backgroundColor: theme.colors.green,
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 17,
+                              color: theme.colors.white,
+                              textAlign: 'center',
+                            }}>
+                            <MaterialIcons name="access-time"></MaterialIcons>{' '}
+                            {v}
+                          </Text>
                         </View>
                       );
                     })}
@@ -199,19 +133,31 @@ export const CardHome = (props) => {
                   <View style={{flexDirection: 'row'}}>
                     {props.data.map((v, i) => {
 
-                      return    <View style={{flexDirection: 'column', width: 100}}>
-                        { v.map(x=>{
-                        return(
-                        <View style={{width: 100,padding:5,borderBottomWidth:0.5}}>
-                        <Text style={{fontSize: 15,textAlign:"center",color:setColor(x.keyColor)}}>{x.GIATRISO}</Text>
+                      return (
+                        <View style={{flexDirection: 'column', width: 100}}>
+                          {v.map((x,c) => {
+                            return (
+                              <View
+                              key={c}
+                                style={{
+                                  width: 100,
+                                  padding: 5,
+                                  borderBottomWidth: 0.5,
+                                }}>
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    textAlign: 'center',
+                                    color: setColor(x.keyColor),
+                                  }}>
+                                  {x.GIATRISO}
+                                </Text>
+                              </View>
+                            );
+                          })}
                         </View>
-                        )
-                       })}
-                        </View>
-                     
+                      );
                     })}
-
-                 
                   </View>
                 </View>
               </ScrollView>
@@ -222,17 +168,25 @@ export const CardHome = (props) => {
     </View>
   );
 };
+const formatDateService = new NativeDateService('en', { format: 'DD/MM/YYYY' });
 
 class Duyet extends Component {
-  state = {
+  constructor(props)
+  {
+    
+    super(props)
+  
+    this.state = {
     indexTram: '',
     dateFrom: '',
     dateTo: '', //new Date(Date.now()).toLocaleDateString('en-US'),
     tabIndex: 0,
-
+    rangeDate: {},
     //Variable thực hiện load giao diện
     isDisplay: false,
     isLoading: false,
+    isShowTimeTo:false,
+    isShowTimeFrom:false,
     animatible_Tram: 'fadeInUpBig',
     //Variable search
     search: '', // từ khóa tìm kiếm tên trạm
@@ -250,7 +204,11 @@ class Duyet extends Component {
     dataThongSo: [],
     dataTableHeader: [],
     dataTableLeft: [],
-  };
+    
+  }
+  this.fetchData();
+  this.fetchDataTram();
+}
 
   header = () => {
     return (
@@ -272,10 +230,9 @@ class Duyet extends Component {
         </View>
 
         <Swiper loop={true} style={{height: 170}}>
-          <View style={{height: 100}}>
+          <View style={{height: 100, width: windowWidth}}>
             <View style={styles.wrapperInput}>
               <AntDesign name="search1" size={18} color="gray" />
-              {/* <TextInput style={styles.inputText} value="Ho Chi Minh" /> */}
               <Picker
                 style={styles.inputText}
                 selectedValue={this.state.indexTram}
@@ -310,104 +267,39 @@ class Duyet extends Component {
                       position: 'absolute',
                       paddingRight: 0,
                       marginRight: 0,
-                      right: 0,
+                      right: 1,
                       paddingTop: 5,
                     }}></MaterialIcons>
                 </TouchableWithoutFeedback>
               ) : null}
             </View>
           </View>
-          <View style={{height: 250}}>
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <DatePicker
-                style={{width: windowWidth / 2 - 20, padding: 5}}
-                date={this.state.dateFrom}
-                mode="date"
-                placeholder="select date"
-                format="DD/MM/YYYY"
-                androidMode="calendar"
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                customStyles={{
-                  dateIcon: {
-                    position: 'absolute',
-                    left: 0,
-                    top: 4,
-                    marginLeft: 0,
-                  },
-                  dateInput: {
-                    marginLeft: 36,
-                    height: 20,
-                    borderRadius: 5,
-                    backgroundColor: theme.colors.white,
-                    height: 30,
-                  },
-                }}
-                onDateChange={(date) => {
-                  this.setState({dateFrom: date});
-                }}
-              />
-              <DatePicker
-                style={{width: windowWidth / 2 - 20, padding: 5}}
-                date={this.state.dateTo}
-                mode="date"
-                placeholder="select date"
-                format="DD/MM/YYYY"
-                androidMode="calendar"
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                customStyles={{
-                  dateIcon: {
-                    position: 'absolute',
-                    left: 0,
-                    top: 4,
-                    marginLeft: 0,
-                  },
-                  dateInput: {
-                    marginLeft: 36,
-                    height: 20,
-                    borderRadius: 5,
-                    backgroundColor: theme.colors.white,
-                    height: 30,
-                  },
-                }}
-                onDateChange={(date) => {
-                  this.setState({dateTo: date});
-                }}
+          <View style={{height: 250, width: windowWidth, paddingHorizontal: 10}}>
+            <View style={[styles.wrapperDate, {width: windowWidth * 0.9}]}>
+              <MaterialIcons name="date-range" size={18} color="gray" />
+              <RangeDatepicker
+                style={{height: 40, width: 250}}
+                range={this.state.rangeDate}
+                onSelect={(nextRange) => this.layNgayQuanTrac(nextRange)}
+                accessoryRight={CalendarIcon}
+                status="success"
+                dateService={formatDateService}
+                autoDismiss={false}
               />
             </View>
-            <Text style={styles.inputText}>
-              Khoảng Thời Gian: {this.state.dateFrom} - {this.state.dateTo}
-            </Text>
-            <DatePicker
-                style={{width: windowWidth / 2 - 20, padding: 5}}
-                date={this.state.dateTo}
-                mode="time"
-                placeholder="select date"
-                //format="DD/MM/YYYY"
-                androidMode="calendar"
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                customStyles={{
-                  dateIcon: {
-                    position: 'absolute',
-                    left: 0,
-                    top: 4,
-                    marginLeft: 0,
-                  },
-                  dateInput: {
-                    marginLeft: 36,
-                    height: 20,
-                    borderRadius: 5,
-                    backgroundColor: theme.colors.white,
-                    height: 30,
-                  },
-                }}
-                onDateChange={(date) => {
-                  this.setState({dateTo: date});
-                }}
-              />
+
+            <View
+              style={{flexDirection: 'row',  width: windowWidth*0.9 , justifyContent: 'space-between'}}>
+              <View style={[styles.wrapperTime]}>
+                <MaterialIcons name="access-time" size={18} color="gray" />
+                <TextInput  onFocus={()=>{this.setState({isShowTimeFrom:true}),Keyboard.dismiss()}} style={{height: 40}} />
+              </View>
+              <View style={[styles.wrapperTime]}>
+                <MaterialIcons name="access-time" size={18} color="gray" />
+                <TextInput style={{height: 40}} />
+              </View>
+            </View>
+                    
           </View>
         </Swiper>
       </View>
@@ -463,19 +355,26 @@ class Duyet extends Component {
 
     await this.fetchData();
   };
-  updateSearch = (search) => {
-    this.setState({search});
-  };
-  SelectTab = (index) => {
-    this.setState({
-      tabIndex: index,
-    });
-  };
-  componentWillMount() {
-    this.fetchData();
-    this.fetchDataTram();
+
+  layNgayQuanTrac=(nextDate)=>{
+    console.log(nextDate.endDate)
+      this.setState({
+        rangeDate:nextDate,
+        dateFrom:new Date(nextDate.startDate).toLocaleDateString('vi-VN'),
+        dateTo:new Date(nextDate.endDate).toLocaleDateString('vi-VN')
+      })
+
   }
-  keyExtractor = (item, index) => index.toString();
+  layThoiGianQuanTrac=(event, selectedDate)=>{
+    console.log(selectedDate)
+    this.setState(
+      {
+        isShowTimeFrom:false,
+   
+      }
+       )   
+  }
+
   fetchData = async () => {
     try {
       var URL = '';
@@ -500,11 +399,10 @@ class Duyet extends Component {
   fetchDataTram = async () => {
     try {
       var URL = '';
-   //   URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=03%2F01%2F2018%2010%3A00&to=03%2F01%2F2018%2010%3A30`;
-   URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=29%2F07%2F2018%2008%3A30&to=29%2F07%2F2018%2020%3A30`;
-   
-   
-   console.log(URL);
+      //   URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=03%2F01%2F2018%2010%3A00&to=03%2F01%2F2018%2010%3A30`;
+      URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=29%2F07%2F2018%2008%3A30&to=29%2F07%2F2018%2020%3A30`;
+
+      console.log(URL);
       let response = await fetch(URL);
       await this.setState({
         isLoading: true,
@@ -520,7 +418,7 @@ class Duyet extends Component {
           dataThongSo: [...this.state.dataThongSo, v.ThongSo],
           dataTableHeader: [
             ...this.state.dataTableHeader,
-            v.THOIDIEMDO.substr(11,5)+' '+ v.THOIDIEMDO.substr(20),
+            v.THOIDIEMDO.substr(11, 5) + ' ' + v.THOIDIEMDO.substr(20),
           ],
         });
       });
@@ -536,6 +434,16 @@ class Duyet extends Component {
       console.error(error);
     }
   };
+  renderItem = ({item, index}) => (
+    <ListItem
+      onPress={() => this.bindingInputTram(item)}
+      title={item.tenTram}
+      subtitle={item.maTram}
+      leftAvatar={{source: {uri: item.avatar_url}}}
+      bottomDivider
+      chevron
+    />
+  );
   searchFilterFunction = (text) => {
     //passing the inserted text in textinput
     const newData = this.state.dataSearch.filter((item) => {
@@ -558,34 +466,15 @@ class Duyet extends Component {
       });
     }
   };
-  BindingInputTram = (data) => {
+  bindingInputTram = (data) => {
     console.log(data);
     this.setState({
       search: data.tenTram,
       idDiem: data.ID,
       //idDiem: 46,
     });
-    this.fetchDataTram();
+    //this.fetchDataTram();
   };
-  renderItem = ({item, index}) => (
-    <ListItem
-      onPress={() => this.BindingInputTram(item)}
-      title={item.tenTram}
-      subtitle={item.maTram}
-      leftAvatar={{source: {uri: item.avatar_url}}}
-      bottomDivider
-      chevron
-    />
-  );
-
-  renderItemTable = (item) => {
-    <View style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
-    </View>;
-  };
-  handleChangeAndDelete(event) {
-    console.log(event);
-  }
   hideDataSearch = () => {
     Keyboard.dismiss();
     this.setState({
@@ -635,12 +524,12 @@ class Duyet extends Component {
               </Animatable.View>
             ) : null}
             <View>
+               <Text>{this.state.dateFrom}-{this.state.dateTo}</Text> 
               <CardHome
                 data={this.state.dataThongSo}
                 dataHeader={this.state.dataTableHeader}
                 dataHeaderLeft={this.state.dataTableLeft}
               />
-              {/* {this.CardHome(this.state.dataThongSo,this.state.dataTableLeft,this.state.dataTableHeader)} */}
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -649,51 +538,6 @@ class Duyet extends Component {
   }
 }
 
-[
-  {id: 48657925, GIATRISO: 6.83, KYHIEU_THONGSO: 'pH', keyColor: '_BlackStyle'},
-  {
-    id: 48657931,
-    GIATRISO: 7.16,
-    KYHIEU_THONGSO: 'DO',
-    keyColor: '_SilverStyle',
-  },
-  {
-    id: 48657926,
-    GIATRISO: 0.75,
-    KYHIEU_THONGSO: 'AMONI',
-    keyColor: '_BlackStyle',
-  },
-  {
-    id: 48657927,
-    GIATRISO: 4.98,
-    KYHIEU_THONGSO: 'NITRAT',
-    keyColor: '_BlackStyle',
-  },
-  {
-    id: 48657930,
-    GIATRISO: 41.41,
-    KYHIEU_THONGSO: 'FL',
-    keyColor: '_BlackStyle',
-  },
-  {
-    id: 48657928,
-    GIATRISO: 9.66,
-    KYHIEU_THONGSO: 'TSS',
-    keyColor: '_BlackStyle',
-  },
-  {
-    id: 48657929,
-    GIATRISO: 20.4,
-    KYHIEU_THONGSO: 'COD',
-    keyColor: '_BlackStyle',
-  },
-  {
-    id: 48657932,
-    GIATRISO: 28.09,
-    KYHIEU_THONGSO: 'NHIETDO',
-    keyColor: '_BlackStyl',
-  },
-];
 const IconTenTram = (
   <Image
     source={require('../assets/image/station.png')}
@@ -717,11 +561,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: 'red',
   },
-  tabContainer: {
-    height: 64,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+
   container: {
     flex: 1,
     backgroundColor: '#F0F1F2',
@@ -787,9 +627,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     borderRadius: 8,
     marginTop: 10,
+    width: windowWidth * 0.95,
+  },
+  wrapperDate: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginTop: 10,
+  },
+  wrapperTime: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginTop: 10,
+    width: windowWidth * 0.4
   },
   inputText: {
     padding: 10,

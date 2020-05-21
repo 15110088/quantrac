@@ -8,18 +8,14 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 
 import { ApplicationProvider, Layout } from '@ui-kitten/components';
 import { mapping, light as lightTheme } from '@eva-design/eva';
+import * as eva from '@eva-design/eva';
+
 import B from './screens/B';
 import Container from '../src/reducer/Container' 
 import MapReducer from './reducer/MapReducer';
 import LoginReducer from './reducer/LoginReducer';
 import MenuContainer from './reducer/container/menuContainer';
-
-
-//import MapReducer from './reducer/MapReducer';
-
-
-
-
+import Duyet from './screens/Duyet';
 
 let appState = {
       colorHerder:'#fff000'
@@ -27,8 +23,6 @@ let appState = {
 
 const showQuanTrac = (state = appState, action) => {
 
- 
-  
   //console.log('data show '+action.type)
   switch (action.type) {
     case 'tot':
@@ -84,13 +78,15 @@ class App extends Component {
     return (
       <Provider store={store} >
         <View style={{ flex: 1 }}>
-          <ApplicationProvider mapping={mapping} theme={lightTheme}>
-            <NavigationContainer>
+          <ApplicationProvider map={mapping} {...eva} theme={lightTheme}>
+            {/* <NavigationContainer>
                   <MenuContainer></MenuContainer>
-            </NavigationContainer>
+            </NavigationContainer> */}
+                  <Duyet/>
           </ApplicationProvider>
         </View>
       </Provider>
+
     );
   }
 }

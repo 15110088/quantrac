@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   KeyboardAvoidingView,
+  TouchableHighlight,
   TextInput,
   Keyboard
 } from 'react-native';
@@ -19,8 +20,11 @@ import * as theme from '../constants/theme';
 import FontAwesome from 'react-native-vector-icons/dist/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Modal from 'react-native-modalbox';
 
-import {
+import { 
   Text,
   View,
   Dialog,
@@ -39,6 +43,7 @@ import DialogWQI from './WQI/DialogWQI';
 
 const {width, height} = Dimensions.get('window');
 
+var screen = Dimensions.get('window');
 
 class D extends Component {
   constructor(props) {
@@ -67,6 +72,8 @@ class D extends Component {
       DO: 0,
       active: null,
       value: null,
+      isOpen: false,
+
       //AQI
       NgayTinh: null,
       chiSo: 0,
@@ -114,6 +121,14 @@ class D extends Component {
       DO:data.DO,
       colorPoint:data.keyColor
     });
+    //show dialog Aqi
+
+    if(this.state.typeMonitoring==2){
+       this.refs.DialogAQI.open()
+       console.log(this.state.typeMonitoring)
+
+     }
+     console.log(this.state.typeMonitoring)
   };
   showDialogTypeMonitoring = (data) => {
     this.setState({
@@ -262,14 +277,11 @@ class D extends Component {
     );
   };
 
+ 
+
   renderDialogAQI = () => {
     const {
-      showDialog,
-      panDirection,
-      position,
-      scroll,
-      showHeader,
-      keyColor,
+      colorPoint,
       chiSo,
       NgayTinh,
       tenTram,
@@ -277,27 +289,16 @@ class D extends Component {
       noidungCanhBao,
       chatluongMT,
     } = this.state;
-    const height = scroll !== this.SCROLL_TYPE.NONE ? '70%' : '50%';
     return (
-      <Dialog
-        migrate
-        useSafeArea
-        top={position === 'top'}
-        bottom={position === 'bottom'}
-        height={height}
-        width={'100%'}
-        panDirection={panDirection}
-        containerStyle={{
-          backgroundColor: 'transparent',
-          marginBottom: Constants.isIphoneX ? 0 : 20,
-          borderWidth: 1,
-          borderColor: keyColor,
-        }}
-        visible={showDialog}
-        onDismiss={this.showDialog}
-        pannableHeaderProps={this.pannableTitle}>
-        <TouchableWithoutFeedback onPress={this.showTodayAQI}>
-          <View flex-1>
+          
+        <Modal
+          ref={'DialogAQI'}
+          style={[styles.modal, styles.modal3]}
+          position={'center'}
+          useNativeDriver={true}
+          >       
+          <TouchableWithoutFeedback  onPress={this.showTodayAQI}>
+            <View style={styles.modal3}>
             <DialogAQI
               chiSo={chiSo}
               NgayTinh={NgayTinh}
@@ -305,16 +306,23 @@ class D extends Component {
               chatluongMT={chatluongMT}
               tenTram={tenTram}
               maTram={maTram}
+              keyColor={colorPoint}
               navigation={this.props.navigation}></DialogAQI>
-          </View>
-        </TouchableWithoutFeedback>
-      </Dialog>
+            </View>
+            
+          </TouchableWithoutFeedback>
+
+          </Modal>
+      
+       
     );
   };
+
   showTodayAQI = () => {
     this.setState({
       showDialog: !this.state.showDialog,
     });
+    
     this.props.navigation.navigate('TodayAQI', {
       chiSo: this.state.chiSo,
       NgayTinh: this.state.NgayTinh,
@@ -323,6 +331,7 @@ class D extends Component {
       chatluongMT: this.state.chatluongMT,
       maTram: this.state.maTram,
     });
+      this.refs.DialogAQI.close()
   };
 
   showTodayWQI = () => {
@@ -365,7 +374,7 @@ class D extends Component {
       scroll,
       showHeader,
       colorPoint,
-      PH,
+      PH,  
       DO,
       active,
     } = this.state;
@@ -595,55 +604,155 @@ class D extends Component {
     const {typeMonitoring} = this.state;
 
     return (
+    //   <>
+    //   <View style={{flex: 1, backgroundColor: theme.colors.green}}>
+    //     {this.renderHeader()}
+    //     <View style={{flex: 1, backgroundColor: '#fff'}}>
+    //     {/* <ActivityIndicator size="large" color="#0000fr" style={{position:'absolute'}} /> */}
 
-      <>
-      <View style={{flex: 1, backgroundColor: theme.colors.green}}>
-        {this.renderHeader()}
-        <View style={{flex: 1, backgroundColor: '#fff'}}>
-          {this.state.isLoading ? (
-            <ActivityIndicator size="large" color="#0000fr" style={{position:'absolute'}} />
-          ) : 
-              <MapView
-               // provider={PROVIDER_GOOGLE} // remove if not using Google Maps
-                 ref={ref => {
-                  this.map = ref;
-                }}
-                style={{flex: 3}}
-                region={this.state.region}>
-                {this.props.data.map((marker, index) => {
-                  console.log(    'x '+ parseFloat(marker.toaDoX)+
-                'y '+parseFloat(marker.toaDoY))
-                  return (
-                    <MapView.Marker
-                      onPress={() => this.showDialog(marker)}
-                      key={index}
-                      coordinate={{
-                      latitude: parseFloat(marker.toaDoX),
-                      longitude: parseFloat(marker.toaDoY),
-                      }}>
-                      <TouchableWithoutFeedback>
-                        <View
-                          style={[styles.diemquantrac,{backgroundColor: marker.keyColor}]
-                          }>
-                          <Text
-                            style={{
-                              fontWeight: 'bold',
-                              fontSize: 18,
-                              color: 'white',
-                            }}>
-                           {this.state.typeMonitoring==1?marker.PH:marker.chiSo} 
-                          </Text>
-                        </View>
-                      </TouchableWithoutFeedback>
+          
+    //           <MapView
+    //            // provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+    //              ref={ref => {
+    //               this.map = ref;
+    //             }}
+    //             style={{flex: 3}}
+    //             region={this.state.region}>
+
+
+    //             {this.props.data.map((marker, index) => {
+    //               console.log(    'x '+ parseFloat(marker.toaDoX)+
+    //             'y '+parseFloat(marker.toaDoY))
+    //               return (
+    //                 <MapView.Marker
+    //                   onPress={() => this.showDialog(marker)}
+    //                   key={index}
+    //                   coordinate={{
+    //                   latitude: parseFloat(marker.toaDoX),
+    //                   longitude: parseFloat(marker.toaDoY),
+    //                   }}>
+    //                   <TouchableWithoutFeedback>
+    //                     <View
+    //                       style={[styles.diemquantrac,{backgroundColor: marker.keyColor}]
+    //                       }>
+    //                       <Text
+    //                         style={{
+    //                           fontWeight: 'bold',
+    //                           fontSize: 18,
+    //                           color: 'white',
+    //                         }}>
+    //                        {this.state.typeMonitoring==1?marker.PH:marker.chiSo} 
+    //                       </Text>
+    //                     </View>
+    //                   </TouchableWithoutFeedback>
 
                       
-                    </MapView.Marker>
-                  );
-                })}
+    //                 </MapView.Marker>
+    //               );
+    //             })}
                   
-              </MapView>
-           }          
-          {this.state.displaySearch?
+    //           </MapView>
+                    
+    //       {this.state.displaySearch?
+    //       <View
+    //         style={{
+    //           backgroundColor: 'transparent',
+    //           flex: 1,
+    //           width: '100%',
+    //           height: 200,
+    //           position: 'absolute',
+    //           paddingLeft: 50,
+    //           paddingRight: 10,
+    //         }}>
+    //         <ScrollView
+    //           style={{
+    //             width: '100%',
+    //             height: 200,
+    //             paddingLeft: 30,
+    //             paddingHorizontal: 50,
+    //             backgroundColor: 'transparent',
+    //           }}>     
+    //           {this.state.displaySearch 
+    //             ? this.state.dataSearch.map((v, i) => {
+    //                 return (
+    //                   <TouchableWithoutFeedback
+    //                     onPress={() => this.selectIndex(v.maTram,v.tenTram)}>
+    //                      <Card containerStyle={{borderWidth:2,borderBottomColor:theme.colors.green}} >
+    //                       <View style={{flex:1,flexDirection:'row'}}>
+    //                       <Text>
+    //                     <Entypo name="location"></Entypo> {v.tenTram} 
+    //                      </Text>
+    //                       </View>
+    //                     </Card>
+    //                   </TouchableWithoutFeedback>
+    //                 );
+    //               })
+    //             : null}
+    //         </ScrollView>
+    //       </View>:null}
+    //       {this.state.typeMonitoring==1?   this.renderDialogWQI(): this.renderDialogAQI()}
+    //       {this.renderDialogTypeMonitoring()}
+    //                      <View style={{ position: "absolute",
+    //           right: 0,
+    //           left: 0,
+    //           bottom: 0,
+    //           paddingBottom: theme.sizes.base * 2}}>
+    //             <LevelAQI></LevelAQI>
+    //                            </View>
+         
+    //     </View>
+    //   </View>
+    // </>
+
+
+
+      <>
+        <View style={{flex: 1, backgroundColor: theme.colors.green}}>
+          {this.renderHeader()}
+          <View style={{flex: 1, backgroundColor: '#fff'}}>
+            {this.state.isLoading ? (
+              <ActivityIndicator size="large" color="#0000fr" />
+            ) : null}
+            {
+            this.props.data.map((marker, index) => {
+              //console.log(parseFloat(marker.toaDoX))
+              //console.log(parseFloat(marker.toaDoY))
+              //console.log(marker.COORDINATES[0])
+              return (
+                <TouchableWithoutFeedback
+                  key={index}
+                  onPress={() => this.showDialog(marker)}>
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: 50,
+                      height: 50,
+                      borderRadius: 25,
+                      backgroundColor: marker.keyColor,
+                      shadowColor: '#7F58FF',
+                      shadowRadius: 5,
+                      shadowOffset: {height: 10},
+                      shadowOpacity: 0.3,
+                      borderWidth: 3,
+                      borderColor: '#FFFFFF',
+                    }}>
+                    <Text
+                      style={{
+                        fontWeight: 'bold',
+                        fontSize: 18,
+                        color: '#000',
+                      }}>
+                     {this.state.typeMonitoring==1?marker.PH:marker.chiSo} 
+                    </Text>
+                  </View>
+                </TouchableWithoutFeedback>
+              );
+            })
+            }
+
+
+     {this.state.displaySearch?
           <View
             style={{
               backgroundColor: 'transparent',
@@ -680,124 +789,32 @@ class D extends Component {
                 : null}
             </ScrollView>
           </View>:null}
-          {this.state.typeMonitoring==1?   this.renderDialogWQI(): this.renderDialogAQI()}
-          {this.renderDialogTypeMonitoring()}
-                         <View style={{ position: "absolute",
-              right: 0,
-              left: 0,
-              bottom: 0,
-              paddingBottom: theme.sizes.base * 2}}>
-                <LevelAQI></LevelAQI>
-                               </View>
-         
-        </View>
-      </View>
-    </>
-
-
-
-    //   <>
-    //     <View style={{flex: 1, backgroundColor: theme.colors.green}}>
-    //       {this.renderHeader()}
-    //       <View style={{flex: 1, backgroundColor: '#fff'}}>
-    //         {this.state.isLoading ? (
-    //           <ActivityIndicator size="large" color="#0000fr" />
-    //         ) : null}
-    //         {
-    //         this.props.data.map((marker, index) => {
-    //           //console.log(parseFloat(marker.toaDoX))
-    //           //console.log(parseFloat(marker.toaDoY))
-    //           //console.log(marker.COORDINATES[0])
-    //           return (
-    //             <TouchableWithoutFeedback
-    //               key={index}
-    //               onPress={() => this.showDialog(marker)}>
-    //               <View
-    //                 style={{
-    //                   alignItems: 'center',
-    //                   justifyContent: 'center',
-    //                   width: 50,
-    //                   height: 50,
-    //                   borderRadius: 25,
-    //                   backgroundColor: marker.keyColor,
-    //                   shadowColor: '#7F58FF',
-    //                   shadowRadius: 5,
-    //                   shadowOffset: {height: 10},
-    //                   shadowOpacity: 0.3,
-    //                   borderWidth: 3,
-    //                   borderColor: '#FFFFFF',
-    //                 }}>
-    //                 <Text
-    //                   style={{
-    //                     fontWeight: 'bold',
-    //                     fontSize: 18,
-    //                     color: '#000',
-    //                   }}>
-    //                  {this.state.typeMonitoring==1?marker.PH:marker.chiSo} 
-    //                 </Text>
-    //               </View>
-    //             </TouchableWithoutFeedback>
-    //           );
-    //         })
-    //         }
-
-
-    //  {this.state.displaySearch?
-    //       <View
-    //         style={{
-    //           backgroundColor: 'transparent',
-    //           flex: 1,
-    //           width: '100%',
-    //           height: 200,
-    //           position: 'absolute',
-    //           paddingLeft: 50,
-    //           paddingRight: 10,
-    //         }}>
-    //         <ScrollView
-    //           style={{
-    //             width: '100%',
-    //             height: 200,
-    //             paddingLeft: 30,
-    //             paddingHorizontal: 50,
-    //             backgroundColor: 'transparent',
-    //           }}>     
-    //           {this.state.displaySearch
-    //             ? this.state.dataSearch.map((v, i) => {
-    //                 return (
-    //                   <TouchableWithoutFeedback
-    //                     onPress={() => this.selectIndex(v.maTram,v.tenTram)}>
-    //                      <Card containerStyle={{borderWidth:2,borderBottomColor:theme.colors.green}} >
-    //                       <View style={{flex:1,flexDirection:'row'}}>
-    //                       <Text>
-    //                     <Entypo name="location"></Entypo> {v.tenTram} 
-    //                      </Text>
-    //                       </View>
-    //                     </Card>
-    //                   </TouchableWithoutFeedback>
-    //                 );
-    //               })
-    //             : null}
-    //         </ScrollView>
-    //       </View>:null}
             
-    //         {this.state.typeMonitoring==1?this.renderDialogWQI(): this.renderDialogAQI()}
-    //         {this.renderDialogTypeMonitoring()}
+            {this.state.typeMonitoring==1?this.renderDialogWQI(): this.renderDialogAQI()}
+            {this.renderDialogTypeMonitoring()}
+       
+            <Button
+              title="B"
+              onPress={() =>
+                this.props.navigation.navigate('History')
+              }></Button>
+            <Button
+              title="Setting"
+              onPress={() => this.showDialogTypeMonitoring('1')}></Button>
 
-    //         <Button
-    //           title="B"
-    //           onPress={() =>
-    //             this.props.navigation.navigate('History')
-    //           }></Button>
-    //         <Button
-    //           title="Setting"
-    //           onPress={() => this.showDialogTypeMonitoring('1')}></Button>
-    //           <View style={{ position: "absolute",
-    //           right: 0,left: 0,bottom: 0,
-    //           paddingBottom: theme.sizes.base * 2}}>
-    //           <LevelAQI></LevelAQI></View>
-    //       </View>
-    //     </View>
-    //   </>
+<TouchableHighlight
+          style={{width: 50}}
+          onPress={() => this.refs.nghia.open()}>
+          <View
+            style={{width: 50, height: 50, backgroundColor: '#4567e3'}}></View>
+        </TouchableHighlight>
+              <View style={{ position: "absolute",
+              right: 0,left: 0,bottom: 0,
+              paddingBottom: theme.sizes.base * 2}}>
+              <LevelAQI></LevelAQI></View>
+          </View>
+        </View>
+      </>
     );
   }
 }
@@ -943,5 +960,25 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     borderWidth: 3,
     borderColor: '#FFFFFF',
-  }
+  },
+  modal3: {
+    height: 150,
+    width: screen.width - 50,
+    borderRadius: 20,
+  },
+  shadow: { 
+    flex:0.4,
+    flexDirection:'row',
+    backgroundColor:'#10d60f',
+    borderRadius:20,
+       shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 7,
+  },
+  shadowOpacity: 0.43,
+  shadowRadius: 9.51,
+  
+  elevation: 15,
+      }
 });

@@ -91,11 +91,7 @@ class Today extends Component {
     this.fetchDataOneHour();
    
   }
-  componentDidMount(){
-   // this.fetchDataOneDay();
- 
-
-  }
+  
   render() {
     const colorPiont = this.props.route.params.colorPoint;
     const {xChart,yChart,xChartDay,yChartDay,xChartHourPH,yChartHourPH,xChartHourDO} = this.state
