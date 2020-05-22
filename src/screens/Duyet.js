@@ -13,8 +13,9 @@ import {
   Keyboard,
   StatusBar,
   TouchableOpacity,
+  
 } from 'react-native';
-import {RangeDatepicker, Icon,NativeDateService } from '@ui-kitten/components';
+import {RangeDatepicker, Icon, NativeDateService} from '@ui-kitten/components';
 import {SearchBar, Image, Input, ListItem} from 'react-native-elements';
 import Swiper from 'react-native-swiper';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -33,7 +34,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import BackgroundHeader from '../components/BackgroundHeader';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-
+import {Select} from 'react-native-propel-kit';
+import DataTimeHour from '../DataGlobal/DataTimeHour.json';
 const CalendarIcon = (props) => <Icon {...props} name="calendar" />;
 const Rating = ({rating}) => {
   return (
@@ -66,9 +68,31 @@ export const setColor = (data) => {
   }
   console.log(data);
 };
-export const CardHome = (props) => {
+export const CardGrid = (props) => {
   return (
     <View style={styles.cardContainer}>
+      <View style={styles.cardHeaderContaner}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            flex: 1,
+          }}>
+          <View style={{flexDirection: 'row'}}>
+            <MaterialIcons name="date-range" size={18}></MaterialIcons>
+            <Text style={styles.textHeaderDate}>
+              {props.dateFrom.toLocaleDateString('vi-VN')}-
+              {props.dateTo.toLocaleDateString('vi-VN')}
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            <MaterialIcons name="access-time" size={18}></MaterialIcons>
+            <Text style={styles.textHeaderTime}>
+              {props.timeFrom} - {props.timeTo}
+            </Text>
+          </View>
+        </View>
+      </View>
       <View style={styles.cardBody}>
         <View style={styles.cardBodyTop}>
           <ScrollView style={{flex: 1}}>
@@ -85,7 +109,8 @@ export const CardHome = (props) => {
                 </View>
                 {props.dataHeaderLeft.map((v, i) => {
                   return (
-                    <View key={i}
+                    <View
+                      key={i}
                       style={{
                         backgroundColor: '#e4e6eb',
                         width: 100,
@@ -111,7 +136,7 @@ export const CardHome = (props) => {
                     {props.dataHeader.map((v, i) => {
                       return (
                         <View
-                        key={i}
+                          key={i}
                           style={{
                             width: 100,
                             borderBottomWidth: 0.5,
@@ -132,13 +157,12 @@ export const CardHome = (props) => {
                   </View>
                   <View style={{flexDirection: 'row'}}>
                     {props.data.map((v, i) => {
-
                       return (
                         <View style={{flexDirection: 'column', width: 100}}>
-                          {v.map((x,c) => {
+                          {v.map((x, c) => {
                             return (
                               <View
-                              key={c}
+                                key={c}
                                 style={{
                                   width: 100,
                                   padding: 5,
@@ -165,50 +189,77 @@ export const CardHome = (props) => {
           </ScrollView>
         </View>
       </View>
+      <View style={styles.cardBodyBottom}>
+            <View style={styles.cardGroupIcon}>
+              <MaterialIcons name="first-page" size={32} />
+              <Text style={styles.cardBottomTitle}></Text>
+            </View>
+
+            <TouchableWithoutFeedback onPress={props.Previous}>
+            <View style={styles.cardGroupIcon}>
+              <MaterialIcons name="keyboard-arrow-left" size={32} />
+              <Text style={styles.cardBottomTitle}></Text>
+            </View>
+            </TouchableWithoutFeedback>
+
+            <TouchableWithoutFeedback onPress={props.Next}>
+              <View style={styles.cardGroupIcon}>
+                <MaterialIcons name="keyboard-arrow-right" size={32} />
+                <Text style={styles.cardBottomTitle}></Text>
+              </View>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={()=>console.log("press")}>
+            <View style={styles.cardGroupIcon}>
+              <MaterialIcons name="last-page" size={32} />
+              <Text style={styles.cardBottomTitle}></Text>
+            </View>
+            </TouchableWithoutFeedback>
+           
+          </View>
     </View>
   );
 };
-const formatDateService = new NativeDateService('en', { format: 'DD/MM/YYYY' });
+const formatDateService = new NativeDateService('en', {format: 'DD/MM/YYYY'});
 
 class Duyet extends Component {
-  constructor(props)
-  {
-    
-    super(props)
-  
+  constructor(props) {
+    super(props);
+
     this.state = {
-    indexTram: '',
-    dateFrom: '',
-    dateTo: '', //new Date(Date.now()).toLocaleDateString('en-US'),
-    tabIndex: 0,
-    rangeDate: {},
-    //Variable thực hiện load giao diện
-    isDisplay: false,
-    isLoading: false,
-    isShowTimeTo:false,
-    isShowTimeFrom:false,
-    animatible_Tram: 'fadeInUpBig',
-    //Variable search
-    search: '', // từ khóa tìm kiếm tên trạm
-    dataTemp: null,
-    dataSearch: null,
+      indexTram: '',
+      dateFrom: new Date(Date.now()),
+      dateTo: new Date(Date.now()), //new Date(Date.now()).toLocaleDateString('en-US'),
+      timeTo: new Date(Date.now()),
+      timeFrom: '', //this.timeTo.setTime(Date.now().getTime() + (30 * 60 * 1000)),
+      rangeTime: 8,
+      tabIndex: 0,
+      rangeDate: {},
+      //Variable thực hiện load giao diện
+      isDisplay: false,
+      isLoading: false,
+      isShowTimeTo: false,
+      isShowTimeFrom: false,
+      animatible_Tram: 'fadeInUpBig',
+      //Variable search
+      search: '', // từ khóa tìm kiếm tên trạm
+      dataTemp: null,
+      dataSearch: null,
 
-    //set gia tri cho api
-    isNhaNuoc: true,
-    idPhanLoai: 1, // loại 1 là nước
-    idLoaiTram: 156, // nước mặc 156
-    idDiem: 46,
+      //set gia tri cho api
+      isNhaNuoc: true,
+      idPhanLoai: 1, // loại 1 là nước
+      idLoaiTram: 156, // nước mặc 156
+      idDiem: 46,
 
-    //
-    dataTram: [],
-    dataThongSo: [],
-    dataTableHeader: [],
-    dataTableLeft: [],
-    
+      //
+      dataTram: [],
+      dataThongSo: [],
+      dataTableHeader: [],
+      dataTableLeft: [],
+    };
+  //  this.fetchData();
+   // this.fetchDataTram();
   }
-  this.fetchData();
-  this.fetchDataTram();
-}
 
   header = () => {
     return (
@@ -274,7 +325,8 @@ class Duyet extends Component {
               ) : null}
             </View>
           </View>
-          <View style={{height: 250, width: windowWidth, paddingHorizontal: 10}}>
+          <View
+            style={{height: 250, width: windowWidth, paddingHorizontal: 10}}>
             <View style={[styles.wrapperDate, {width: windowWidth * 0.9}]}>
               <MaterialIcons name="date-range" size={18} color="gray" />
               <RangeDatepicker
@@ -282,24 +334,40 @@ class Duyet extends Component {
                 range={this.state.rangeDate}
                 onSelect={(nextRange) => this.layNgayQuanTrac(nextRange)}
                 accessoryRight={CalendarIcon}
-                status="success"
                 dateService={formatDateService}
                 autoDismiss={false}
               />
             </View>
 
             <View
-              style={{flexDirection: 'row',  width: windowWidth*0.9 , justifyContent: 'space-between'}}>
+              style={{
+                flexDirection: 'row',
+                width: windowWidth * 0.9,
+                justifyContent: 'space-between',
+              }}>
               <View style={[styles.wrapperTime]}>
                 <MaterialIcons name="access-time" size={18} color="gray" />
-                <TextInput  onFocus={()=>{this.setState({isShowTimeFrom:true}),Keyboard.dismiss()}} style={{height: 40}} />
+                <Select
+                  style={{height: 20, alignItems: 'center', margin: 10}}
+                  value={this.state.rangeTime}
+                  onChange={this.layThoiGianQuanTrac}>
+                  {DataTimeHour.map((item) => {
+                    return (
+                      <Select.Item
+                        key={item.value}
+                        label={item.name}
+                        value={item.value}
+                      />
+                    );
+                  })}
+                </Select>
               </View>
-              <View style={[styles.wrapperTime]}>
+
+              {/* <View style={[styles.wrapperTime]}>
                 <MaterialIcons name="access-time" size={18} color="gray" />
                 <TextInput style={{height: 40}} />
-              </View>
+              </View> */}
             </View>
-                    
           </View>
         </Swiper>
       </View>
@@ -355,25 +423,62 @@ class Duyet extends Component {
 
     await this.fetchData();
   };
-
-  layNgayQuanTrac=(nextDate)=>{
-    console.log(nextDate.endDate)
+  componentDidMount() {
+    this.setTimeFrom();
+  }
+  setTimeFrom = () => {
+     var dateTemp = new Date(this.state.timeTo);
+     dateTemp.setTime(dateTemp.getTime()+(-this.state.rangeTime*60*60*1000))
+     this.setState({
+      timeFrom: dateTemp.toLocaleTimeString('vi-VN').substr(0, 5),
+      dateFrom: dateTemp
+    });
+  };
+  setTimeNextPrevious=(key)=>{
+    //1 previour 2 next 
+    console.log(this.state.dateFrom+' - '+this.state.dateTo)  
+    if(key==2)
+    {  
+      let dateTempFrom = new Date(this.state.dateFrom);
+      dateTempFrom.setTime(dateTempFrom.getTime()+(this.state.rangeTime*60*60*1000))
+      let dateTempTo = new Date(this.state.dateTo);
+      dateTempTo.setTime(dateTempTo.getTime()+(this.state.rangeTime*60*60*1000))
       this.setState({
-        rangeDate:nextDate,
-        dateFrom:new Date(nextDate.startDate).toLocaleDateString('vi-VN'),
-        dateTo:new Date(nextDate.endDate).toLocaleDateString('vi-VN')
-      })
+       timeFrom: dateTempFrom.toLocaleTimeString('vi-VN').substr(0, 5),
+       timeTo: dateTempTo,
+       dateFrom: dateTempFrom,
+       dateTo: dateTempTo  
+     });
+    }
+    if(key==1)
+    {
+      let dateTempFrom = new Date(this.state.dateFrom);
+      dateTempFrom.setTime(dateTempFrom.getTime()-(this.state.rangeTime*60*60*1000))
+      let dateTempTo = new Date(this.state.dateTo);
+      dateTempTo.setTime(dateTempTo.getTime()-(this.state.rangeTime*60*60*1000))
+      this.setState({
+       timeFrom: dateTempFrom.toLocaleTimeString('vi-VN').substr(0, 5),
+       timeTo: dateTempTo,
+       dateFrom: dateTempFrom,
+       dateTo: dateTempTo
+     });
+    }
+  }
 
-  }
-  layThoiGianQuanTrac=(event, selectedDate)=>{
-    console.log(selectedDate)
-    this.setState(
-      {
-        isShowTimeFrom:false,
-   
-      }
-       )   
-  }
+  layNgayQuanTrac = (nextDate) => {
+    console.log(nextDate.endDate);
+    this.setState({
+      rangeDate: nextDate,
+      dateFrom: new Date(nextDate.startDate),
+      dateTo: new Date(nextDate.endDate),
+    });
+  };
+  layThoiGianQuanTrac = (value) => {
+    this.setState({
+      rangeTime: value,
+    });
+    this.setTimeFrom();
+  };
 
   fetchData = async () => {
     try {
@@ -524,11 +629,19 @@ class Duyet extends Component {
               </Animatable.View>
             ) : null}
             <View>
-               <Text>{this.state.dateFrom}-{this.state.dateTo}</Text> 
-              <CardHome
+              <CardGrid
                 data={this.state.dataThongSo}
                 dataHeader={this.state.dataTableHeader}
                 dataHeaderLeft={this.state.dataTableLeft}
+                dateFrom={this.state.dateFrom}
+                dateTo={this.state.dateTo}
+                timeTo={this.state.timeTo
+                  .toLocaleTimeString('vi-VN')
+                  .substr(0, 5)}
+                timeFrom={this.state.timeFrom}
+                Next={()=>this.setTimeNextPrevious(2)}
+                Previous={()=>this.setTimeNextPrevious(1)}
+
               />
             </View>
           </ScrollView>
@@ -647,7 +760,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
     marginTop: 10,
-    width: windowWidth * 0.4
+    width: windowWidth * 0.3,
   },
   inputText: {
     padding: 10,
@@ -749,7 +862,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardHeading: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   cardMore: {
@@ -806,5 +919,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#fff',
+  },
+  textHeaderDate: {
+    fontWeight: 'bold',
+    fontSize: 15,
+    color: '#222',
+  },
+  textHeaderTime: {
+    fontWeight: 'bold',
+    fontSize: 15,
+    color: theme.colors.black,
   },
 });
