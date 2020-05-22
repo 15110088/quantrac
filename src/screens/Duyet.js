@@ -13,7 +13,6 @@ import {
   Keyboard,
   StatusBar,
   TouchableOpacity,
-  
 } from 'react-native';
 import {RangeDatepicker, Icon, NativeDateService} from '@ui-kitten/components';
 import {SearchBar, Image, Input, ListItem} from 'react-native-elements';
@@ -36,6 +35,7 @@ import BackgroundHeader from '../components/BackgroundHeader';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {Select} from 'react-native-propel-kit';
 import DataTimeHour from '../DataGlobal/DataTimeHour.json';
+import { GridThongSo } from './Duyet/GirdThongSo';
 const CalendarIcon = (props) => <Icon {...props} name="calendar" />;
 const Rating = ({rating}) => {
   return (
@@ -53,172 +53,8 @@ const Rating = ({rating}) => {
     </View>
   );
 };
-export const setColor = (data) => {
-  if (data == '_BlackStyle') {
-    return '#000';
-  }
-  if (data == '_SilverStyle') {
-    return theme.colors.gray;
-  }
-  if (data == '_RedStyle') {
-    return '#de2302';
-  }
-  if (data == '_BlueStyle') {
-    return '#0a9dff';
-  }
-  console.log(data);
-};
-export const CardGrid = (props) => {
-  return (
-    <View style={styles.cardContainer}>
-      <View style={styles.cardHeaderContaner}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            flex: 1,
-          }}>
-          <View style={{flexDirection: 'row'}}>
-            <MaterialIcons name="date-range" size={18}></MaterialIcons>
-            <Text style={styles.textHeaderDate}>
-              {props.dateFrom.toLocaleDateString('vi-VN')}-
-              {props.dateTo.toLocaleDateString('vi-VN')}
-            </Text>
-          </View>
-          <View style={{flexDirection: 'row'}}>
-            <MaterialIcons name="access-time" size={18}></MaterialIcons>
-            <Text style={styles.textHeaderTime}>
-              {props.timeFrom} - {props.timeTo}
-            </Text>
-          </View>
-        </View>
-      </View>
-      <View style={styles.cardBody}>
-        <View style={styles.cardBodyTop}>
-          <ScrollView style={{flex: 1}}>
-            <View style={{flex: 1, flexDirection: 'row'}}>
-              <View style={{}}>
-                <View
-                  style={{
-                    backgroundColor: theme.colors.green,
-                    width: 100,
-                  }}>
-                  <View style={{width: 100}}>
-                    <Text style={{fontSize: 17}}></Text>
-                  </View>
-                </View>
-                {props.dataHeaderLeft.map((v, i) => {
-                  return (
-                    <View
-                      key={i}
-                      style={{
-                        backgroundColor: '#e4e6eb',
-                        width: 100,
-                        padding: 5,
-                      }}>
-                      <View style={{width: 100}}>
-                        <Text
-                          style={{
-                            fontSize: 15,
-                            fontWeight: 'bold',
-                            color: theme.colors.black,
-                          }}>
-                          {v}
-                        </Text>
-                      </View>
-                    </View>
-                  );
-                })}
-              </View>
-              <ScrollView horizontal={true}>
-                <View style={{flexDirection: 'column'}}>
-                  <View style={{flexDirection: 'row'}}>
-                    {props.dataHeader.map((v, i) => {
-                      return (
-                        <View
-                          key={i}
-                          style={{
-                            width: 100,
-                            borderBottomWidth: 0.5,
-                            backgroundColor: theme.colors.green,
-                          }}>
-                          <Text
-                            style={{
-                              fontSize: 17,
-                              color: theme.colors.white,
-                              textAlign: 'center',
-                            }}>
-                            <MaterialIcons name="access-time"></MaterialIcons>{' '}
-                            {v}
-                          </Text>
-                        </View>
-                      );
-                    })}
-                  </View>
-                  <View style={{flexDirection: 'row'}}>
-                    {props.data.map((v, i) => {
-                      return (
-                        <View style={{flexDirection: 'column', width: 100}}>
-                          {v.map((x, c) => {
-                            return (
-                              <View
-                                key={c}
-                                style={{
-                                  width: 100,
-                                  padding: 5,
-                                  borderBottomWidth: 0.5,
-                                }}>
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    textAlign: 'center',
-                                    color: setColor(x.keyColor),
-                                  }}>
-                                  {x.GIATRISO}
-                                </Text>
-                              </View>
-                            );
-                          })}
-                        </View>
-                      );
-                    })}
-                  </View>
-                </View>
-              </ScrollView>
-            </View>
-          </ScrollView>
-        </View>
-      </View>
-      <View style={styles.cardBodyBottom}>
-            <View style={styles.cardGroupIcon}>
-              <MaterialIcons name="first-page" size={32} />
-              <Text style={styles.cardBottomTitle}></Text>
-            </View>
 
-            <TouchableWithoutFeedback onPress={props.Previous}>
-            <View style={styles.cardGroupIcon}>
-              <MaterialIcons name="keyboard-arrow-left" size={32} />
-              <Text style={styles.cardBottomTitle}></Text>
-            </View>
-            </TouchableWithoutFeedback>
 
-            <TouchableWithoutFeedback onPress={props.Next}>
-              <View style={styles.cardGroupIcon}>
-                <MaterialIcons name="keyboard-arrow-right" size={32} />
-                <Text style={styles.cardBottomTitle}></Text>
-              </View>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={()=>console.log("press")}>
-            <View style={styles.cardGroupIcon}>
-              <MaterialIcons name="last-page" size={32} />
-              <Text style={styles.cardBottomTitle}></Text>
-            </View>
-            </TouchableWithoutFeedback>
-           
-          </View>
-    </View>
-  );
-};
 const formatDateService = new NativeDateService('en', {format: 'DD/MM/YYYY'});
 
 class Duyet extends Component {
@@ -237,8 +73,11 @@ class Duyet extends Component {
       //Variable thực hiện load giao diện
       isDisplay: false,
       isLoading: false,
+      isLoadingGird: false,
       isShowTimeTo: false,
       isShowTimeFrom: false,
+      isDataNull:false,
+      indexSwiper:0,
       animatible_Tram: 'fadeInUpBig',
       //Variable search
       search: '', // từ khóa tìm kiếm tên trạm
@@ -257,15 +96,17 @@ class Duyet extends Component {
       dataTableHeader: [],
       dataTableLeft: [],
     };
-  //  this.fetchData();
-   // this.fetchDataTram();
+    this.fetchData();
+    this.fetchDataTram();
   }
 
-  header = () => {
+  header = (navigation) => {
     return (
       <View style={{height: 200, width: windowWidth, paddingHorizontal: 10}}>
         <View style={styles.header}>
-          <Entypo name="chevron-left" size={32} color="#fff" />
+          <TouchableOpacity onPress={()=>navigation.goBack()}>
+           <Entypo name="chevron-left" size={32} color="#fff" />
+          </TouchableOpacity>
           <View style={styles.headerBody}>
             <Text style={styles.headerText}>Duyệt dữ liệu quan trắc nước</Text>
             <View style={styles.headerRightContainer}>
@@ -280,7 +121,7 @@ class Duyet extends Component {
           </View>
         </View>
 
-        <Swiper loop={true} style={{height: 170}}>
+        <Swiper index={this.state.indexSwiper} loop={true}  style={{height: 170}}>
           <View style={{height: 100, width: windowWidth}}>
             <View style={styles.wrapperInput}>
               <AntDesign name="search1" size={18} color="gray" />
@@ -413,6 +254,13 @@ class Duyet extends Component {
         idLoaiTram: 156, // nước mặc 156
       });
     }
+    if (data == '2') {
+      await this.setState({
+        isNhaNuoc: false,
+        idPhanLoai: 1, // loại 1 là nước
+        idLoaiTram: 156, // nước mặc 156
+      });
+    }
     if (data == '3') {
       await this.setState({
         isNhaNuoc: true,
@@ -420,6 +268,16 @@ class Duyet extends Component {
         idLoaiTram: 39, // nước thải 39
       });
     }
+    if (data == '4') {
+      await this.setState({
+        isNhaNuoc: false,
+        idPhanLoai: 1, // loại 1 là nước
+        idLoaiTram: 39, // nước thải 39
+      });
+    }
+    this.setState({
+      search: '',
+    });
 
     await this.fetchData();
   };
@@ -427,43 +285,51 @@ class Duyet extends Component {
     this.setTimeFrom();
   }
   setTimeFrom = () => {
-     var dateTemp = new Date(this.state.timeTo);
-     dateTemp.setTime(dateTemp.getTime()+(-this.state.rangeTime*60*60*1000))
-     this.setState({
+    var dateTemp = new Date(this.state.timeTo);
+    dateTemp.setTime(
+      dateTemp.getTime() + -this.state.rangeTime * 60 * 60 * 1000,
+    );
+    this.setState({
       timeFrom: dateTemp.toLocaleTimeString('vi-VN').substr(0, 5),
-      dateFrom: dateTemp
+      dateFrom: dateTemp,
     });
   };
-  setTimeNextPrevious=(key)=>{
-    //1 previour 2 next 
-    console.log(this.state.dateFrom+' - '+this.state.dateTo)  
-    if(key==2)
-    {  
+  setTimeNextPrevious = (key) => {
+    //1 previour 2 next
+    console.log(this.state.dateFrom + ' - ' + this.state.dateTo);
+    if (key == 2) {
       let dateTempFrom = new Date(this.state.dateFrom);
-      dateTempFrom.setTime(dateTempFrom.getTime()+(this.state.rangeTime*60*60*1000))
+      dateTempFrom.setTime(
+        dateTempFrom.getTime() + this.state.rangeTime * 60 * 60 * 1000,
+      );
       let dateTempTo = new Date(this.state.dateTo);
-      dateTempTo.setTime(dateTempTo.getTime()+(this.state.rangeTime*60*60*1000))
+      dateTempTo.setTime(
+        dateTempTo.getTime() + this.state.rangeTime * 60 * 60 * 1000,
+      );
       this.setState({
-       timeFrom: dateTempFrom.toLocaleTimeString('vi-VN').substr(0, 5),
-       timeTo: dateTempTo,
-       dateFrom: dateTempFrom,
-       dateTo: dateTempTo  
-     });
+        timeFrom: dateTempFrom.toLocaleTimeString('vi-VN').substr(0, 5),
+        timeTo: dateTempTo,
+        dateFrom: dateTempFrom,
+        dateTo: dateTempTo,
+      });
     }
-    if(key==1)
-    {
+    if (key == 1) {
       let dateTempFrom = new Date(this.state.dateFrom);
-      dateTempFrom.setTime(dateTempFrom.getTime()-(this.state.rangeTime*60*60*1000))
+      dateTempFrom.setTime(
+        dateTempFrom.getTime() - this.state.rangeTime * 60 * 60 * 1000,
+      );
       let dateTempTo = new Date(this.state.dateTo);
-      dateTempTo.setTime(dateTempTo.getTime()-(this.state.rangeTime*60*60*1000))
+      dateTempTo.setTime(
+        dateTempTo.getTime() - this.state.rangeTime * 60 * 60 * 1000,
+      );
       this.setState({
-       timeFrom: dateTempFrom.toLocaleTimeString('vi-VN').substr(0, 5),
-       timeTo: dateTempTo,
-       dateFrom: dateTempFrom,
-       dateTo: dateTempTo
-     });
+        timeFrom: dateTempFrom.toLocaleTimeString('vi-VN').substr(0, 5),
+        timeTo: dateTempTo,
+        dateFrom: dateTempFrom,
+        dateTo: dateTempTo,
+      });
     }
-  }
+  };
 
   layNgayQuanTrac = (nextDate) => {
     console.log(nextDate.endDate);
@@ -503,6 +369,12 @@ class Duyet extends Component {
   };
   fetchDataTram = async () => {
     try {
+      await this.setState({
+        dataTableLeft: [],
+        dataTableHeader: [],
+        dataThongSo: [],
+        isDataNull:false,
+      });
       var URL = '';
       //   URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=03%2F01%2F2018%2010%3A00&to=03%2F01%2F2018%2010%3A30`;
       URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=29%2F07%2F2018%2008%3A30&to=29%2F07%2F2018%2020%3A30`;
@@ -510,12 +382,13 @@ class Duyet extends Component {
       console.log(URL);
       let response = await fetch(URL);
       await this.setState({
-        isLoading: true,
+        isLoadingGird: true,
       });
       let reponseJson = await response.json();
-
+      console.log('=====reposejson=====');
+      console.log(reponseJson);
       await this.setState({
-        isLoading: false,
+        isLoadingGird: false,
         dataTram: reponseJson,
       });
       await this.state.dataTram.map((v, i) => {
@@ -528,11 +401,19 @@ class Duyet extends Component {
         });
       });
       console.log(this.state.dataThongSo);
-      await this.state.dataThongSo[0].map((v, i) => {
-        this.setState({
-          dataTableLeft: [...this.state.dataTableLeft, v.KYHIEU_THONGSO],
+      if (this.state.dataThongSo.length != 0) {
+        await this.state.dataThongSo[0].map((v, i) => {
+          this.setState({
+            dataTableLeft: [...this.state.dataTableLeft, v.KYHIEU_THONGSO],
+          });
         });
+      }
+      if(this.state.dataThongSo.length==0)
+      {
+         await this.setState({
+        isDataNull: true,
       });
+      }
       console.log('===============');
       console.log(this.state.dataTableHeader);
     } catch (error) {
@@ -576,9 +457,10 @@ class Duyet extends Component {
     this.setState({
       search: data.tenTram,
       idDiem: data.ID,
+      isDisplay: false,
       //idDiem: 46,
     });
-    //this.fetchDataTram();
+    this.fetchDataTram();
   };
   hideDataSearch = () => {
     Keyboard.dismiss();
@@ -594,57 +476,68 @@ class Duyet extends Component {
       isDisplay: true,
     });
   };
+  ClickTime=()=>{
+    console.log('click ok cai da')
+    this.setState({
+      indexSwiper:1
+    })
+  }
   render() {
+    const {isLoadingGird,isDataNull} = this.state;
+    console.log(this.props)
     return (
       <>
         <StatusBar barStyle="dark-content" />
         <SafeAreaView style={styles.container}>
           <BackgroundHeader style={styles.bg} />
-          {this.header()}
+          {this.header(this.props.navigation)}
           <ScrollView style={styles.scrollView}>
             {this.ButtonDuyet()}
-            {this.state.isDisplay ? (
-              <Animatable.View
-                animation={this.state.animatible_Tram}
-                duration={1500}
-                delay={0}
-                useNativeDriver
-                style={{
-                  width: windowWidth,
-                  height: windowHeight / 2,
-                  bottom: 0,
-                  marginBottom: 0,
-                  paddingBottom: 0,
-                  backgroundColor: 'green',
-                }}>
-                {this.state.isLoading ? (
-                  <Loading />
-                ) : (
-                  <FlatList
-                    keyExtractor={this.keyExtractor}
-                    data={this.state.dataSearch}
-                    renderItem={this.renderItem}
-                  />
-                )}
-              </Animatable.View>
-            ) : null}
             <View>
-              <CardGrid
-                data={this.state.dataThongSo}
-                dataHeader={this.state.dataTableHeader}
-                dataHeaderLeft={this.state.dataTableLeft}
-                dateFrom={this.state.dateFrom}
-                dateTo={this.state.dateTo}
-                timeTo={this.state.timeTo
-                  .toLocaleTimeString('vi-VN')
-                  .substr(0, 5)}
-                timeFrom={this.state.timeFrom}
-                Next={()=>this.setTimeNextPrevious(2)}
-                Previous={()=>this.setTimeNextPrevious(1)}
-
-              />
+              <GridThongSo
+               data={this.state.dataThongSo}
+               dataHeader={this.state.dataTableHeader}
+               dataHeaderLeft={this.state.dataTableLeft}
+               dateFrom={this.state.dateFrom}
+               dateTo={this.state.dateTo}
+               timeTo={this.state.timeTo
+                 .toLocaleTimeString('vi-VN')
+                 .substr(0, 5)}
+               timeFrom={this.state.timeFrom}
+               Next={() => this.setTimeNextPrevious(2)}
+               Previous={() => this.setTimeNextPrevious(1)}
+               isLoadingGird={isLoadingGird}
+               isDataNull={isDataNull}
+               ClickTime={this.ClickTime}
+              ></GridThongSo>
+             
             </View>
           </ScrollView>
+          {this.state.isDisplay ? (
+            <Animatable.View
+              animation={this.state.animatible_Tram}
+              duration={1500}
+              delay={0}
+              useNativeDriver
+              style={{
+                width: windowWidth,
+                height: windowHeight / 2,
+                bottom: 0,
+                marginBottom: 0,
+                paddingBottom: 0,
+                backgroundColor: 'green',
+              }}>
+              {this.state.isLoading ? (
+                <Loading />
+              ) : (
+                <FlatList
+                  keyExtractor={this.keyExtractor}
+                  data={this.state.dataSearch}
+                  renderItem={this.renderItem}
+                />
+              )}
+            </Animatable.View>
+          ) : null}
         </SafeAreaView>
       </>
     );
