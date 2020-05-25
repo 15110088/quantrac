@@ -6,6 +6,7 @@ import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.github.wuxudong.rncharts.MPAndroidChartPackage;
 import com.github.wuxudong.rncharts.MPAndroidChartPackage;
+import com.github.wuxudong.rncharts.MPAndroidChartPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.RNRSA.RNRSAPackage;
 import com.github.wuxudong.rncharts.MPAndroidChartPackage;

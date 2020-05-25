@@ -68,8 +68,8 @@ export  const GridThongSo = (props) => {
             <View style={{flexDirection: 'row'}}>
               <MaterialIcons name="date-range" size={18}></MaterialIcons>
               <Text style={styles.textHeaderDate}>
-                {props.dateFrom.toLocaleDateString('vi-VN')}-
-                {props.dateTo.toLocaleDateString('vi-VN')}
+                {props.dateFrom.toLocaleDateString('en-GB')}-
+                {props.dateTo.toLocaleDateString('en-GB')}
               </Text>
             </View>
             </TouchableOpacity>
@@ -86,16 +86,17 @@ export  const GridThongSo = (props) => {
           {props.isDataNull ?<Text style={styles.cardGroupIcon}>Không có dữ liệu</Text>:!props.isLoadingGird?
            (
             <View style={styles.cardBodyTop}>
-              <ScrollView style={{flex: 1}}>
+              <ScrollView style={{flex: 1,borderBottomRightRadius:20,borderTopLeftRadius:20,borderColor:theme.colors.green,borderWidth:2}}>
                 <View style={{flex: 1, flexDirection: 'row'}}>
                   <View style={{}}>
                     <View
                       style={{
                         backgroundColor: theme.colors.green,
                         width: 100,
+                        borderTopLeftRadius:20,
                       }}>
                       <View style={{width: 100}}>
-                        <Text style={{fontSize: 17}}></Text>
+                        <Text style={{fontSize: 16,textAlign:'center',color:theme.colors.white}}>Thông Số</Text>
                       </View>
                     </View>
                     {props.dataHeaderLeft.map((v, i) => {
@@ -106,6 +107,9 @@ export  const GridThongSo = (props) => {
                             backgroundColor: '#e4e6eb',
                             width: 100,
                             padding: 5,
+                            borderBottomWidth: 0.5,
+                            borderBottomColor:'#e4e6eb',
+                            //borderBottomLeftRadius:20
                           }}>
                           <View style={{width: 100}}>
                             <Text
@@ -113,6 +117,7 @@ export  const GridThongSo = (props) => {
                                 fontSize: 15,
                                 fontWeight: 'bold',
                                 color: theme.colors.black,
+                                marginLeft:10
                               }}>
                               {v}
                             </Text>
@@ -121,10 +126,10 @@ export  const GridThongSo = (props) => {
                       );
                     })}
                   </View>
-                  <ScrollView horizontal={true}>
+                  <ScrollView horizontal={true} style={{borderTopRightRadius:20}}>
                     <View style={{flexDirection: 'column'}}>
-                      <View style={{flexDirection: 'row'}}>
-                        {props.dataHeader.map((v, i) => {
+                      <View style={{flexDirection: 'row',borderTopRightRadius:20}}>
+                        {props.dataHeader.map((v, i) => { 
                           return (
                             <View
                               key={i}
@@ -135,7 +140,7 @@ export  const GridThongSo = (props) => {
                               }}>
                               <Text
                                 style={{
-                                  fontSize: 17,
+                                  fontSize: 16,
                                   color: theme.colors.white,
                                   textAlign: 'center',
                                 }}>
@@ -152,6 +157,7 @@ export  const GridThongSo = (props) => {
                             <View style={{flexDirection: 'column', width: 100}}>
                               {v.map((x, c) => {
                                 return (
+                                  <TouchableOpacity onPress={()=>props.ClickThongSo(x)}>
                                   <View
                                     key={c}
                                     style={{
@@ -159,7 +165,7 @@ export  const GridThongSo = (props) => {
                                       padding: 5,
                                       borderBottomWidth: 0.5,
                                     }}>
-                                    <Text
+                                    <Text 
                                       style={{
                                         fontSize: 15,
                                         textAlign: 'center',
@@ -168,6 +174,8 @@ export  const GridThongSo = (props) => {
                                       {x.GIATRISO}
                                     </Text>
                                   </View>
+                                  </TouchableOpacity>
+
                                 );
                               })}
                             </View>
@@ -226,40 +234,17 @@ export  const GridThongSo = (props) => {
       flex: 1,
       backgroundColor: '#F0F1F2',
     },
-    picker: {
-      flex: 1,
-      margin: 2,
-    },
+ 
     select: {
       width: 200,
       margin: 2,
     },
-    item: {
-      backgroundColor: '#fff',
-      padding: 20,
-      marginVertical: 8,
-      marginHorizontal: 2,
-      flex: 1,
-      flexDirection: 'row',
-    },
+  
     title: {
       fontSize: 20,
       flex: 1,
     },
-    bg: {
-      position: 'absolute',
-      width: Dimensions.get('window').width,
-      height: 200,
-      borderBottomRightRadius: 0,
-      borderBottomLeftRadius: 0,
-    },
-    bg1: {
-      position: 'absolute',
-      width: Dimensions.get('window').width,
-      height: 280,
-      borderBottomRightRadius: 0,
-      borderBottomLeftRadius: 0,
-    },
+   
     scrollView: {
       flex: 0.6,
     },
@@ -323,13 +308,7 @@ export  const GridThongSo = (props) => {
   
     //
   
-    rating: {
-      flexDirection: 'row',
-      marginTop: 5,
-    },
-    tag: {
-      color: '#B066A4',
-    },
+ 
     cardContainer: {
       padding: 15,
       paddingBottom: 0,

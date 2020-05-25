@@ -36,6 +36,8 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import {Select} from 'react-native-propel-kit';
 import DataTimeHour from '../DataGlobal/DataTimeHour.json';
 import { GridThongSo } from './Duyet/GirdThongSo';
+import RNPickerSelect from 'react-native-picker-select';
+
 const CalendarIcon = (props) => <Icon {...props} name="calendar" />;
 const Rating = ({rating}) => {
   return (
@@ -67,7 +69,9 @@ class Duyet extends Component {
       dateTo: new Date(Date.now()), //new Date(Date.now()).toLocaleDateString('en-US'),
       timeTo: new Date(Date.now()),
       timeFrom: '', //this.timeTo.setTime(Date.now().getTime() + (30 * 60 * 1000)),
-      rangeTime: 8,
+      convertDateFrom:'',
+      convertDateTo:'',
+      rangeTime: 12,
       tabIndex: 0,
       rangeDate: {},
       //Variable thực hiện load giao diện
@@ -87,7 +91,7 @@ class Duyet extends Component {
       //set gia tri cho api
       isNhaNuoc: true,
       idPhanLoai: 1, // loại 1 là nước
-      idLoaiTram: 156, // nước mặc 156
+      idLoaiTram: 39, // nước mặc 156 nuoc thai 39
       idDiem: 46,
 
       //
@@ -95,6 +99,7 @@ class Duyet extends Component {
       dataThongSo: [],
       dataTableHeader: [],
       dataTableLeft: [],
+      dataTest:[],
     };
     this.fetchData();
     this.fetchDataTram();
@@ -186,28 +191,15 @@ class Duyet extends Component {
                 width: windowWidth * 0.9,
                 justifyContent: 'space-between',
               }}>
+                
               <View style={[styles.wrapperTime]}>
                 <MaterialIcons name="access-time" size={18} color="gray" />
-                <Select
-                  style={{height: 20, alignItems: 'center', margin: 10}}
-                  value={this.state.rangeTime}
-                  onChange={this.layThoiGianQuanTrac}>
-                  {DataTimeHour.map((item) => {
-                    return (
-                      <Select.Item
-                        key={item.value}
-                        label={item.name}
-                        value={item.value}
-                      />
-                    );
-                  })}
-                </Select>
+                {/* <RNPickerSelect value={this.state.rangeTime} style={{inputAndroid:{padding:10,width:windowWidth * 0.2}}}
+            onValueChange={(value) => console.log(value)}
+            items={DataTimeHour}/> */}
               </View>
 
-              {/* <View style={[styles.wrapperTime]}>
-                <MaterialIcons name="access-time" size={18} color="gray" />
-                <TextInput style={{height: 40}} />
-              </View> */}
+           
             </View>
           </View>
         </Swiper>
@@ -217,7 +209,7 @@ class Duyet extends Component {
   ButtonDuyet = () => {
     return (
       <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-        <TouchableOpacity
+        <TouchableOpacity onPress={this.XemDuLieuQuanTrac}
           style={[
             styles.button,
             {
@@ -244,6 +236,18 @@ class Duyet extends Component {
       </View>
     );
   };
+  XemDuLieuQuanTrac = ()=>{
+      var datefrom=this.state.dateFrom.toLocaleDateString("en-GB")+' '+this.state.timeFrom
+      var dateto=this.state.dateTo.toLocaleDateString("en-GB")+' '+this.state.timeTo.toLocaleTimeString('en-GB').substr(0,5)
+      this.setState({
+          convertDateFrom:encodeURIComponent(datefrom),
+          convertDateTo:encodeURIComponent(dateto)
+      })
+      this.fetchDataTram()
+      console.log(datefrom + ' ' +dateto)
+      console.log(this.state.convertDateFrom + ' ' +this.state.convertDateTo)
+
+  }
   updateLoaiTram = async (data) => {
     console.log(data);
     this.setState({indexTram: data});
@@ -251,7 +255,7 @@ class Duyet extends Component {
       await this.setState({
         isNhaNuoc: true,
         idPhanLoai: 1, // loại 1 là nước
-        idLoaiTram: 156, // nước mặc 156
+        idLoaiTram: 39, // nước thải 39
       });
     }
     if (data == '2') {
@@ -265,7 +269,7 @@ class Duyet extends Component {
       await this.setState({
         isNhaNuoc: true,
         idPhanLoai: 1, // loại 1 là nước
-        idLoaiTram: 39, // nước thải 39
+        idLoaiTram: 156, // nước thải 156
       });
     }
     if (data == '4') {
@@ -290,11 +294,11 @@ class Duyet extends Component {
       dateTemp.getTime() + -this.state.rangeTime * 60 * 60 * 1000,
     );
     this.setState({
-      timeFrom: dateTemp.toLocaleTimeString('vi-VN').substr(0, 5),
+      timeFrom: dateTemp.toLocaleTimeString('en-GB').substr(0, 5),
       dateFrom: dateTemp,
     });
   };
-  setTimeNextPrevious = (key) => {
+  setTimeNextPrevious = async(key) => {
     //1 previour 2 next
     console.log(this.state.dateFrom + ' - ' + this.state.dateTo);
     if (key == 2) {
@@ -306,12 +310,13 @@ class Duyet extends Component {
       dateTempTo.setTime(
         dateTempTo.getTime() + this.state.rangeTime * 60 * 60 * 1000,
       );
-      this.setState({
-        timeFrom: dateTempFrom.toLocaleTimeString('vi-VN').substr(0, 5),
+      await this.setState({
+        timeFrom: dateTempFrom.toLocaleTimeString('en-GB').substr(0, 5),
         timeTo: dateTempTo,
         dateFrom: dateTempFrom,
         dateTo: dateTempTo,
       });
+      this.XemDuLieuQuanTrac();
     }
     if (key == 1) {
       let dateTempFrom = new Date(this.state.dateFrom);
@@ -322,12 +327,13 @@ class Duyet extends Component {
       dateTempTo.setTime(
         dateTempTo.getTime() - this.state.rangeTime * 60 * 60 * 1000,
       );
-      this.setState({
-        timeFrom: dateTempFrom.toLocaleTimeString('vi-VN').substr(0, 5),
+      await this.setState({
+        timeFrom: dateTempFrom.toLocaleTimeString('en-GB').substr(0, 5),
         timeTo: dateTempTo,
         dateFrom: dateTempFrom,
         dateTo: dateTempTo,
       });
+      this.XemDuLieuQuanTrac();
     }
   };
 
@@ -344,7 +350,7 @@ class Duyet extends Component {
       rangeTime: value,
     });
     this.setTimeFrom();
-  };
+  }; 
 
   fetchData = async () => {
     try {
@@ -376,8 +382,9 @@ class Duyet extends Component {
         isDataNull:false,
       });
       var URL = '';
-      //   URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=03%2F01%2F2018%2010%3A00&to=03%2F01%2F2018%2010%3A30`;
-      URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=29%2F07%2F2018%2008%3A30&to=29%2F07%2F2018%2020%3A30`;
+         URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=03%2F01%2F2018%2010%3A00&to=03%2F01%2F2018%2010%3A30`;
+    //   URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=29%2F07%2F2018%2008%3A30&to=29%2F07%2F2018%2020%3A30`;
+        // URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=${this.state.convertDateFrom}&to=${this.state.convertDateTo}`;
 
       console.log(URL);
       let response = await fetch(URL);
@@ -387,35 +394,46 @@ class Duyet extends Component {
       let reponseJson = await response.json();
       console.log('=====reposejson=====');
       console.log(reponseJson);
-      await this.setState({
-        isLoadingGird: false,
-        dataTram: reponseJson,
-      });
-      await this.state.dataTram.map((v, i) => {
-        this.setState({
-          dataThongSo: [...this.state.dataThongSo, v.ThongSo],
-          dataTableHeader: [
-            ...this.state.dataTableHeader,
-            v.THOIDIEMDO.substr(11, 5) + ' ' + v.THOIDIEMDO.substr(20),
-          ],
+      if(reponseJson!=null)
+      {
+        await this.setState({
+          isLoadingGird: false,
+          dataTram: reponseJson,
         });
-      });
-      console.log(this.state.dataThongSo);
-      if (this.state.dataThongSo.length != 0) {
-        await this.state.dataThongSo[0].map((v, i) => {
+        await this.state.dataTram.map((v, i) => {
           this.setState({
-            dataTableLeft: [...this.state.dataTableLeft, v.KYHIEU_THONGSO],
+            dataThongSo: [...this.state.dataThongSo, v.ThongSo],
+            dataTableHeader: [
+              ...this.state.dataTableHeader,
+              v.THOIDIEMDO.substr(11, 5) + ' ' + v.THOIDIEMDO.substr(20),
+            ],
           });
         });
+        console.log(this.state.dataThongSo);
+        if (this.state.dataThongSo.length != 0) {
+          await this.state.dataThongSo[0].map((v, i) => {
+            this.setState({
+              dataTableLeft: [...this.state.dataTableLeft, v.KYHIEU_THONGSO],
+            });
+          });
+          this.setState({
+            dataTest:this.state.dataThongSo
+          })
+        }
+        if(this.state.dataThongSo.length==0)
+        {
+           await this.setState({
+          isDataNull: true,
+        });
+        }
+        console.log('===============');
+        console.log(this.state.dataTableHeader);
       }
-      if(this.state.dataThongSo.length==0)
-      {
-         await this.setState({
-        isDataNull: true,
-      });
+      else{
+        this.setState({
+          isDataNull: true,});
       }
-      console.log('===============');
-      console.log(this.state.dataTableHeader);
+      
     } catch (error) {
       console.error(error);
     }
@@ -482,9 +500,42 @@ class Duyet extends Component {
       indexSwiper:1
     })
   }
+  ClickThongSo=(data)=>{
+    console.log(data)
+   
+    this.state.dataThongSo.forEach((element,index) => {
+      console.log('index' + index)
+      const result=element.find(n=>n.id==data.id)
+      console.log(element)
+      if(result!=undefined)
+      {
+        const newDate = result;
+        this.setState(
+            {
+              dataTest:[
+                ...this.state.dataTest[index],
+                element=newDate
+              ]
+               
+              
+            } 
+        )
+        console.log(this.state.dataTest)
+      }
+    });
+    
+    console.log(data.keyColor)
+    console.log(data.id)
+    
+    if(data.keyColor=='_SilverStyle')
+    {
+    }
+    else{
+
+    }
+  }
   render() {
     const {isLoadingGird,isDataNull} = this.state;
-    console.log(this.props)
     return (
       <>
         <StatusBar barStyle="dark-content" />
@@ -496,12 +547,12 @@ class Duyet extends Component {
             <View>
               <GridThongSo
                data={this.state.dataThongSo}
-               dataHeader={this.state.dataTableHeader}
+               dataHeader={this.state.dataTableHeader}  
                dataHeaderLeft={this.state.dataTableLeft}
                dateFrom={this.state.dateFrom}
                dateTo={this.state.dateTo}
                timeTo={this.state.timeTo
-                 .toLocaleTimeString('vi-VN')
+                 .toLocaleTimeString('en-GB')
                  .substr(0, 5)}
                timeFrom={this.state.timeFrom}
                Next={() => this.setTimeNextPrevious(2)}
@@ -509,8 +560,10 @@ class Duyet extends Component {
                isLoadingGird={isLoadingGird}
                isDataNull={isDataNull}
                ClickTime={this.ClickTime}
+               ClickThongSo={this.ClickThongSo}
               ></GridThongSo>
-             
+            
+        
             </View>
           </ScrollView>
           {this.state.isDisplay ? (
