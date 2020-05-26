@@ -1,15 +1,29 @@
-let LoginState = {
-    data: {
-        isLogin:false
-    }
-};
+// let LoginState = {
+//     data: {
+
+//         isLogin:false
+//     }
+// };
+
+const LoginState={
+    isLogin:false,
+    userName:'test',
+    token:'ok'
+}
 
 const LoginReducer=(state=LoginState,action)=>{
     switch(action.type){
         case 'checkLogin':
-         state.data={
+         state={
              isLogin:action.isCheck
          }
+         break;
+         case 'LOGIN':
+         state={
+            userName:action.payload.username,
+            token:action.payload.token,
+            isLogin:action.payload.isLogin
+         } 
          break;
     }
     return state

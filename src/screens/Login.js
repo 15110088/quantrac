@@ -6,7 +6,8 @@ import Feather from 'react-native-vector-icons/dist/Feather';
 import { RSA } from 'react-native-rsa-native';
 import config from '../ultilities/config';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import { connect } from 'react-redux';
+import {loginAction} from '../reducer/action/LoginAction'
 const  PublicKey=`-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmXVVi3z9APO77sFSqrIg
 Z4s38eC43UYuveN29MOGzMmlvIoRdef3zDWZ1Fj/Y65K8DYgcidQhMl6Z5QrSds8
@@ -16,7 +17,7 @@ Z8YOntzDYpRzn57dKTgcrZTwq20wStMX1EvdeZiA8O0+mR25earq1nMm35Bpe2vV
 UOvbZKFPHM3muyshmX0iT/A8as3sgj+r61tmZgd+TeH3G/U5ic3XhTEaNxkHmuDw
 mQIDAQAB
 -----END PUBLIC KEY-----`
-
+ 
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -26,9 +27,9 @@ class Login extends Component {
         passWord:'',
         isAlterLogin:null,
     };
-  }
+  } 
   componentWillMount(){
-     console.log(this.props)
+     console.log(this.props.dataLogin)
   }
   CheckLogin=async()=>{
     let checkLogin =await  AsyncStorage.getItem('checkLogin')
@@ -83,15 +84,15 @@ class Login extends Component {
             // await this.props.navigation.navigate('Duyet');
         }
         else{
-           
           console.log("========login False=======")
-         
         }
-      
-      
   }
-
+  LoginRedux=()=>{
+    this.props.SaveLogin('nghiatt','123',true) 
+    console.log(this.props.dataLogin)
+  }
   render() {
+    console.log(this.props)
     return (
       <View style={styles.container}>
         <Text style={styles.title}> Login </Text>
@@ -107,7 +108,7 @@ class Login extends Component {
              </TouchableOpacity>
          </View>
 
-         <TouchableOpacity onPress={this.LoginSubmit}>
+         <TouchableOpacity onPress={this.LoginRedux}>
              <View style={styles.Login}>
              <Text style={styles.textLogin}>LOGIN</Text>
              </View>
@@ -116,8 +117,17 @@ class Login extends Component {
     );
   }
 }
-
-export default Login;
+const mapStatetoProps=(state)=>{
+    return {
+        dataLogin:state.loginRedux
+    }
+}
+const mapDispatchtoProps=(dispatch,props)=>{
+    return{
+        SaveLogin:(userName,token,islogin)=>dispatch(loginAction(userName,token,islogin))
+    }
+}
+export default connect(mapStatetoProps,mapDispatchtoProps)(Login);
 
 const styles=StyleSheet.create({
     container:{

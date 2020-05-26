@@ -12,7 +12,7 @@ class loginContainer extends Component {
     };
   }
   
-  render() {
+  render() {  
     const { data } = this.props.data;
 
     const {CheckLogin,navigation}=this.props

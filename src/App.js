@@ -16,6 +16,7 @@ import MapReducer from './reducer/MapReducer';
 import LoginReducer from './reducer/LoginReducer';
 import MenuContainer from './reducer/container/menuContainer';
 import Duyet from './screens/Duyet';
+import Login from './screens/Login';
 
 let appState = {
       colorHerder:'#fff000'
@@ -60,7 +61,6 @@ const showQuanTrac = (state = appState, action) => {
 
 const store = createStore(
   combineReducers({
-  
     nghia1: showQuanTrac,
     mapRedux:MapReducer,
     loginRedux:LoginReducer,
@@ -82,7 +82,8 @@ class App extends Component {
             {/* <NavigationContainer>
                   <MenuContainer></MenuContainer>
             </NavigationContainer> */}
-                  <Duyet/>
+                  {/* <Duyet/> */}
+                  <Login></Login>
           </ApplicationProvider>
         </View>
       </Provider>

@@ -100,9 +100,10 @@ class Duyet extends Component {
       dataTableHeader: [],
       dataTableLeft: [],
       dataTest:[],
+
     };
     this.fetchData();
-    this.fetchDataTram();
+    this.fetchChiSoDataTram();
   }
 
   header = (navigation) => {
@@ -116,12 +117,14 @@ class Duyet extends Component {
             <Text style={styles.headerText}>Duyệt dữ liệu quan trắc nước</Text>
             <View style={styles.headerRightContainer}>
               <Entypo name="map" size={25} color="#fff" />
+              <TouchableOpacity onPress={this.refreshGrid}>
               <Octicons
-                name="settings"
+                name="settings" 
                 size={25}
                 color="#fff"
                 style={styles.icon}
               />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -221,7 +224,7 @@ class Duyet extends Component {
           ]}>
           <Text style={{color: theme.colors.green}}>Xem</Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        <TouchableOpacity  onPress={this.DuyetDuLieuQuanTrac}
           style={[
             styles.button,
             {
@@ -243,10 +246,33 @@ class Duyet extends Component {
           convertDateFrom:encodeURIComponent(datefrom),
           convertDateTo:encodeURIComponent(dateto)
       })
-      this.fetchDataTram()
+      this.fetchChiSoDataTram()
       console.log(datefrom + ' ' +dateto)
       console.log(this.state.convertDateFrom + ' ' +this.state.convertDateTo)
 
+  }
+  DuyetDuLieuQuanTrac= async()=>{
+      const newData=this.state.dataTram
+
+      // await this.state.dataTram.map((v,index)=>{
+      //   newData[index].ThongSo=this.data.ThongSo[index]
+      // })
+      // await  this.setState({
+      //   dataTram:newData
+      // })
+
+     
+     const requestOption ={
+       method:'POST',
+       headers:{'Content-Type':'application/json'}, 
+       body:JSON.stringify(this.state.dataTram)
+     }
+     fetch(`http://${config.URLIP_API}/api/Duyet/LuuDuLieu`,requestOption)
+     .then(response => response.json())
+     .then(data => console.log(data));    
+  }
+  refreshGrid=()=>{
+    this.fetchChiSoDataTram();
   }
   updateLoaiTram = async (data) => {
     console.log(data);
@@ -286,8 +312,9 @@ class Duyet extends Component {
     await this.fetchData();
   };
   componentDidMount() {
-    this.setTimeFrom();
+    this.setTimeFrom();  
   }
+  // Hàm này để suy ra giá trị ngày bất đầu  từ biến timeTo
   setTimeFrom = () => {
     var dateTemp = new Date(this.state.timeTo);
     dateTemp.setTime(
@@ -373,7 +400,7 @@ class Duyet extends Component {
       console.error(error);
     }
   };
-  fetchDataTram = async () => {
+  fetchChiSoDataTram = async () => {
     try {
       await this.setState({
         dataTableLeft: [],
@@ -478,7 +505,7 @@ class Duyet extends Component {
       isDisplay: false,
       //idDiem: 46,
     });
-    this.fetchDataTram();
+    this.fetchChiSoDataTram();
   };
   hideDataSearch = () => {
     Keyboard.dismiss();
@@ -500,27 +527,37 @@ class Duyet extends Component {
       indexSwiper:1
     })
   }
-  ClickThongSo=(data)=>{
+  ClickThongSo=(data)=>{ 
     console.log(data)
-   
+    const dataTempThongSo=this.state.dataThongSo 
     this.state.dataThongSo.forEach((element,index) => {
-      console.log('index' + index)
-      const result=element.find(n=>n.id==data.id)
-      console.log(element)
-      if(result!=undefined)
+     
+      let indexElement=element.findIndex(n=>n.id==data.id)
+      const resultData=element.find(n=>n.id==data.id)
+      
+      if(indexElement!=-1)
       {
-        const newDate = result;
+        // [index][indexElenmt]
+        element.map((v,i)=>{
+            if(v.id==resultData.id)
+            {
+              if(dataTempThongSo[index][indexElement].keyColor!="_SilverStyle")
+              {
+                dataTempThongSo[index][indexElement].keyColor="_SilverStyle"
+              }
+              else{
+                dataTempThongSo[index][indexElement].keyColor="_BlueStyle"
+              }
+            }
+        })
         this.setState(
             {
-              dataTest:[
-                ...this.state.dataTest[index],
-                element=newDate
-              ]
-               
-              
+              dataThongSo:dataTempThongSo
             } 
+            
         )
-        console.log(this.state.dataTest)
+
+        console.log(this.state.dataThongSo)
       }
     });
     
