@@ -1,8 +1,9 @@
 import React, {Component,useEffect,useState} from 'react';
-import {View, Text,StyleSheet,Image,Dimensions} from 'react-native';
+import {View, Text,StyleSheet,Image,Dimensions,Alert} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator,DrawerContentScrollView,DrawerItem} from '@react-navigation/drawer';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { NavigationContainer, StackActions } from '@react-navigation/native';
 
 import A from './A';
 import B from './B';
@@ -31,7 +32,10 @@ import TodayAQI from './AQI/TodayAQI';
 import Search from './Search';
 import Duyet from './Duyet';
 import loginContainer from '../reducer/container/loginContainer';
+import {loginAction} from '../reducer/action/LoginAction'
 
+//readux 
+import { connect, useDispatch ,useSelector} from 'react-redux';
 
 const Stack = createStackNavigator();
 const RootStack = createStackNavigator();
@@ -93,36 +97,43 @@ const StackMenu = () => (
     <Stack.Screen name="TodayAQI" component={TodayAQI}></Stack.Screen>
     <Stack.Screen name="Search" component={Search}></Stack.Screen>
     <Stack.Screen name="Duyet" component={Duyet}></Stack.Screen>
+    <Stack.Screen name="LoginStack" component={loginContainer}></Stack.Screen>
+
   </Stack.Navigator>
 );
 
 
-const LogoutSubmit=async(props)=>{
-  var data={
-    ketQua: "Đăng Xuất Thành Công",
-    trangThai: false,
-    tenDangNhap: "",
-    matKhau: ""
-    }
-  await AsyncStorage.setItem('checkLogin', JSON.stringify(data) );
-  props.navigation.closeDrawer();
-  props.navigation.popToTop().
-  console.log(props)
-}
+
 
 
 
 const CustomDrawerContent=(props)=>{
-  return(
+  const dataLogin=useSelector(state=>state.loginRedux)
+  const dispatch=useDispatch()
+  const LogoutSubmit=()=>{
+    const data={
+      ketQua: "Đăng Xuất Thành Công",
+      trangThai: "Flase",
+      tenDangNhap: "",
+      matKhau: ""
+      }
+    //await AsyncStorage.setItem('checkLogin', JSON.stringify(data) );
+     dispatch(loginAction(data.tenDangNhap,data.matKhau,data.trangThai))
+     Alert.alert(data.ketQua)
+     props.navigation.dispatch(StackActions.replace('LoginStack'))
+     props.navigation.closeDrawer()
+    }
+
+  return( 
   <View style={{flex:1}}>
   <DrawerContentScrollView {...props}>
       <View style={styles.drawerContent}>
           <View style={styles.drawerSection}>
-                 {props.isLogin?<Block flex={0.5} >
+                 {dataLogin.isLogin=='True'?<Block flex={0.5} >
           <Image
                     source={require('../assets/image/logo.png')}
                     style={[styles.image]}></Image>
-                    <Text style={[styles.textUser,{alignSelf:"center"}]}>xxxxxx</Text>
+                    <Text style={[styles.textUser,{alignSelf:"center"}]}>{dataLogin.userName}</Text>
       </Block>
       :null}      
       <DrawerItem
@@ -133,18 +144,18 @@ const CustomDrawerContent=(props)=>{
 
         icon={() => <AntDesign name="home" color={theme.colors.white} size={16} />}
       />
-       {props.isLogin?null:<DrawerItem
+       {dataLogin.isLogin=='True'?null:<DrawerItem
         label="Sign In"
         labelStyle={styles.text}
         onPress={() => props.navigation.navigate('Login')}
         style={styles.lineItemMenu}
         icon={() => <SimpleLineIcons name="login" color={theme.colors.white} size={16} />}
       />}
-      {props.isLogin?<DrawerItem
+      {dataLogin.isLogin=='True'?<DrawerItem
         label="Monitoring"
         labelStyle={styles.text} 
         style={styles.lineItemMenu}
-        onPress={() => props.navigation.navigate('Duyet')}
+        onPress={() => props.navigation.navigate('Duyet',{dataLogin:dataLogin})}
         icon={() => <SimpleLineIcons name="logout" color={theme.colors.white} size={16} />}/>:null}
        <DrawerItem
         label="Setting"
@@ -153,17 +164,14 @@ const CustomDrawerContent=(props)=>{
         onPress={() => props.navigation.navigate('C')}
         icon={() => <AntDesign name="setting" color={theme.colors.white} size={16} />}
       />
-      
-      
           </View>
-        
       </View>
   </DrawerContentScrollView>
-  {props.isLogin?<DrawerItem
+  {dataLogin.isLogin=='True'?<DrawerItem
         label="Sing Out"
         labelStyle={styles.text} 
         style={{marginBottom:15}}
-        onPress={() => LogoutSubmit(props)}
+        onPress={LogoutSubmit}
         icon={() => <SimpleLineIcons name="logout" color={theme.colors.white} size={16} />}/>:null}
 </View>)
 }
@@ -186,8 +194,6 @@ class Menu extends Component {
    })
   }
   DrawerMenu =  (props) => {
-    
-    this.getLogin()
     return (
       <Drawer.Navigator
         drawerType="front" 
@@ -202,7 +208,7 @@ class Menu extends Component {
           }} 
         sceneContainerStyle={{ backgroundColor: 'transparent' }}
         drawerContent={(props) => {
-                     return <CustomDrawerContent {...props} isLogin={this.state.isLogin} />;
+                     return <CustomDrawerContent {...props}   />;
                    }}
       > 
         <Drawer.Screen name="Tabs" component={StackMenu}></Drawer.Screen>
@@ -215,6 +221,8 @@ class Menu extends Component {
   };
   
   render() {
+    console.log(this.props)
+
     return (
         <RootStack.Navigator headerMode="none">
           <RootStack.Screen name="Drawer"  component={this.DrawerMenu}></RootStack.Screen>
@@ -226,10 +234,8 @@ class Menu extends Component {
 
 
 
-export default Menu;
+export default  Menu;
 
-const withScreen=Dimensions.get("screen").width
-const heightScreen=Dimensions.get("screen").height
 const styles = StyleSheet.create({
   drawerStyles: { flex: 1, width: '50%', backgroundColor: theme.colors.green },
   image: {

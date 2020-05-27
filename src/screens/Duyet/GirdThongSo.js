@@ -135,6 +135,7 @@ export  const GridThongSo = (props) => {
                               key={i}
                               style={{
                                 width: 100,
+                                height:40,
                                 borderBottomWidth: 0.5,
                                 backgroundColor: theme.colors.green,
                               }}>

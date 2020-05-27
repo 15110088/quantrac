@@ -13,6 +13,7 @@ import {
   Keyboard,
   StatusBar,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {RangeDatepicker, Icon, NativeDateService} from '@ui-kitten/components';
 import {SearchBar, Image, Input, ListItem} from 'react-native-elements';
@@ -37,6 +38,7 @@ import {Select} from 'react-native-propel-kit';
 import DataTimeHour from '../DataGlobal/DataTimeHour.json';
 import { GridThongSo } from './Duyet/GirdThongSo';
 import RNPickerSelect from 'react-native-picker-select';
+import { connect, useSelector } from 'react-redux';
 
 const CalendarIcon = (props) => <Icon {...props} name="calendar" />;
 const Rating = ({rating}) => {
@@ -58,6 +60,7 @@ const Rating = ({rating}) => {
 
 
 const formatDateService = new NativeDateService('en', {format: 'DD/MM/YYYY'});
+
 
 class Duyet extends Component {
   constructor(props) {
@@ -201,8 +204,6 @@ class Duyet extends Component {
             onValueChange={(value) => console.log(value)}
             items={DataTimeHour}/> */}
               </View>
-
-           
             </View>
           </View>
         </Swiper>
@@ -224,7 +225,7 @@ class Duyet extends Component {
           ]}>
           <Text style={{color: theme.colors.green}}>Xem</Text>
         </TouchableOpacity>
-        <TouchableOpacity  onPress={this.DuyetDuLieuQuanTrac}
+        <TouchableOpacity disabled={this.state.isLoadingGird?true:false} onPress={this.DuyetDuLieuQuanTrac}
           style={[
             styles.button,
             {
@@ -252,24 +253,29 @@ class Duyet extends Component {
 
   }
   DuyetDuLieuQuanTrac= async()=>{
-      const newData=this.state.dataTram
-
-      // await this.state.dataTram.map((v,index)=>{
-      //   newData[index].ThongSo=this.data.ThongSo[index]
-      // })
-      // await  this.setState({
-      //   dataTram:newData
-      // })
-
-     
-     const requestOption ={
-       method:'POST',
-       headers:{'Content-Type':'application/json'}, 
-       body:JSON.stringify(this.state.dataTram)
+     if(this.state.isDataNull)
+     {
+      console.log(this.props.route.params.dataLogin)
+      const data={
+       lstChiSo:this.state.dataTram,
+        auth:{
+         UserName:this.props.route.params.dataLogin.userName,
+         Token:this.props.route.params.dataLogin.token
+        }
+      }
+      const requestOption ={
+        method:'POST',  
+        headers:{'Content-Type':'application/json'}, 
+        body:JSON.stringify(data)
+      }
+      await fetch(`http://${config.URLIP_API}/api/Duyet/LuuDuLieu`,requestOption)
+      .then(response => response.json())
+      .then(data => console.log(data)); 
+      this.refreshGrid()
      }
-     fetch(`http://${config.URLIP_API}/api/Duyet/LuuDuLieu`,requestOption)
-     .then(response => response.json())
-     .then(data => console.log(data));    
+     else{
+      Alert.alert("Không có dữ liệu")
+     }
   }
   refreshGrid=()=>{
     this.fetchChiSoDataTram();
@@ -554,22 +560,11 @@ class Duyet extends Component {
             {
               dataThongSo:dataTempThongSo
             } 
-            
         )
-
         console.log(this.state.dataThongSo)
       }
     });
-    
-    console.log(data.keyColor)
-    console.log(data.id)
-    
-    if(data.keyColor=='_SilverStyle')
-    {
-    }
-    else{
-
-    }
+  
   }
   render() {
     const {isLoadingGird,isDataNull} = this.state;
@@ -611,17 +606,17 @@ class Duyet extends Component {
               useNativeDriver
               style={{
                 width: windowWidth,
-                height: windowHeight / 2,
+                height: windowHeight -200,
                 bottom: 0,
                 marginBottom: 0,
                 paddingBottom: 0,
-                backgroundColor: 'green',
+                backgroundColor: theme.colors.white,
               }}>
               {this.state.isLoading ? (
                 <Loading />
               ) : (
                 <FlatList
-                  keyExtractor={this.keyExtractor}
+                  keyExtractor={(item) => item.maTram}
                   data={this.state.dataSearch}
                   renderItem={this.renderItem}
                 />
@@ -647,6 +642,11 @@ const IconLoaiTram = (
     style={{height: 30, width: 30}}
   />
 );
+const mapProstoState=(state)=>{
+      return {
+        dataLogin:state.loginRedux
+      }
+}
 
 export default Duyet;
 const windowWidth = Dimensions.get('screen').width;

@@ -8,6 +8,7 @@ import config from '../ultilities/config';
 import AsyncStorage from '@react-native-community/async-storage';
 import { connect } from 'react-redux';
 import {loginAction} from '../reducer/action/LoginAction'
+
 const  PublicKey=`-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmXVVi3z9APO77sFSqrIg
 Z4s38eC43UYuveN29MOGzMmlvIoRdef3zDWZ1Fj/Y65K8DYgcidQhMl6Z5QrSds8
@@ -23,8 +24,8 @@ class Login extends Component {
     super(props);
     this.state = {
         secureTextEntry:true,
-        userName:'',
-        passWord:'',
+        userName:'nghiatt',
+        passWord:'ttcntt',
         isAlterLogin:null,
     };
   } 
@@ -34,14 +35,13 @@ class Login extends Component {
   CheckLogin=async()=>{
     let checkLogin =await  AsyncStorage.getItem('checkLogin')
     var jsoncheckLogin =  JSON.parse(checkLogin)
+    
     if(jsoncheckLogin.trangThai=="True")
     {  
         console.log('=============')
         console.log(jsoncheckLogin)
-
-        await this.props.navigation.openDrawer();
-        await this.props.navigation.closeDrawer();
-        await this.props.navigation.navigate('Duyet');
+        await this.props.SaveLogin(jsoncheckLogin.tenDangNhap,jsoncheckLogin.matKhau,jsoncheckLogin.trangThai) 
+        this.props.navigation.navigate('Duyet',{dataLogin:this.props.dataLogin});
     }
     else{
         Alert.alert(jsoncheckLogin.ketQua)
@@ -72,30 +72,13 @@ class Login extends Component {
                             });
             });
         });
-         
-        if(this.state.userName==this.state.passWord)
-        {
-            var data={islogin:true}
-           // await AsyncStorage.setItem('checkLogin', JSON.stringify(data) );
-           // let checkLogin = await AsyncStorage.getItem('checkLogin')
-            //await console.log(checkLogin)
-            // await this.props.navigation.openDrawer();
-            // await this.props.navigation.closeDrawer();
-            // await this.props.navigation.navigate('Duyet');
-        }
-        else{
-          console.log("========login False=======")
-        }
   }
-  LoginRedux=()=>{
-    this.props.SaveLogin('nghiatt','123',true) 
-    console.log(this.props.dataLogin)
-  }
+
   render() {
-    console.log(this.props)
+    //console.log(this.props)
     return (
       <View style={styles.container}>
-        <Text style={styles.title}> Login </Text>
+        <Text style={styles.title}> Đăng Nhập </Text>
          <View style={styles.section}>
              <AntDesign name="user" size={20} color={'#fff'}></AntDesign>
              <TextInput style={styles.textInput} onChangeText={(userName)=>this.setState({userName:userName})} placeholder={"user"}></TextInput>
@@ -108,21 +91,23 @@ class Login extends Component {
              </TouchableOpacity>
          </View>
 
-         <TouchableOpacity onPress={this.LoginRedux}>
+         <TouchableOpacity onPress={this.LoginSubmit}>
              <View style={styles.Login}>
-             <Text style={styles.textLogin}>LOGIN</Text>
+             {/* <Text style={styles.textLogin}>LOGIN</Text> */}
+             <AntDesign name="login" size={30} color={theme.colors.green}></AntDesign>
+
              </View>
          </TouchableOpacity>
       </View>
     );
   }
 }
-const mapStatetoProps=(state)=>{
+const mapStatetoProps=(state)=>{//lay statet tu redux, muoons them state viet vao day
     return {
         dataLogin:state.loginRedux
     }
 }
-const mapDispatchtoProps=(dispatch,props)=>{
+const mapDispatchtoProps=(dispatch,props)=>{ // muon them action viet vao day
     return{
         SaveLogin:(userName,token,islogin)=>dispatch(loginAction(userName,token,islogin))
     }
@@ -156,6 +141,7 @@ const styles=StyleSheet.create({
     },
     textInput:{
         flex:1,
+        fontSize:18,
         color:theme.colors.white,
       
     },
