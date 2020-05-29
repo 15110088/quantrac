@@ -55,13 +55,11 @@ class ChartAQI extends React.Component {
       },  
 
     };
+    this.setState({...this.state, highlights: [{x: this.props.xChart.length-1, y:10}]})
+
   }
 
-  componentWillMount() {
-    console.log("==========Chart AIQ========")
-    this.setState({...this.state, highlights: [{x: this.props.xChart.length-1, y:10}]})
-    
-  }
+  
  
 
   handleSelect(event) {

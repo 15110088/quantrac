@@ -29,9 +29,7 @@ class Login extends Component {
         isAlterLogin:null,
     };
   } 
-  componentWillMount(){
-     console.log(this.props.dataLogin)
-  }
+
   CheckLogin=async()=>{
     let checkLogin =await  AsyncStorage.getItem('checkLogin')
     var jsoncheckLogin =  JSON.parse(checkLogin)

@@ -87,10 +87,7 @@ class TodayAQI extends Component {
   };
 
 
-  componentWillMount(){
-    this.fetchDataOneHour();
-   
-  }
+
   componentDidMount(){
     this.fetchDataOneDay();
   }
@@ -107,6 +104,8 @@ class TodayAQI extends Component {
         isCheckDay:true,
         timeDayorHour:1 //1 gio 2 ngay
     };
+        this.fetchDataOneHour();
+
   }
   CheckSelectDay=(time)=>{
    

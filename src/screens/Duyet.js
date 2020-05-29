@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   Button,
   Dimensions,
-  Picker,
   TextInput,
   TouchableWithoutFeedback,
   FlatList,
@@ -45,6 +44,7 @@ import DataTimeHour from '../DataGlobal/DataTimeHour.json';
 import {GridThongSo} from './Duyet/GirdThongSo';
 import RNPickerSelect from 'react-native-picker-select';
 import {connect, useSelector} from 'react-redux';
+import {Picker} from '@react-native-community/picker';
 
 const CalendarIcon = (props) => <Icon {...props} name="calendar" />;
 const Rating = ({rating}) => {
@@ -109,24 +109,28 @@ class Duyet extends Component {
       dataTableLeft: [],
       dataTest: [],
     };
-    this.fetchData();
-    this.fetchChiSoDataTram();
+    //this.fetchData();
   }
 
   header = (navigation, isShowFillter) => {
     return (
       <View
         style={{
-          height: isShowFillter ? 200 : 200,
+          height: isShowFillter ? 200 : 80,
           width: windowWidth,
           paddingHorizontal: 10,
         }}>
         <View style={styles.header}>
           <View style={styles.headerBody}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Entypo name="chevron-left" size={32} color="#fff" />
-          </TouchableOpacity>
-           <Entypo name="water" style={{position:'absolute',marginLeft:40,paddingTop:10}}   size={32} color="#4285F4" />
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Entypo name="chevron-left" size={32} color="#fff" />
+            </TouchableOpacity>
+            <Entypo
+              name="water"
+              style={{position: 'absolute', marginLeft: 40, paddingTop: 10}}
+              size={32}
+              color="#4285F4"
+            />
             <View style={styles.headerRightContainer}>
               <Entypo name="map" size={25} color="#fff" />
               <TouchableOpacity onPress={this.onHideFillter}>
@@ -139,101 +143,128 @@ class Duyet extends Component {
               </TouchableOpacity>
             </View>
           </View>
-          <ScrollView
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{alignItems: 'center'}}
-            horizontal={true}
-            style={{
-              width: windowWidth,
-              height: 110,
-              alignSelf: 'center',
-              paddingVertical:5,
-            }}
-            onScroll={this.handleScroll}
-           // scrollEnabled={false}
-            ref={(ref) => {
-              this.scrollSearchHeader = ref;
-            }}>
+          {isShowFillter ? (
+            <>
+            <ScrollView
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{alignItems: 'center'}}
+              horizontal={true}
+              style={{
+                width: windowWidth,
+                height: 110,
+                alignSelf: 'center',
+                paddingVertical: 5,
+              }}
+              onScroll={this.handleScroll}
+              // scrollEnabled={false}
+              ref={(ref) => {
+                this.scrollSearchHeader = ref;
+              }}>
               {/* page 1 */}
-              <View style={{width:windowWidth,height:110,backgroundColor:'transform',}}>
-              <View style={[styles.wrapperInput,{height:40}]}>
-                <AntDesign name="search1" size={18} color="gray" />
-                <Picker
-                  style={styles.inputText}
-                  selectedValue={this.state.indexTram}
-                  mode="dialog"
-                  onValueChange={this.updateLoaiTram}>
-                  <Picker.Item label="Nước Mặt Nhà Nước" value="1" />
-                  <Picker.Item label="Nước Mặt Doanh Nghiệp" value="2" />
-                  <Picker.Item label="Nước Thải Nhà Nước" value="3" />
-                  <Picker.Item label="Nước Thải Doanh Nghiệp" value="4" />
-                </Picker>
-              </View>
-              <View style={[styles.wrapperInput,{height:40}]}>
-                <Feather name="map-pin" size={18} color="gray" />
-                <TextInput
-                  style={[styles.inputText, {color: '#9770A3'}]}
-                  placeholder="Tên Trạm"
-                  onFocus={this.showDataSearch}
-                  onKeyPress={this.handleChangeAndDelete}
-                  containerStyle={{height: 30}}
-                  value={this.state.search}
-                  onChangeText={(data) => this.searchFilterFunction(data)}
-                />
-              </View>
-              </View>
-              {/* page 2 */}
-              <View style={{width:windowWidth,height:110,backgroundColor:'transform',}}>
-              <View
-              style={{height: 100, width: windowWidth, paddingHorizontal: 10}}>
-              <View style={[styles.wrapperInput,{height:40}]}>
-                <MaterialIcons name="date-range" size={18} color="gray" />
-                <RangeDatepicker
-                  style={{height: 40, width: 250}}
-                  range={this.state.rangeDate}
-                  onSelect={(nextRange) => this.layNgayQuanTrac(nextRange)}
-                  accessoryRight={CalendarIcon}
-                  dateService={formatDateService}
-                  autoDismiss={false}
-                />
-              </View>
-
               <View
                 style={{
-                  flexDirection: 'row',
-                  width: windowWidth * 0.9,
-                  justifyContent: 'space-between',
+                  width: windowWidth,
+                  height: 110,
+                  backgroundColor: 'transform',
                 }}>
-                <View style={[styles.wrapperTime]}>
-                  <MaterialIcons name="access-time" size={18} color="gray" />
-                  {/* <RNPickerSelect value={this.state.rangeTime} style={{inputAndroid:{padding:10,width:windowWidth * 0.2}}}
-            onValueChange={(value) => console.log(value)}
-            items={DataTimeHour}/> */}
+                <View style={[styles.wrapperInput, {height: 40}]}>
+                  <AntDesign name="search1" size={18} color="gray" />
+                  <Picker
+                    style={styles.inputText}
+                    selectedValue={this.state.indexTram}
+                    mode="dialog"
+                    onValueChange={this.updateLoaiTram}>
+                    <Picker.Item label="Nước Mặt Nhà Nước" value="1" />
+                    <Picker.Item label="Nước Mặt Doanh Nghiệp" value="2" />
+                    <Picker.Item label="Nước Thải Nhà Nước" value="3" />
+                    <Picker.Item label="Nước Thải Doanh Nghiệp" value="4" />
+                  </Picker>
+                </View>
+                <View style={[styles.wrapperInput, {height: 40}]}>
+                  <Feather name="map-pin" size={18} color="gray" />
+                  <TextInput
+                    style={[styles.inputText, {color: '#9770A3'}]}
+                    placeholder="Tên Trạm"
+                    onFocus={this.showDataSearch}
+                    onKeyPress={this.handleChangeAndDelete}
+                    containerStyle={{height: 30}}
+                    value={this.state.search}
+                    onChangeText={(data) => this.searchFilterFunction(data)}
+                  />
                 </View>
               </View>
-              </View>
+              {/* page 2 */}
+              <View
+                style={{
+                  width: windowWidth,
+                  height: 110,
+                  backgroundColor: 'transform',
+                }}>
+                <View
+                  style={{
+                    height: 100,
+                    width: windowWidth,
+                    paddingHorizontal: 10,
+                  }}>
+                  <View style={[styles.wrapperInput, {height: 40}]}>
+                    <MaterialIcons name="date-range" size={18} color="gray" />
+                    <RangeDatepicker
+                      style={{height: 40, width: 250}}
+                      range={this.state.rangeDate}
+                      onSelect={(nextRange) => this.layNgayQuanTrac(nextRange)}
+                      accessoryRight={CalendarIcon}
+                      dateService={formatDateService}
+                      autoDismiss={false}
+                    />
+                  </View>
+
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      width: windowWidth * 0.9,
+                      justifyContent: 'space-between',
+                    }}>
+                    <View style={[styles.wrapperTime]}>
+                      <MaterialIcons
+                        name="access-time"
+                        size={18}
+                        color="gray"
+                      />
+                      {/* <RNPickerSelect value={this.state.rangeTime} style={{inputAndroid:{padding:10,width:windowWidth * 0.2}}}
+            onValueChange={(value) => console.log(value)}
+            items={DataTimeHour}/> */}
+                    </View>
+                  </View>
+                </View>
               </View>
             </ScrollView>
-           {/* nút xem dữ liệu */}
-          <View style={{width:windowWidth,flexDirection:'row',justifyContent:'flex-end', alignSelf:'center',height:50,paddingHorizontal:10}}>
-           <TouchableOpacity
-          onPress={this.XemDuLieuQuanTrac}
-          style={[
-            styles.button,
-            {
-              borderColor: theme.colors.green,
-              borderRadius: 50,
-              borderWidth: 1,
-              backgroundColor: theme.colors.white,
-            },
-          ]}>
-          <Text style={{color: theme.colors.green}}>Xem</Text>
-        </TouchableOpacity>
-          </View> 
-           
+            <View
+            style={{
+              width: windowWidth,
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              alignSelf: 'center',
+              height: 50,
+              paddingHorizontal: 10,
+            }}>
+            <TouchableOpacity
+              onPress={this.XemDuLieuQuanTrac}
+              style={[
+                styles.button,
+                {
+                  borderColor: theme.colors.green,
+                  borderRadius: 50,
+                  borderWidth: 1,
+                  backgroundColor: theme.colors.white,
+                },
+              ]}>
+              <Text style={{color: theme.colors.green}}>Xem</Text>
+            </TouchableOpacity>
+          </View>
+           </>
+             ) : null}
         </View>
-       
       </View>
     );
   };
@@ -360,6 +391,8 @@ class Duyet extends Component {
   };
   componentDidMount() {
     this.setTimeFrom();
+    this.fetchChiSoDataTram();
+
   }
   // Hàm này để suy ra giá trị ngày bất đầu  từ biến timeTo
   setTimeFrom = () => {
@@ -449,7 +482,7 @@ class Duyet extends Component {
   };
   fetchChiSoDataTram = async () => {
     try {
-      await this.setState({
+      this.setState({
         dataTableLeft: [],
         dataTableHeader: [],
         dataThongSo: [],
@@ -457,22 +490,25 @@ class Duyet extends Component {
       });
       var URL = '';
       //1 load   2 khoang thoi gian
-      URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=03%2F01%2F2018%2010%3A00&to=03%2F01%2F2018%2010%3A30`;
+      //URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=03%2F01%2F2018%2010%3A00&to=03%2F01%2F2018%2010%3A30`;
       //2  load nhieu khoan thoi gian
-      //  URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=29%2F07%2F2018%2008%3A30&to=29%2F07%2F2018%2020%3A30`;
+        URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=29%2F07%2F2018%2008%3A30&to=29%2F07%2F2018%2020%3A30`;
       // 3 load dung du lieu
-      //URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=${this.state.convertDateFrom}&to=${this.state.convertDateTo}`;
-
+     // URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=${this.state.convertDateFrom}&to=${this.state.convertDateTo}`;
+      console.log("0")
       console.log(URL);
+      console.log("1")
       let response = await fetch(URL);
-      await this.setState({
+       this.setState({
         isLoadingGird: true,
       });
+       console.log("2")
+
       let reponseJson = await response.json();
       console.log('=====reposejson=====');
       console.log(reponseJson);
       if (reponseJson != null) {
-        await this.setState({
+         this.setState({
           isLoadingGird: false,
           dataTram: reponseJson,
         });
@@ -497,11 +533,6 @@ class Duyet extends Component {
           });
           this.setState({
             dataTest: this.state.dataThongSo,
-          });
-        }
-        if (this.state.dataThongSo.length == 0) {
-          await this.setState({
-            isDataNull: true,
           });
         }
         console.log('===============');
@@ -572,14 +603,15 @@ class Duyet extends Component {
     });
   };
   ClickTime = () => {
-    console.log('click ok cai da');
-    this.setState({
-      indexSwiper: 1,
-    });
+    if(this.state.isShowFillter)
+    {
+    this.scrollSearchHeader.scrollTo({x: windowWidth, y: 0, animated: true});
+    }
+
   };
   ClickThongSo = (data) => {
     console.log(data);
-    const dataTempThongSo = this.state.dataThongSo;
+    const dataTempThongSo = [...this.state.dataThongSo];
     this.state.dataThongSo.forEach((element, index) => {
       let indexElement = element.findIndex((n) => n.id == data.id);
       const resultData = element.find((n) => n.id == data.id);
@@ -606,8 +638,8 @@ class Duyet extends Component {
   };
   ClickCheckBoxThongSo = (data) => {
     console.log('check ' + data);
-    const dataTempThongSo = this.state.dataThongSo;
-    const dataTempHeaderLeft = this.state.dataTableLeft;
+    const dataTempThongSo = [...this.state.dataThongSo];
+    const dataTempHeaderLeft = [...this.state.dataTableLeft];
 
     // this.state.dataTableLeft.forEach((element,index)=>{
 
@@ -634,7 +666,7 @@ class Duyet extends Component {
     });
   };
   ClickScrollPaging = (x) => {
-   this.scrollSearch.scrollTo({x: x, y: 0, animated: true});
+    this.scrollSearch.scrollTo({x: x, y: 0, animated: true});
   };
   handleScroll = (e) => {
     console.log(e.nativeEvent.contentOffset);
@@ -644,17 +676,17 @@ class Duyet extends Component {
   };
   render() {
     const {isLoadingGird, isDataNull} = this.state;
+    console.log(isLoadingGird)
     return (
       <>
         <StatusBar barStyle="dark-content" />
         <SafeAreaView style={styles.container}>
           <BackgroundHeader
-            style={[this.state.isShowFillter ? styles.bg : styles.bg, {}]}
+            style={[this.state.isShowFillter ? styles.bg : styles.bg1, {}]}
           />
           {this.header(this.props.navigation, this.state.isShowFillter)}
 
           <ScrollView style={styles.scrollView}>
-            {/* {this.ButtonDuyet()} */}
             <GridThongSo
               data={this.state.dataThongSo}
               dataHeader={this.state.dataTableHeader}
@@ -667,12 +699,21 @@ class Duyet extends Component {
               timeFrom={this.state.timeFrom}
               Next={() => this.setTimeNextPrevious(2)}
               Previous={() => this.setTimeNextPrevious(1)}
-              isLoadingGird={isLoadingGird}
+              isLoadingGird={false}
               isDataNull={isDataNull}
               ClickTime={this.ClickTime}
               ClickThongSo={this.ClickThongSo}
               ClickCheckBoxThongSo={this.ClickCheckBoxThongSo}></GridThongSo>
           </ScrollView>
+
+{/* <FlatList
+        data={this.state.dataThongSo}
+        renderItem={({ item }) => <Text>{item[0].id}</Text>}
+        keyExtractor={item => item.id}
+      /> */}
+
+         
+
 
           <View
             style={{
@@ -692,7 +733,6 @@ class Duyet extends Component {
               bottom: 5,
               alignSelf: 'center',
               position: 'absolute',
-              borderWidth:2
             }}
             onScroll={this.handleScroll}
             scrollEnabled={false}
@@ -701,7 +741,7 @@ class Duyet extends Component {
             }}>
             {/* Duyêt */}
             <View style={{width: 250, flexDirection: 'row'}}>
-              <TouchableOpacity     onPress={this.XemDuLieuQuanTrac}>
+              <TouchableOpacity onPress={this.DuyetDuLieuQuanTrac}>
                 <View
                   style={{
                     justifyContent: 'center',
@@ -721,9 +761,8 @@ class Duyet extends Component {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={()=>this.ClickScrollPaging(250)}>
-                <View
-                  style={styles.buttonScroll}>
+              <TouchableOpacity onPress={() => this.ClickScrollPaging(250)}>
+                <View style={styles.buttonScroll}>
                   <Foundation
                     name="page-search"
                     size={25}
@@ -733,54 +772,47 @@ class Duyet extends Component {
             </View>
             {/* Tìm Kiếm  */}
             <View style={{width: 250, flexDirection: 'row'}}>
-            <TouchableOpacity onPress={()=>this.ClickScrollPaging(0)}>
-              <View
-                style={styles.buttonScroll}>
-                   <AntDesign
+              <TouchableOpacity onPress={() => this.ClickScrollPaging(0)}>
+                <View style={styles.buttonScroll}>
+                  <AntDesign
                     name="back"
                     size={25}
                     color={theme.colors.white}></AntDesign>
                 </View>
-             </TouchableOpacity>
-             <TouchableOpacity onPress={()=>this.ClickScrollPaging(0)}>
-              <View
-                style={styles.buttonScroll}>
-                   <MaterialIcons
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.ClickScrollPaging(0)}>
+                <View style={styles.buttonScroll}>
+                  <MaterialIcons
                     name="first-page"
                     size={25}
                     color={theme.colors.white}></MaterialIcons>
                 </View>
-             </TouchableOpacity>
-             <TouchableOpacity onPress={()=>this.setTimeNextPrevious(1)}>
-              <View
-                style={styles.buttonScroll}>
-                   <MaterialIcons
-                    name="keyboard-arrow-left" 
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.setTimeNextPrevious(1)}>
+                <View style={styles.buttonScroll}>
+                  <MaterialIcons
+                    name="keyboard-arrow-left"
                     size={25}
                     color={theme.colors.white}></MaterialIcons>
                 </View>
-             </TouchableOpacity>
-             <TouchableOpacity onPress={()=>this.setTimeNextPrevious(2)}>
-              <View
-                style={styles.buttonScroll}>
-                   <MaterialIcons
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.setTimeNextPrevious(2)}>
+                <View style={styles.buttonScroll}>
+                  <MaterialIcons
                     name="keyboard-arrow-right"
                     size={25}
                     color={theme.colors.white}></MaterialIcons>
                 </View>
-             </TouchableOpacity>
-             <TouchableOpacity onPress={()=>this.ClickScrollPaging(0)}>
-              <View
-                style={styles.buttonScroll}>
-                   <MaterialIcons
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.ClickScrollPaging(0)}>
+                <View style={styles.buttonScroll}>
+                  <MaterialIcons
                     name="last-page"
                     size={25}
                     color={theme.colors.white}></MaterialIcons>
                 </View>
-             </TouchableOpacity>
-
+              </TouchableOpacity>
             </View>
-            
           </ScrollView>
 
           {this.state.isDisplay ? (
@@ -791,14 +823,15 @@ class Duyet extends Component {
               useNativeDriver
               style={{
                 width: windowWidth,
-                height: windowHeight - 200,
+                height: windowHeight-280,
+                position:'absolute',
                 bottom: 0,
                 marginBottom: 0,
                 paddingBottom: 0,
                 backgroundColor: theme.colors.white,
               }}>
               {this.state.isLoading ? (
-                <Loading />
+                <Loading /> 
               ) : (
                 <FlatList
                   keyExtractor={(item) => item.maTram}
@@ -811,7 +844,7 @@ class Duyet extends Component {
         </SafeAreaView>
       </>
     );
-  }
+  }  
 }
 
 const IconTenTram = (
@@ -877,13 +910,13 @@ const styles = StyleSheet.create({
   bg1: {
     position: 'absolute',
     width: Dimensions.get('window').width,
-    height: 80,
+    height: 50,
     borderBottomRightRadius: 0,
     borderBottomLeftRadius: 0,
   },
   scrollView: {
     margin: 10,
-    flex:0.6,
+    flex: 0.6,
   },
 
   header: {
@@ -913,7 +946,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
     marginTop: 10,
-    width: windowWidth-20 ,
+    width: windowWidth - 20,
   },
   wrapperDate: {
     flexDirection: 'row',
@@ -1099,7 +1132,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: theme.colors.black,
   },
-  buttonScroll:{
+  buttonScroll: {
     justifyContent: 'center',
     alignItems: 'center',
     width: 50,
@@ -1108,5 +1141,5 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.green1,
     height: 40,
     marginHorizontal: 0,
-  }
+  },
 });

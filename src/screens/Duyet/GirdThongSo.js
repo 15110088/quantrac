@@ -13,12 +13,14 @@ import {
   Keyboard,
   StatusBar,
   TouchableOpacity,
+  TouchableHighlightBase,
+  TouchableOpacityBase,
 } from 'react-native';
 
 import * as theme from '../../constants/theme';
 
 import * as Animatable from 'react-native-animatable';
-import {ScrollView} from 'react-native-gesture-handler';
+import {ScrollView, TouchableHighlight} from 'react-native-gesture-handler';
 import Loading from './../Loading';
 import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -65,15 +67,20 @@ export const GridThongSo = (props) => {
   return (
     <>
       <View style={styles.cardContainer}>
-        
-        <View
+
+        <TouchableWithoutFeedback onPress={props.ClickTime}> 
+                 <View
           style={{
             flex: 1,
             height: 50,
             flexDirection: 'row',
             borderRadius: 10,
+            shadowColor: '#000',
+            shadowOffset: {width: 0, height: 2},
+            shadowOpacity: 0.2,
+            shadowRadius: 4,
           }}>
-            {/* Tu ngay */}
+          {/* Tu ngay */}
           <View
             style={{
               flex: 1,
@@ -82,7 +89,6 @@ export const GridThongSo = (props) => {
               alignItems: 'center',
               borderTopLeftRadius: 10,
               borderBottomLeftRadius: 10,
-
             }}>
             <Text style={styles.textHeaderDate}>
               {props.dateFrom.toLocaleDateString('en-GB')}
@@ -95,14 +101,16 @@ export const GridThongSo = (props) => {
               flex: 0.2,
               justifyContent: 'center',
               backgroundColor: theme.colors.green3,
+              borderColor: theme.colors.green3,
+              borderWidth: 2,
             }}>
             <MaterialIcons
               name="navigate-next"
-              size={30}
+              size={35}
               color={theme.colors.white}></MaterialIcons>
           </View>
-            {/* den ngay */}
-            <View
+          {/* den ngay */}
+          <View
             style={{
               flex: 1,
               backgroundColor: theme.colors.green3,
@@ -117,9 +125,12 @@ export const GridThongSo = (props) => {
             <Text style={styles.textHeaderTime}>{props.timeTo}</Text>
           </View>
         </View>
+</TouchableWithoutFeedback>
+
+
         <View style={styles.cardBody}>
-          {/* {props.isDataNull ?<Text style={styles.cardGroupIcon}>Không có dữ liệu</Text>:!props.isLoadingGird?
-           */}
+          {props.isDataNull ?<View style={{flex:1,justifyContent:'center',alignItems:'center'}}><MaterialIcons name='sentiment-very-dissatisfied' size={60}></MaterialIcons><Text style={styles.cardGroupIcon}>Không có dữ liệu</Text></View>:!props.isLoadingGird?
+          
           <View
             // contentContainerStyle={{flexDirection: 'row'}}
             style={{
@@ -141,7 +152,7 @@ export const GridThongSo = (props) => {
               {props.dataHeaderLeft.map((v, i) => {
                 return (
                   <View
-                    key={i}
+                    key={i+Math.floor(Math.random()*100000000)}
                     style={{
                       backgroundColor: '#e4e6eb',
                       padding: 5,
@@ -182,7 +193,7 @@ export const GridThongSo = (props) => {
                 {props.dataHeader.map((v, i) => {
                   return (
                     <View
-                      key={i}
+                    key={i+Math.floor(Math.random()*100000000)}
                       style={{
                         flex: 1,
                         height: 40,
@@ -200,13 +211,13 @@ export const GridThongSo = (props) => {
               <View style={{flexDirection: 'row'}}>
                 {props.data.map((v, i) => {
                   return (
-                    <View style={{flex: 1, flexDirection: 'column'}}>
+                    <View key={i+Math.floor(Math.random()*100000000)+''} style={{flex: 1, flexDirection: 'column'}}>
                       {v.map((x, c) => {
                         return (
                           <TouchableOpacity
+                          key={c+Math.floor(Math.random()*100000000)}
                             onPress={() => props.ClickThongSo(x)}>
                             <View
-                              key={c}
                               style={{
                                 padding: 5,
                                 flex: 1,
@@ -236,10 +247,10 @@ export const GridThongSo = (props) => {
               </View>
             </ScrollView>
           </View>
-          {/* :  (
+          :  (
         <Loading />
       )
-      } */}
+      } 
         </View>
       </View>
     </>
@@ -351,6 +362,7 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 4,
+   // height:windowHeight/2
   },
   cardBodyTop: {
     flexDirection: 'row',
