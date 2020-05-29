@@ -15,6 +15,8 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+
 import {RangeDatepicker, Icon, NativeDateService} from '@ui-kitten/components';
 import {SearchBar, Image, Input, ListItem} from 'react-native-elements';
 import Swiper from 'react-native-swiper';
@@ -23,7 +25,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import * as theme from '../constants/theme';
 
 import * as Animatable from 'react-native-animatable';
-import {ScrollView} from 'react-native-gesture-handler';
+import {ScrollView, TouchableHighlight} from 'react-native-gesture-handler';
 import Loading from './Loading';
 import config from '../ultilities/config';
 import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons';
@@ -32,13 +34,17 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
+import Foundation from 'react-native-vector-icons/Foundation';
+
 import BackgroundHeader from '../components/BackgroundHeader';
+
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {Select} from 'react-native-propel-kit';
 import DataTimeHour from '../DataGlobal/DataTimeHour.json';
-import { GridThongSo } from './Duyet/GirdThongSo';
+import {GridThongSo} from './Duyet/GirdThongSo';
 import RNPickerSelect from 'react-native-picker-select';
-import { connect, useSelector } from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 
 const CalendarIcon = (props) => <Icon {...props} name="calendar" />;
 const Rating = ({rating}) => {
@@ -58,9 +64,7 @@ const Rating = ({rating}) => {
   );
 };
 
-
 const formatDateService = new NativeDateService('en', {format: 'DD/MM/YYYY'});
-
 
 class Duyet extends Component {
   constructor(props) {
@@ -72,8 +76,8 @@ class Duyet extends Component {
       dateTo: new Date(Date.now()), //new Date(Date.now()).toLocaleDateString('en-US'),
       timeTo: new Date(Date.now()),
       timeFrom: '', //this.timeTo.setTime(Date.now().getTime() + (30 * 60 * 1000)),
-      convertDateFrom:'',
-      convertDateTo:'',
+      convertDateFrom: '',
+      convertDateTo: '',
       rangeTime: 12,
       tabIndex: 0,
       rangeDate: {},
@@ -83,8 +87,9 @@ class Duyet extends Component {
       isLoadingGird: false,
       isShowTimeTo: false,
       isShowTimeFrom: false,
-      isDataNull:false,
-      indexSwiper:0,
+      isShowFillter: false,
+      isDataNull: false,
+      indexSwiper: 0,
       animatible_Tram: 'fadeInUpBig',
       //Variable search
       search: '', // từ khóa tìm kiếm tên trạm
@@ -102,118 +107,118 @@ class Duyet extends Component {
       dataThongSo: [],
       dataTableHeader: [],
       dataTableLeft: [],
-      dataTest:[],
-
+      dataTest: [],
     };
     this.fetchData();
     this.fetchChiSoDataTram();
   }
 
-  header = (navigation) => {
+  header = (navigation, isShowFillter) => {
     return (
-      <View style={{height: 200, width: windowWidth, paddingHorizontal: 10}}>
+      <View
+        style={{
+          height: isShowFillter ? 200 : 200,
+          width: windowWidth,
+          paddingHorizontal: 10,
+        }}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={()=>navigation.goBack()}>
-           <Entypo name="chevron-left" size={32} color="#fff" />
-          </TouchableOpacity>
           <View style={styles.headerBody}>
-            <Text style={styles.headerText}>Duyệt dữ liệu quan trắc nước</Text>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Entypo name="chevron-left" size={32} color="#fff" />
+          </TouchableOpacity>
+           <Entypo name="water" style={{position:'absolute',marginLeft:40,paddingTop:10}}   size={32} color="#4285F4" />
             <View style={styles.headerRightContainer}>
               <Entypo name="map" size={25} color="#fff" />
-              <TouchableOpacity onPress={this.refreshGrid}>
-              <Octicons
-                name="settings" 
-                size={25}
-                color="#fff"
-                style={styles.icon}
-              />
+              <TouchableOpacity onPress={this.onHideFillter}>
+                <Octicons
+                  name="settings"
+                  size={25}
+                  color="#fff"
+                  style={styles.icon}
+                />
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+          <ScrollView
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{alignItems: 'center'}}
+            horizontal={true}
+            style={{
+              width: windowWidth,
+              height: 110,
+              alignSelf: 'center',
+              paddingVertical:5,
+            }}
+            onScroll={this.handleScroll}
+           // scrollEnabled={false}
+            ref={(ref) => {
+              this.scrollSearchHeader = ref;
+            }}>
+              {/* page 1 */}
+              <View style={{width:windowWidth,height:110,backgroundColor:'transform',}}>
+              <View style={[styles.wrapperInput,{height:40}]}>
+                <AntDesign name="search1" size={18} color="gray" />
+                <Picker
+                  style={styles.inputText}
+                  selectedValue={this.state.indexTram}
+                  mode="dialog"
+                  onValueChange={this.updateLoaiTram}>
+                  <Picker.Item label="Nước Mặt Nhà Nước" value="1" />
+                  <Picker.Item label="Nước Mặt Doanh Nghiệp" value="2" />
+                  <Picker.Item label="Nước Thải Nhà Nước" value="3" />
+                  <Picker.Item label="Nước Thải Doanh Nghiệp" value="4" />
+                </Picker>
+              </View>
+              <View style={[styles.wrapperInput,{height:40}]}>
+                <Feather name="map-pin" size={18} color="gray" />
+                <TextInput
+                  style={[styles.inputText, {color: '#9770A3'}]}
+                  placeholder="Tên Trạm"
+                  onFocus={this.showDataSearch}
+                  onKeyPress={this.handleChangeAndDelete}
+                  containerStyle={{height: 30}}
+                  value={this.state.search}
+                  onChangeText={(data) => this.searchFilterFunction(data)}
+                />
+              </View>
+              </View>
+              {/* page 2 */}
+              <View style={{width:windowWidth,height:110,backgroundColor:'transform',}}>
+              <View
+              style={{height: 100, width: windowWidth, paddingHorizontal: 10}}>
+              <View style={[styles.wrapperInput,{height:40}]}>
+                <MaterialIcons name="date-range" size={18} color="gray" />
+                <RangeDatepicker
+                  style={{height: 40, width: 250}}
+                  range={this.state.rangeDate}
+                  onSelect={(nextRange) => this.layNgayQuanTrac(nextRange)}
+                  accessoryRight={CalendarIcon}
+                  dateService={formatDateService}
+                  autoDismiss={false}
+                />
+              </View>
 
-        <Swiper index={this.state.indexSwiper} loop={true}  style={{height: 170}}>
-          <View style={{height: 100, width: windowWidth}}>
-            <View style={styles.wrapperInput}>
-              <AntDesign name="search1" size={18} color="gray" />
-              <Picker
-                style={styles.inputText}
-                selectedValue={this.state.indexTram}
-                mode="dialog"
-                onValueChange={this.updateLoaiTram}>
-                <Picker.Item label="Nước Mặt Nhà Nước" value="1" />
-                <Picker.Item label="Nước Mặt Doanh Nghiệp" value="2" />
-                <Picker.Item label="Nước Thải Nhà Nước" value="3" />
-                <Picker.Item label="Nước Thải Doanh Nghiệp" value="4" />
-              </Picker>
-            </View>
-            <View style={styles.wrapperInput}>
-              <Feather name="map-pin" size={18} color="gray" />
-              <TextInput
-                style={[styles.inputText, {color: '#9770A3'}]}
-                placeholder="Tên Trạm"
-                onFocus={this.showDataSearch}
-                onKeyPress={this.handleChangeAndDelete}
-                containerStyle={{height: 30}}
-                value={this.state.search}
-                onChangeText={(data) => this.searchFilterFunction(data)}
-              />
-              {this.state.isDisplay ? (
-                <TouchableWithoutFeedback
-                  style={{position: 'absolute', flex: 1}}
-                  onPress={this.hideDataSearch}>
-                  <MaterialIcons
-                    size={25}
-                    name="close"
-                    color={theme.colors.green}
-                    style={{
-                      position: 'absolute',
-                      paddingRight: 0,
-                      marginRight: 0,
-                      right: 1,
-                      paddingTop: 5,
-                    }}></MaterialIcons>
-                </TouchableWithoutFeedback>
-              ) : null}
-            </View>
-          </View>
-          <View
-            style={{height: 250, width: windowWidth, paddingHorizontal: 10}}>
-            <View style={[styles.wrapperDate, {width: windowWidth * 0.9}]}>
-              <MaterialIcons name="date-range" size={18} color="gray" />
-              <RangeDatepicker
-                style={{height: 40, width: 250}}
-                range={this.state.rangeDate}
-                onSelect={(nextRange) => this.layNgayQuanTrac(nextRange)}
-                accessoryRight={CalendarIcon}
-                dateService={formatDateService}
-                autoDismiss={false}
-              />
-            </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                width: windowWidth * 0.9,
-                justifyContent: 'space-between',
-              }}>
-                
-              <View style={[styles.wrapperTime]}>
-                <MaterialIcons name="access-time" size={18} color="gray" />
-                {/* <RNPickerSelect value={this.state.rangeTime} style={{inputAndroid:{padding:10,width:windowWidth * 0.2}}}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  width: windowWidth * 0.9,
+                  justifyContent: 'space-between',
+                }}>
+                <View style={[styles.wrapperTime]}>
+                  <MaterialIcons name="access-time" size={18} color="gray" />
+                  {/* <RNPickerSelect value={this.state.rangeTime} style={{inputAndroid:{padding:10,width:windowWidth * 0.2}}}
             onValueChange={(value) => console.log(value)}
             items={DataTimeHour}/> */}
+                </View>
               </View>
-            </View>
-          </View>
-        </Swiper>
-      </View>
-    );
-  };
-  ButtonDuyet = () => {
-    return (
-      <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-        <TouchableOpacity onPress={this.XemDuLieuQuanTrac}
+              </View>
+              </View>
+            </ScrollView>
+           {/* nút xem dữ liệu */}
+          <View style={{width:windowWidth,flexDirection:'row',justifyContent:'flex-end', alignSelf:'center',height:50,paddingHorizontal:10}}>
+           <TouchableOpacity
+          onPress={this.XemDuLieuQuanTrac}
           style={[
             styles.button,
             {
@@ -225,7 +230,32 @@ class Duyet extends Component {
           ]}>
           <Text style={{color: theme.colors.green}}>Xem</Text>
         </TouchableOpacity>
-        <TouchableOpacity disabled={this.state.isLoadingGird?true:false} onPress={this.DuyetDuLieuQuanTrac}
+          </View> 
+           
+        </View>
+       
+      </View>
+    );
+  };
+  ButtonDuyet = () => {
+    return (
+      <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+        <TouchableOpacity
+          onPress={this.XemDuLieuQuanTrac}
+          style={[
+            styles.button,
+            {
+              borderColor: theme.colors.green,
+              borderRadius: 50,
+              borderWidth: 1,
+              backgroundColor: theme.colors.white,
+            },
+          ]}>
+          <Text style={{color: theme.colors.green}}>Xem</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          disabled={this.state.isLoadingGird ? true : false}
+          onPress={this.DuyetDuLieuQuanTrac}
           style={[
             styles.button,
             {
@@ -240,46 +270,57 @@ class Duyet extends Component {
       </View>
     );
   };
-  XemDuLieuQuanTrac = ()=>{
-      var datefrom=this.state.dateFrom.toLocaleDateString("en-GB")+' '+this.state.timeFrom
-      var dateto=this.state.dateTo.toLocaleDateString("en-GB")+' '+this.state.timeTo.toLocaleTimeString('en-GB').substr(0,5)
-      this.setState({
-          convertDateFrom:encodeURIComponent(datefrom),
-          convertDateTo:encodeURIComponent(dateto)
-      })
-      this.fetchChiSoDataTram()
-      console.log(datefrom + ' ' +dateto)
-      console.log(this.state.convertDateFrom + ' ' +this.state.convertDateTo)
-
-  }
-  DuyetDuLieuQuanTrac= async()=>{
-     if(this.state.isDataNull)
-     {
-      console.log(this.props.route.params.dataLogin)
-      const data={
-       lstChiSo:this.state.dataTram,
-        auth:{
-         UserName:this.props.route.params.dataLogin.userName,
-         Token:this.props.route.params.dataLogin.token
-        }
-      }
-      const requestOption ={
-        method:'POST',  
-        headers:{'Content-Type':'application/json'}, 
-        body:JSON.stringify(data)
-      }
-      await fetch(`http://${config.URLIP_API}/api/Duyet/LuuDuLieu`,requestOption)
-      .then(response => response.json())
-      .then(data => console.log(data)); 
-      this.refreshGrid()
-     }
-     else{
-      Alert.alert("Không có dữ liệu")
-     }
-  }
-  refreshGrid=()=>{
+  XemDuLieuQuanTrac = () => {
+    var datefrom =
+      this.state.dateFrom.toLocaleDateString('en-GB') +
+      ' ' +
+      this.state.timeFrom;
+    var dateto =
+      this.state.dateTo.toLocaleDateString('en-GB') +
+      ' ' +
+      this.state.timeTo.toLocaleTimeString('en-GB').substr(0, 5);
+    this.setState({
+      convertDateFrom: encodeURIComponent(datefrom),
+      convertDateTo: encodeURIComponent(dateto),
+    });
     this.fetchChiSoDataTram();
-  }
+    console.log(datefrom + ' ' + dateto);
+    console.log(this.state.convertDateFrom + ' ' + this.state.convertDateTo);
+  };
+  DuyetDuLieuQuanTrac = async () => {
+    if (!this.state.isDataNull) {
+      console.log(this.props.route.params.dataLogin);
+      const data = {
+        lstChiSo: this.state.dataTram,
+        auth: {
+          UserName: this.props.route.params.dataLogin.userName,
+          Token: this.props.route.params.dataLogin.token,
+        },
+      };
+      const requestOption = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+      };
+      await fetch(
+        `http://${config.URLIP_API}/api/Duyet/LuuDuLieu`,
+        requestOption,
+      )
+        .then((response) => response.json())
+        .then((data) => console.log(data));
+      this.refreshGrid();
+    } else {
+      Alert.alert('Không có dữ liệu');
+    }
+  };
+  refreshGrid = () => {
+    this.fetchChiSoDataTram();
+  };
+  onHideFillter = () => {
+    this.setState({
+      isShowFillter: !this.state.isShowFillter,
+    });
+  };
   updateLoaiTram = async (data) => {
     console.log(data);
     this.setState({indexTram: data});
@@ -318,7 +359,7 @@ class Duyet extends Component {
     await this.fetchData();
   };
   componentDidMount() {
-    this.setTimeFrom();  
+    this.setTimeFrom();
   }
   // Hàm này để suy ra giá trị ngày bất đầu  từ biến timeTo
   setTimeFrom = () => {
@@ -331,7 +372,7 @@ class Duyet extends Component {
       dateFrom: dateTemp,
     });
   };
-  setTimeNextPrevious = async(key) => {
+  setTimeNextPrevious = async (key) => {
     //1 previour 2 next
     console.log(this.state.dateFrom + ' - ' + this.state.dateTo);
     if (key == 2) {
@@ -383,7 +424,7 @@ class Duyet extends Component {
       rangeTime: value,
     });
     this.setTimeFrom();
-  }; 
+  };
 
   fetchData = async () => {
     try {
@@ -412,12 +453,15 @@ class Duyet extends Component {
         dataTableLeft: [],
         dataTableHeader: [],
         dataThongSo: [],
-        isDataNull:false,
+        isDataNull: false,
       });
       var URL = '';
-         URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=03%2F01%2F2018%2010%3A00&to=03%2F01%2F2018%2010%3A30`;
-    //   URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=29%2F07%2F2018%2008%3A30&to=29%2F07%2F2018%2020%3A30`;
-        // URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=${this.state.convertDateFrom}&to=${this.state.convertDateTo}`;
+      //1 load   2 khoang thoi gian
+      URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=03%2F01%2F2018%2010%3A00&to=03%2F01%2F2018%2010%3A30`;
+      //2  load nhieu khoan thoi gian
+      //  URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=29%2F07%2F2018%2008%3A30&to=29%2F07%2F2018%2020%3A30`;
+      // 3 load dung du lieu
+      //URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=${this.state.convertDateFrom}&to=${this.state.convertDateTo}`;
 
       console.log(URL);
       let response = await fetch(URL);
@@ -427,8 +471,7 @@ class Duyet extends Component {
       let reponseJson = await response.json();
       console.log('=====reposejson=====');
       console.log(reponseJson);
-      if(reponseJson!=null)
-      {
+      if (reponseJson != null) {
         await this.setState({
           isLoadingGird: false,
           dataTram: reponseJson,
@@ -446,27 +489,28 @@ class Duyet extends Component {
         if (this.state.dataThongSo.length != 0) {
           await this.state.dataThongSo[0].map((v, i) => {
             this.setState({
-              dataTableLeft: [...this.state.dataTableLeft, v.KYHIEU_THONGSO],
+              dataTableLeft: [
+                ...this.state.dataTableLeft,
+                [v.KYHIEU_THONGSO, false],
+              ],
             });
           });
           this.setState({
-            dataTest:this.state.dataThongSo
-          })
+            dataTest: this.state.dataThongSo,
+          });
         }
-        if(this.state.dataThongSo.length==0)
-        {
-           await this.setState({
-          isDataNull: true,
-        });
+        if (this.state.dataThongSo.length == 0) {
+          await this.setState({
+            isDataNull: true,
+          });
         }
         console.log('===============');
         console.log(this.state.dataTableHeader);
-      }
-      else{
+      } else {
         this.setState({
-          isDataNull: true,});
+          isDataNull: true,
+        });
       }
-      
     } catch (error) {
       console.error(error);
     }
@@ -527,77 +571,218 @@ class Duyet extends Component {
       isDisplay: true,
     });
   };
-  ClickTime=()=>{
-    console.log('click ok cai da')
+  ClickTime = () => {
+    console.log('click ok cai da');
     this.setState({
-      indexSwiper:1
-    })
-  }
-  ClickThongSo=(data)=>{ 
-    console.log(data)
-    const dataTempThongSo=this.state.dataThongSo 
-    this.state.dataThongSo.forEach((element,index) => {
-     
-      let indexElement=element.findIndex(n=>n.id==data.id)
-      const resultData=element.find(n=>n.id==data.id)
-      
-      if(indexElement!=-1)
-      {
+      indexSwiper: 1,
+    });
+  };
+  ClickThongSo = (data) => {
+    console.log(data);
+    const dataTempThongSo = this.state.dataThongSo;
+    this.state.dataThongSo.forEach((element, index) => {
+      let indexElement = element.findIndex((n) => n.id == data.id);
+      const resultData = element.find((n) => n.id == data.id);
+
+      if (indexElement != -1) {
         // [index][indexElenmt]
-        element.map((v,i)=>{
-            if(v.id==resultData.id)
-            {
-              if(dataTempThongSo[index][indexElement].keyColor!="_SilverStyle")
-              {
-                dataTempThongSo[index][indexElement].keyColor="_SilverStyle"
-              }
-              else{
-                dataTempThongSo[index][indexElement].keyColor="_BlueStyle"
-              }
+        element.map((v, i) => {
+          if (v.id == resultData.id) {
+            if (
+              dataTempThongSo[index][indexElement].keyColor != '_SilverStyle'
+            ) {
+              dataTempThongSo[index][indexElement].keyColor = '_SilverStyle';
+            } else {
+              dataTempThongSo[index][indexElement].keyColor = '_BlueStyle';
             }
-        })
-        this.setState(
-            {
-              dataThongSo:dataTempThongSo
-            } 
-        )
-        console.log(this.state.dataThongSo)
+          }
+        });
+        this.setState({
+          dataThongSo: dataTempThongSo,
+        });
+        console.log(this.state.dataThongSo);
       }
     });
-  
-  }
+  };
+  ClickCheckBoxThongSo = (data) => {
+    console.log('check ' + data);
+    const dataTempThongSo = this.state.dataThongSo;
+    const dataTempHeaderLeft = this.state.dataTableLeft;
+
+    // this.state.dataTableLeft.forEach((element,index)=>{
+
+    dataTempHeaderLeft[data][1] = !dataTempHeaderLeft[data][1];
+
+    // })
+    // this.setState({
+    //   dataHeaderLeft:dataTempHeaderLeft
+    // })
+    console.log(dataTempHeaderLeft[data][1]);
+    console.log(dataTempHeaderLeft);
+    this.state.dataThongSo.forEach((element, index) => {
+      let indexElement = dataTempThongSo[index].findIndex(
+        (n) => n.id == element[data].id,
+      );
+      if (element[data].keyColor != '_SilverStyle') {
+        dataTempThongSo[index][indexElement].keyColor = '_SilverStyle';
+      } else {
+        dataTempThongSo[index][indexElement].keyColor = '_BlueStyle';
+      }
+    });
+    this.setState({
+      dataThongSo: dataTempThongSo,
+    });
+  };
+  ClickScrollPaging = (x) => {
+   this.scrollSearch.scrollTo({x: x, y: 0, animated: true});
+  };
+  handleScroll = (e) => {
+    console.log(e.nativeEvent.contentOffset);
+    console.log(e.nativeEvent.contentSize);
+    console.log(e.nativeEvent.contentInset);
+    console.log(e.nativeEvent.layoutMeasurement);
+  };
   render() {
-    const {isLoadingGird,isDataNull} = this.state;
+    const {isLoadingGird, isDataNull} = this.state;
     return (
       <>
         <StatusBar barStyle="dark-content" />
         <SafeAreaView style={styles.container}>
-          <BackgroundHeader style={styles.bg} />
-          {this.header(this.props.navigation)}
+          <BackgroundHeader
+            style={[this.state.isShowFillter ? styles.bg : styles.bg, {}]}
+          />
+          {this.header(this.props.navigation, this.state.isShowFillter)}
+
           <ScrollView style={styles.scrollView}>
-            {this.ButtonDuyet()}
-            <View>
-              <GridThongSo
-               data={this.state.dataThongSo}
-               dataHeader={this.state.dataTableHeader}  
-               dataHeaderLeft={this.state.dataTableLeft}
-               dateFrom={this.state.dateFrom}
-               dateTo={this.state.dateTo}
-               timeTo={this.state.timeTo
-                 .toLocaleTimeString('en-GB')
-                 .substr(0, 5)}
-               timeFrom={this.state.timeFrom}
-               Next={() => this.setTimeNextPrevious(2)}
-               Previous={() => this.setTimeNextPrevious(1)}
-               isLoadingGird={isLoadingGird}
-               isDataNull={isDataNull}
-               ClickTime={this.ClickTime}
-               ClickThongSo={this.ClickThongSo}
-              ></GridThongSo>
-            
-        
-            </View>
+            {/* {this.ButtonDuyet()} */}
+            <GridThongSo
+              data={this.state.dataThongSo}
+              dataHeader={this.state.dataTableHeader}
+              dataHeaderLeft={this.state.dataTableLeft}
+              dateFrom={this.state.dateFrom}
+              dateTo={this.state.dateTo}
+              timeTo={this.state.timeTo
+                .toLocaleTimeString('en-GB')
+                .substr(0, 5)}
+              timeFrom={this.state.timeFrom}
+              Next={() => this.setTimeNextPrevious(2)}
+              Previous={() => this.setTimeNextPrevious(1)}
+              isLoadingGird={isLoadingGird}
+              isDataNull={isDataNull}
+              ClickTime={this.ClickTime}
+              ClickThongSo={this.ClickThongSo}
+              ClickCheckBoxThongSo={this.ClickCheckBoxThongSo}></GridThongSo>
           </ScrollView>
+
+          <View
+            style={{
+              width: windowWidth,
+              alignSelf: 'center',
+              height: 40,
+            }}></View>
+          <ScrollView
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            snapToAlignment="end"
+            contentContainerStyle={{alignItems: 'center'}}
+            horizontal={true}
+            style={{
+              width: 250,
+              height: 40,
+              bottom: 5,
+              alignSelf: 'center',
+              position: 'absolute',
+              borderWidth:2
+            }}
+            onScroll={this.handleScroll}
+            scrollEnabled={false}
+            ref={(ref) => {
+              this.scrollSearch = ref;
+            }}>
+            {/* Duyêt */}
+            <View style={{width: 250, flexDirection: 'row'}}>
+              <TouchableOpacity     onPress={this.XemDuLieuQuanTrac}>
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    width: 200,
+                    backgroundColor: theme.colors.green1,
+                    height: 40,
+                    marginHorizontal: 0,
+                  }}>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      color: theme.colors.white,
+                      fontWeight: 'bold',
+                    }}>
+                    DUYỆT
+                  </Text>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={()=>this.ClickScrollPaging(250)}>
+                <View
+                  style={styles.buttonScroll}>
+                  <Foundation
+                    name="page-search"
+                    size={25}
+                    color={theme.colors.white}></Foundation>
+                </View>
+              </TouchableOpacity>
+            </View>
+            {/* Tìm Kiếm  */}
+            <View style={{width: 250, flexDirection: 'row'}}>
+            <TouchableOpacity onPress={()=>this.ClickScrollPaging(0)}>
+              <View
+                style={styles.buttonScroll}>
+                   <AntDesign
+                    name="back"
+                    size={25}
+                    color={theme.colors.white}></AntDesign>
+                </View>
+             </TouchableOpacity>
+             <TouchableOpacity onPress={()=>this.ClickScrollPaging(0)}>
+              <View
+                style={styles.buttonScroll}>
+                   <MaterialIcons
+                    name="first-page"
+                    size={25}
+                    color={theme.colors.white}></MaterialIcons>
+                </View>
+             </TouchableOpacity>
+             <TouchableOpacity onPress={()=>this.setTimeNextPrevious(1)}>
+              <View
+                style={styles.buttonScroll}>
+                   <MaterialIcons
+                    name="keyboard-arrow-left" 
+                    size={25}
+                    color={theme.colors.white}></MaterialIcons>
+                </View>
+             </TouchableOpacity>
+             <TouchableOpacity onPress={()=>this.setTimeNextPrevious(2)}>
+              <View
+                style={styles.buttonScroll}>
+                   <MaterialIcons
+                    name="keyboard-arrow-right"
+                    size={25}
+                    color={theme.colors.white}></MaterialIcons>
+                </View>
+             </TouchableOpacity>
+             <TouchableOpacity onPress={()=>this.ClickScrollPaging(0)}>
+              <View
+                style={styles.buttonScroll}>
+                   <MaterialIcons
+                    name="last-page"
+                    size={25}
+                    color={theme.colors.white}></MaterialIcons>
+                </View>
+             </TouchableOpacity>
+
+            </View>
+            
+          </ScrollView>
+
           {this.state.isDisplay ? (
             <Animatable.View
               animation={this.state.animatible_Tram}
@@ -606,7 +791,7 @@ class Duyet extends Component {
               useNativeDriver
               style={{
                 width: windowWidth,
-                height: windowHeight -200,
+                height: windowHeight - 200,
                 bottom: 0,
                 marginBottom: 0,
                 paddingBottom: 0,
@@ -642,11 +827,11 @@ const IconLoaiTram = (
     style={{height: 30, width: 30}}
   />
 );
-const mapProstoState=(state)=>{
-      return {
-        dataLogin:state.loginRedux
-      }
-}
+const mapProstoState = (state) => {
+  return {
+    dataLogin: state.loginRedux,
+  };
+};
 
 export default Duyet;
 const windowWidth = Dimensions.get('screen').width;
@@ -692,12 +877,13 @@ const styles = StyleSheet.create({
   bg1: {
     position: 'absolute',
     width: Dimensions.get('window').width,
-    height: 280,
+    height: 80,
     borderBottomRightRadius: 0,
     borderBottomLeftRadius: 0,
   },
   scrollView: {
-    flex: 0.6,
+    margin: 10,
+    flex:0.6,
   },
 
   header: {
@@ -723,10 +909,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     alignItems: 'center',
+    alignSelf: 'center',
     paddingHorizontal: 20,
     borderRadius: 8,
     marginTop: 10,
-    width: windowWidth * 0.95,
+    width: windowWidth-20 ,
   },
   wrapperDate: {
     flexDirection: 'row',
@@ -754,7 +941,6 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    top: 10,
   },
 
   //
@@ -913,4 +1099,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: theme.colors.black,
   },
+  buttonScroll:{
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 50,
+    borderLeftWidth: 1,
+    borderColor: theme.colors.gray,
+    backgroundColor: theme.colors.green1,
+    height: 40,
+    marginHorizontal: 0,
+  }
 });
