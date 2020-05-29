@@ -700,7 +700,7 @@ class Duyet extends Component {
               timeFrom={this.state.timeFrom}
               Next={() => this.setTimeNextPrevious(2)}
               Previous={() => this.setTimeNextPrevious(1)}
-              isLoadingGird={false}
+              isLoadingGird={this.state.isLoadingGird}
               isDataNull={isDataNull}
               ClickTime={this.ClickTime}
               ClickThongSo={this.ClickThongSo}

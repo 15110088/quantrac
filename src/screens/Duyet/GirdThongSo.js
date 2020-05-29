@@ -208,7 +208,7 @@ export const GridThongSo = (props) => {
                   );
                 })}
               </View>
-              <View style={{flexDirection: 'row'}}>
+              {/* <View style={{flexDirection: 'row'}}>
                 {props.data.map((v, i) => {
                   return (
                     <View key={i+Math.floor(Math.random()*100000000)+''} style={{flex: 1, flexDirection: 'column'}}>
@@ -244,7 +244,7 @@ export const GridThongSo = (props) => {
                     </View>
                   );
                 })}
-              </View>
+              </View> */}
             </ScrollView>
           </View>
           :  (
