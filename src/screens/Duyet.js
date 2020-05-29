@@ -687,6 +687,7 @@ class Duyet extends Component {
           {this.header(this.props.navigation, this.state.isShowFillter)}
 
           <ScrollView style={styles.scrollView}>
+            {/* {this.ButtonDuyet()} */}
             <GridThongSo
               data={this.state.dataThongSo}
               dataHeader={this.state.dataTableHeader}
