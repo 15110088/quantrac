@@ -17,6 +17,7 @@ import LoginReducer from './reducer/LoginReducer';
 import MenuContainer from './reducer/container/menuContainer';
 import Duyet from './screens/Duyet';
 import Login from './screens/Login';
+import FillterTram from './screens/Duyet/FillterTram';
 
 let appState = {
       colorHerder:'#fff000'
@@ -79,16 +80,17 @@ class App extends Component {
       <Provider store={store} >
         <View style={{ flex: 1 }}>
           <ApplicationProvider map={mapping} {...eva} theme={lightTheme}>
-            <NavigationContainer>
+            {/* <NavigationContainer>
                   <MenuContainer></MenuContainer>
-            </NavigationContainer>
-                  {/* <Duyet/> */}
+            </NavigationContainer> */}
+                   <Duyet/>  
+                  {/* <FillterTram/> */}
                   {/* <Login></Login> */}
           </ApplicationProvider>
         </View>
       </Provider>
 
-    );
+    ); 
   }
 }
 

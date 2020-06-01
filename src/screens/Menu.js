@@ -36,6 +36,7 @@ import {loginAction} from '../reducer/action/LoginAction'
 
 //readux 
 import { connect, useDispatch ,useSelector} from 'react-redux';
+import FillterTram from './Duyet/FillterTram';
 
 const Stack = createStackNavigator();
 const RootStack = createStackNavigator();
@@ -97,6 +98,7 @@ const StackMenu = () => (
     <Stack.Screen name="TodayAQI" component={TodayAQI}></Stack.Screen>
     <Stack.Screen name="Search" component={Search}></Stack.Screen>
     <Stack.Screen name="Duyet" component={Duyet}></Stack.Screen>
+    <Stack.Screen name="FillterTram" component={FillterTram}></Stack.Screen>
     <Stack.Screen name="LoginStack" component={loginContainer}></Stack.Screen>
 
   </Stack.Navigator>

@@ -72,6 +72,7 @@ class Duyet extends Component {
 
     this.state = {
       indexTram: '',
+      indexTramKhi:40,
       dateFrom: new Date(Date.now()),
       dateTo: new Date(Date.now()), //new Date(Date.now()).toLocaleDateString('en-US'),
       timeTo: new Date(Date.now()),
@@ -81,15 +82,16 @@ class Duyet extends Component {
       rangeTime: 12,
       tabIndex: 0,
       rangeDate: {},
+      WaterOrAir:1, // 1 water 2 air
       //Variable thực hiện load giao diện
       isDisplay: false,
       isLoading: false,
       isLoadingGird: false,
+      isLoadingLoaiTramKhi: false,
       isShowTimeTo: false,
       isShowTimeFrom: false,
       isShowFillter: false,
       isDataNull: false,
-      indexSwiper: 0,
       animatible_Tram: 'fadeInUpBig',
       //Variable search
       search: '', // từ khóa tìm kiếm tên trạm
@@ -107,11 +109,12 @@ class Duyet extends Component {
       dataThongSo: [],
       dataTableHeader: [],
       dataTableLeft: [],
+      dataLoaiTramKhi:[],
       dataTest: [],
     };
-    //this.fetchData();
-  }
+    this.fetchData();
 
+  }
   header = (navigation, isShowFillter) => {
     return (
       <View
@@ -125,14 +128,43 @@ class Duyet extends Component {
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Entypo name="chevron-left" size={32} color="#fff" />
             </TouchableOpacity>
-            <Entypo
+            {/* <Entypo
               name="water"
               style={{position: 'absolute', marginLeft: 40, paddingTop: 10}}
               size={32}
               color="#4285F4"
+            /> */}
+            <View style={styles.listTab}>
+            <TouchableOpacity onPress={()=>this.ChonLoaiQuanTrac(1)}
+            style={[
+              styles.btnTab,this.state.WaterOrAir==1 && styles.btnTabActive,
+              {borderTopLeftRadius: 5, borderBottomLeftRadius: 5},
+            ]}
+            >
+           <Entypo
+              name="water"
+              size={15}
+              color={theme.colors.green}
             />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={()=>this.ChonLoaiQuanTrac(2)}
+            style={[styles.btnTab,this.state.WaterOrAir==2 && styles.btnTabActive ,{borderTopRightRadius:5,borderBottomRightRadius:5}]}>
+              <Entypo
+              name="air"
+              size={15}
+              color={theme.colors.green}
+            />
+           
+          </TouchableOpacity>
+
+            </View>
             <View style={styles.headerRightContainer}>
-              <Entypo name="map" size={25} color="#fff" />
+            {/* <TouchableOpacity onPress={()=>navigation.navigate('FillterTram')}>
+               <AntDesign name="filter" size={25} color="#fff" />
+               </TouchableOpacity> */}
+
+              {/* <Entypo name="map" size={25} color="#fff" /> */}
               <TouchableOpacity onPress={this.onHideFillter}>
                 <Octicons
                   name="settings"
@@ -169,17 +201,34 @@ class Duyet extends Component {
                   backgroundColor: 'transform',
                 }}>
                 <View style={[styles.wrapperInput, {height: 40}]}>
-                  <AntDesign name="search1" size={18} color="gray" />
-                  <Picker
-                    style={styles.inputText}
-                    selectedValue={this.state.indexTram}
-                    mode="dialog"
-                    onValueChange={this.updateLoaiTram}>
-                    <Picker.Item label="Nước Mặt Nhà Nước" value="1" />
-                    <Picker.Item label="Nước Mặt Doanh Nghiệp" value="2" />
-                    <Picker.Item label="Nước Thải Nhà Nước" value="3" />
-                    <Picker.Item label="Nước Thải Doanh Nghiệp" value="4" />
-                  </Picker>
+                      <AntDesign name="search1" size={18} color="gray" />
+                      {this.state.WaterOrAir==1?
+                      <Picker
+                      style={styles.inputText}
+                      selectedValue={this.state.indexTram}
+                      mode="dialog"
+                      onValueChange={this.updateLoaiTram}>
+                      <Picker.Item label="Nước Mặt Nhà Nước" value="1" />
+                      <Picker.Item label="Nước Mặt Doanh Nghiệp" value="2" />
+                      <Picker.Item label="Nước Thải Nhà Nước" value="3" />
+                      <Picker.Item label="Nước Thải Doanh Nghiệp" value="4" />
+                    </Picker>:
+                    <Picker
+                      style={styles.inputText}
+                      selectedValue={this.state.indexTramKhi}
+                      mode="dialog"
+                      onValueChange={this.updateLoaiTramKhi}>
+                      {
+                        this.state.dataLoaiTramKhi.map((v,i)=>{
+                          return(
+                            <Picker.Item label={v.TEN_LOAIQT} value={v.ID} />
+                          )
+                        })
+                      }
+                    
+                    </Picker>
+                  }
+                 
                 </View>
                 <View style={[styles.wrapperInput, {height: 40}]}>
                   <Feather name="map-pin" size={18} color="gray" />
@@ -210,7 +259,7 @@ class Duyet extends Component {
                   <View style={[styles.wrapperInput, {height: 40}]}>
                     <MaterialIcons name="date-range" size={18} color="gray" />
                     <RangeDatepicker
-                      style={{height: 40, width: 250}}
+                      style={{height: 40, width: windowWidth-80}}
                       range={this.state.rangeDate}
                       onSelect={(nextRange) => this.layNgayQuanTrac(nextRange)}
                       accessoryRight={CalendarIcon}
@@ -225,16 +274,16 @@ class Duyet extends Component {
                       width: windowWidth * 0.9,
                       justifyContent: 'space-between',
                     }}>
-                    <View style={[styles.wrapperTime]}>
+                    {/* <View style={[styles.wrapperTime]}>
                       <MaterialIcons
                         name="access-time"
                         size={18}
                         color="gray"
                       />
-                      {/* <RNPickerSelect value={this.state.rangeTime} style={{inputAndroid:{padding:10,width:windowWidth * 0.2}}}
+                      <RNPickerSelect value={this.state.rangeTime} style={{inputAndroid:{padding:10,width:windowWidth * 0.2}}}
             onValueChange={(value) => console.log(value)}
-            items={DataTimeHour}/> */}
-                    </View>
+            items={DataTimeHour}/>
+                    </View> */}
                   </View>
                 </View>
               </View>
@@ -268,40 +317,26 @@ class Duyet extends Component {
       </View>
     );
   };
-  ButtonDuyet = () => {
-    return (
-      <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-        <TouchableOpacity
-          onPress={this.XemDuLieuQuanTrac}
-          style={[
-            styles.button,
-            {
-              borderColor: theme.colors.green,
-              borderRadius: 50,
-              borderWidth: 1,
-              backgroundColor: theme.colors.white,
-            },
-          ]}>
-          <Text style={{color: theme.colors.green}}>Xem</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          disabled={this.state.isLoadingGird ? true : false}
-          onPress={this.DuyetDuLieuQuanTrac}
-          style={[
-            styles.button,
-            {
-              borderColor: theme.colors.green,
-              borderRadius: 50,
-              borderWidth: 1,
-              backgroundColor: theme.colors.white,
-            },
-          ]}>
-          <Text style={{color: theme.colors.green}}>Duyệt</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-  XemDuLieuQuanTrac = () => {
+  ChonLoaiQuanTrac=(data)=>{
+    if(data==2)
+    {
+      this.setState({
+        idPhanLoai:4,
+        WaterOrAir:data
+
+      })
+      this.fetchLoaiTramKhi();
+    }
+    if(data==1)
+    {
+      this.setState({
+        idPhanLoai:1,
+        WaterOrAir:data,
+      })
+      this.fetchData();
+    }
+  }
+  XemDuLieuQuanTrac = async() => {
     var datefrom =
       this.state.dateFrom.toLocaleDateString('en-GB') +
       ' ' +
@@ -310,7 +345,7 @@ class Duyet extends Component {
       this.state.dateTo.toLocaleDateString('en-GB') +
       ' ' +
       this.state.timeTo.toLocaleTimeString('en-GB').substr(0, 5);
-    this.setState({
+   await this.setState({
       convertDateFrom: encodeURIComponent(datefrom),
       convertDateTo: encodeURIComponent(dateto),
     });
@@ -360,6 +395,7 @@ class Duyet extends Component {
         isNhaNuoc: true,
         idPhanLoai: 1, // loại 1 là nước
         idLoaiTram: 39, // nước thải 39
+        search: '',
       });
     }
     if (data == '2') {
@@ -367,6 +403,7 @@ class Duyet extends Component {
         isNhaNuoc: false,
         idPhanLoai: 1, // loại 1 là nước
         idLoaiTram: 156, // nước mặc 156
+        search: '',
       });
     }
     if (data == '3') {
@@ -374,6 +411,7 @@ class Duyet extends Component {
         isNhaNuoc: true,
         idPhanLoai: 1, // loại 1 là nước
         idLoaiTram: 156, // nước thải 156
+        search: '',
       });
     }
     if (data == '4') {
@@ -381,18 +419,30 @@ class Duyet extends Component {
         isNhaNuoc: false,
         idPhanLoai: 1, // loại 1 là nước
         idLoaiTram: 39, // nước thải 39
+        search: '',
       });
     }
-    this.setState({
-      search: '',
-    });
+  
 
     await this.fetchData();
   };
+  updateLoaiTramKhi= async (data)=>{
+   await this.setState({
+      indexTramKhi:data,
+      isNhaNuoc: true,
+      idPhanLoai: 4, // loại 4 là khi
+      idLoaiTram: data, // nước thải 39
+      search: '',
+    })
+    this.fetchData()
+  }
+  dongbodulieu = async()=>{
+    await this.setTimeFrom();
+    await this.fetchChiSoDataTram();
+    this.XemDuLieuQuanTrac();
+  }
   componentDidMount() {
-    this.setTimeFrom();
-    this.fetchChiSoDataTram();
-
+      this.dongbodulieu();
   }
   // Hàm này để suy ra giá trị ngày bất đầu  từ biến timeTo
   setTimeFrom = () => {
@@ -404,6 +454,19 @@ class Duyet extends Component {
       timeFrom: dateTemp.toLocaleTimeString('en-GB').substr(0, 5),
       dateFrom: dateTemp,
     });
+
+    // var datefrom =
+    //   this.state.dateFrom.toLocaleDateString('en-GB') +
+    //   ' ' +
+    //   this.state.timeFrom;
+    // var dateto =
+    //   this.state.dateTo.toLocaleDateString('en-GB') +
+    //   ' ' +
+    //   this.state.timeTo.toLocaleTimeString('en-GB').substr(0, 5);
+    // this.setState({
+    //   convertDateFrom: encodeURIComponent(datefrom),
+    //   convertDateTo: encodeURIComponent(dateto),
+    // });
   };
   setTimeNextPrevious = async (key) => {
     //1 previour 2 next
@@ -464,18 +527,20 @@ class Duyet extends Component {
       var URL = '';
       URL = `http://${config.URLIP}/DuLieuQuanTracServices.svc/GetDanhSachTenTram?idLoaiTram=${this.state.idLoaiTram}&isNhaNuoc=${this.state.isNhaNuoc}&idPhanLoai=${this.state.idPhanLoai}`;
       console.log(URL);
-
       let response = await fetch(URL);
       await this.setState({
         isLoading: true,
       });
       let reponseJson = await response.json();
-
+      console.log("===========tesst ==========")
+      console.log()
       await this.setState({
         isLoading: false,
         dataTemp: reponseJson,
         dataSearch: reponseJson,
+        search:reponseJson[0].maTram, 
       });
+     
     } catch (error) {
       console.error(error);
     }
@@ -488,13 +553,16 @@ class Duyet extends Component {
         dataThongSo: [],
         isDataNull: false,
       });
+      const dataThongSoTemp=[]
+      const dataTableHeaderTemp=[]
+      const dataTableLeftTemp=[]
       var URL = '';
       //1 load   2 khoang thoi gian
       //URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=03%2F01%2F2018%2010%3A00&to=03%2F01%2F2018%2010%3A30`;
       //2  load nhieu khoan thoi gian
-        URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=29%2F07%2F2018%2008%3A30&to=29%2F07%2F2018%2020%3A30`;
+    //URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=29%2F07%2F2018%2008%3A30&to=29%2F07%2F2018%2020%3A30`;
       // 3 load dung du lieu
-     // URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=${this.state.convertDateFrom}&to=${this.state.convertDateTo}`;
+      URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachThongSoNuoc?idDiem=${this.state.idDiem}&from=${this.state.convertDateFrom}&to=${this.state.convertDateTo}`;
       console.log("0")
       console.log(URL);
       console.log("1")
@@ -504,48 +572,67 @@ class Duyet extends Component {
       });
        console.log("2")
 
-      let reponseJson = await response.json();
+      const reponseJson = await response.json();
       console.log('=====reposejson=====');
-      console.log(reponseJson);
+      let reponseJsonTemp=[] ;
+    //  reponseJsonTemp=reponseJson
+     
       if (reponseJson != null) {
-         this.setState({
-          isLoadingGird: false,
+        if(reponseJson.length==0)
+        {
+          this.setState({
+            isDataNull: true,
+  
+          });
+        }
+        this.setState({
           dataTram: reponseJson,
         });
         await this.state.dataTram.map((v, i) => {
-          this.setState({
-            dataThongSo: [...this.state.dataThongSo, v.ThongSo],
-            dataTableHeader: [
-              ...this.state.dataTableHeader,
-              v.THOIDIEMDO.substr(11, 5) + ' ' + v.THOIDIEMDO.substr(20),
-            ],
-          });
+              dataThongSoTemp.push(v.ThongSo)
+              dataTableHeaderTemp.push(v.THOIDIEMDO.substr(11, 5) + ' ' + v.THOIDIEMDO.substr(20))
+        });
+        this.setState({
+          dataThongSo:dataThongSoTemp,
+          dataTableHeader:dataTableHeaderTemp,
         });
         console.log(this.state.dataThongSo);
         if (this.state.dataThongSo.length != 0) {
           await this.state.dataThongSo[0].map((v, i) => {
-            this.setState({
-              dataTableLeft: [
-                ...this.state.dataTableLeft,
-                [v.KYHIEU_THONGSO, false],
-              ],
-            });
-          });
-          this.setState({
-            dataTest: this.state.dataThongSo,
+            dataTableLeftTemp.push([v.KYHIEU_THONGSO, false])
           });
         }
+     
         console.log('===============');
         console.log(this.state.dataTableHeader);
+        this.setState({
+          isLoadingGird: false,
+          dataTableLeft:dataTableLeftTemp
+        });
       } else {
         this.setState({
           isDataNull: true,
+          isLoadingGird: false,
+
         });
       }
     } catch (error) {
       console.error(error);
     }
-  };
+  }; 
+  fetchLoaiTramKhi = async()=>{
+    var URL = ''; 
+    URL = `http://${config.URLIP_API}/api/Duyet/GetDanhSachLoaiTramKhi`
+    this.setState({
+      isLoadingLoaiTramKhi: true,
+    });
+    let response = await fetch(URL);
+    const reponseJson  = await response.json()
+    this.setState({ 
+          dataLoaiTramKhi:reponseJson ,
+          isLoadingLoaiTramKhi: false,
+    }); 
+    }
   renderItem = ({item, index}) => (
     <ListItem
       onPress={() => this.bindingInputTram(item)}
@@ -607,7 +694,6 @@ class Duyet extends Component {
     {
     this.scrollSearchHeader.scrollTo({x: windowWidth, y: 0, animated: true});
     }
-
   };
   ClickThongSo = (data) => {
     console.log(data);
@@ -641,8 +727,6 @@ class Duyet extends Component {
     const dataTempThongSo = [...this.state.dataThongSo];
     const dataTempHeaderLeft = [...this.state.dataTableLeft];
 
-    // this.state.dataTableLeft.forEach((element,index)=>{
-
     dataTempHeaderLeft[data][1] = !dataTempHeaderLeft[data][1];
 
     // })
@@ -669,26 +753,27 @@ class Duyet extends Component {
     this.scrollSearch.scrollTo({x: x, y: 0, animated: true});
   };
   handleScroll = (e) => {
-    console.log(e.nativeEvent.contentOffset);
-    console.log(e.nativeEvent.contentSize);
-    console.log(e.nativeEvent.contentInset);
-    console.log(e.nativeEvent.layoutMeasurement);
+    // console.log(e.nativeEvent.contentOffset);
+    // console.log(e.nativeEvent.contentSize);
+    // console.log(e.nativeEvent.contentInset);
+    // console.log(e.nativeEvent.layoutMeasurement);
   };
   render() {
     const {isLoadingGird, isDataNull} = this.state;
-    console.log(isLoadingGird)
+    console.log("so lan refresh" )
+    console.log(this.state.convertDateFrom +' '+ this.state.convertDateTo)
     return (
       <>
         <StatusBar barStyle="dark-content" />
         <SafeAreaView style={styles.container}>
           <BackgroundHeader
             style={[this.state.isShowFillter ? styles.bg : styles.bg1, {}]}
-          />
+          /> 
           {this.header(this.props.navigation, this.state.isShowFillter)}
 
           <ScrollView style={styles.scrollView}>
             {/* {this.ButtonDuyet()} */}
-            <GridThongSo
+            {isLoadingGird?<Loading/>:<GridThongSo
               data={this.state.dataThongSo}
               dataHeader={this.state.dataTableHeader}
               dataHeaderLeft={this.state.dataTableLeft}
@@ -705,6 +790,7 @@ class Duyet extends Component {
               ClickTime={this.ClickTime}
               ClickThongSo={this.ClickThongSo}
               ClickCheckBoxThongSo={this.ClickCheckBoxThongSo}></GridThongSo>
+            }
           </ScrollView>
 
 {/* <FlatList
@@ -712,10 +798,6 @@ class Duyet extends Component {
         renderItem={({ item }) => <Text>{item[0].id}</Text>}
         keyExtractor={item => item.id}
       /> */}
-
-         
-
-
           <View
             style={{
               width: windowWidth,
@@ -825,7 +907,7 @@ class Duyet extends Component {
               style={{
                 width: windowWidth,
                 height: windowHeight-280,
-                position:'absolute',
+                //position:'absolute',
                 bottom: 0,
                 marginBottom: 0,
                 paddingBottom: 0,
@@ -1143,4 +1225,33 @@ const styles = StyleSheet.create({
     height: 40,
     marginHorizontal: 0,
   },
+
+  listTab: {
+    flexDirection: 'row',
+    borderRadius: 10,
+    alignSelf: 'center',
+  },
+  btnTab: {
+    // flex: 1,
+    width: Dimensions.get('window').width / 4.5,
+    flexDirection: 'row',
+    borderWidth: 0.5,
+    borderColor: '#EBEBEB',
+    height:35,
+    padding: 10,
+    justifyContent: 'center',
+  },
+  btnTabActive: {
+    backgroundColor: theme.colors.white,
+  },
+
+  textTabActive: {
+    color: theme.colors.green,
+  },
+  textTab: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: 'gray',
+  },
+
 });

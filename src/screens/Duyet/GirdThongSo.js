@@ -30,7 +30,6 @@ import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {CheckBox} from '@ui-kitten/components';
-import {cos} from 'react-native-reanimated';
 
 const windowWidth = Dimensions.get('screen').width;
 const windowHeight = Dimensions.get('screen').height;
@@ -38,13 +37,13 @@ const windowHeight = Dimensions.get('screen').height;
 export const setColor = (data) => {
   if (data == '_BlackStyle') {
     return {
-      item: '#fff',
+      item: '#231b12',
       itemBorder: '#231b12',
     };
   }
   if (data == '_SilverStyle') {
     return {
-      item: '#5D535E',
+      item: theme.colors.gray,
       itemBorder: theme.colors.gray,
     };
   }
@@ -56,14 +55,14 @@ export const setColor = (data) => {
   }
   if (data == '_BlueStyle') {
     return {
-      item: '#fff',
+      item: '#0000FF',
       itemBorder: '#0099FF',
     };
   }
-  console.log(data);
 };
 
 export const GridThongSo = (props) => {
+  console.log('load grid thong so')
   return (
     <>
       <View style={styles.cardContainer}>
@@ -208,7 +207,8 @@ export const GridThongSo = (props) => {
                   );
                 })}
               </View>
-              {/* <View style={{flexDirection: 'row'}}>
+              
+            <View style={{flexDirection: 'row'}}>
                 {props.data.map((v, i) => {
                   return (
                     <View key={i+Math.floor(Math.random()*100000000)+''} style={{flex: 1, flexDirection: 'column'}}>
@@ -231,9 +231,8 @@ export const GridThongSo = (props) => {
                                   color: setColor(x.keyColor).item,
 
                                   borderRadius: 10,
-                                  width: 50,
-                                  backgroundColor: setColor(x.keyColor)
-                                    .itemBorder,
+                                  width: 80,
+                                 // backgroundColor: setColor(x.keyColor).itemBorder,
                                 }}>
                                 {x.GIATRISO}
                               </Text>
@@ -244,14 +243,16 @@ export const GridThongSo = (props) => {
                     </View>
                   );
                 })}
-              </View> */}
+              </View>
             </ScrollView>
+            
           </View>
           :  (
         <Loading />
       )
       } 
         </View>
+        <Text>{props.data.length}</Text>
       </View>
     </>
   );
