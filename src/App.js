@@ -80,10 +80,10 @@ class App extends Component {
       <Provider store={store} >
         <View style={{ flex: 1 }}>
           <ApplicationProvider map={mapping} {...eva} theme={lightTheme}>
-            {/* <NavigationContainer>
+            <NavigationContainer>
                   <MenuContainer></MenuContainer>
-            </NavigationContainer> */}
-                   <Duyet/>  
+            </NavigationContainer>
+                   {/* <Duyet/>   */}
                   {/* <FillterTram/> */}
                   {/* <Login></Login> */}
           </ApplicationProvider>

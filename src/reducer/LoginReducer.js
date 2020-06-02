@@ -6,7 +6,7 @@
 // };
 
 const LoginState={
-    isLogin:false,
+    isLogin:'False',
     userName:'test',
     token:'ok'
 }

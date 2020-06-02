@@ -16,9 +16,16 @@ import mapContainer from '../reducer/container/mapContainer';
 import E from './E';
 import History from './History';
 import {Icon} from 'react-native-elements';
-import AntDesign from 'react-native-vector-icons/dist/AntDesign';
+import MaterialIcons from 'react-native-vector-icons/dist/MaterialIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
+import Octicons from 'react-native-vector-icons/Octicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import SimpleLineIcons from 'react-native-vector-icons/dist/SimpleLineIcons';
 import AsyncStorage from '@react-native-community/async-storage';
+
+
 
 
 import Today from './Today';
@@ -37,6 +44,9 @@ import {loginAction} from '../reducer/action/LoginAction'
 //readux 
 import { connect, useDispatch ,useSelector} from 'react-redux';
 import FillterTram from './Duyet/FillterTram';
+import UserInfo from './UserInfo';
+import DanhSachNguoiDung from './CanhBao/DanhSachNguoiDung';
+import DanhSachTramCanhBao from './CanhBao/DanhSachTramCanhBao';
 
 const Stack = createStackNavigator();
 const RootStack = createStackNavigator();
@@ -45,7 +55,7 @@ const Tab = createBottomTabNavigator();
 
 
 const TabMenu = () => (
-  <Tab.Navigator
+  <Tab.Navigator 
     screenOptions={({route}) => ({
       tabBarIcon: ({focused, color, size}) => {
         let iconName, colorIcon;
@@ -61,29 +71,30 @@ const TabMenu = () => (
           iconName = focused ? 'history' : 'history';
           colorIcon = focused ? '#34569e' : '#08be51';
       
-        } else if (route.name === 'Setting') {
-          iconName = focused ? 'gear' : 'gear';
+        } else if (route.name === 'User') {
+          iconName = focused ? 'user' : 'user';
           colorIcon = focused ? '#34569e' : '#08be51';
         }
 
         // You can return any component that you like here!
-        return <Icon name={iconName} type="octicon" color={color} size={30} />;
+        return <FontAwesome5 name={iconName} type="octicon" color={color} size={25} />;
       },
-    })}
+    
+     })}
     tabBarOptions={{
       activeTintColor: theme.colors.green,
       inactiveTintColor: theme.colors.gray,
       style: {
         backgroundColor: theme.colors.white, 
-      }
-     
+      },
+      showLabel:false
     }}
     >  
-    <Tab.Screen name="Map" component={mapContainer}></Tab.Screen> 
+    <Tab.Screen  name="Map" component={mapContainer}></Tab.Screen> 
     {/* <Tab.Screen name="Map" component={StackMenu}></Tab.Screen> */}
     <Tab.Screen name="List" component={C}></Tab.Screen>
     <Tab.Screen name="History" component={Chart}></Tab.Screen>
-    <Tab.Screen name="Setting" component={Today}></Tab.Screen>
+    <Tab.Screen name="User" component={UserInfo}></Tab.Screen>
   </Tab.Navigator>
 );
 
@@ -100,14 +111,12 @@ const StackMenu = () => (
     <Stack.Screen name="Duyet" component={Duyet}></Stack.Screen>
     <Stack.Screen name="FillterTram" component={FillterTram}></Stack.Screen>
     <Stack.Screen name="LoginStack" component={loginContainer}></Stack.Screen>
+    <Stack.Screen name="Login" component={loginContainer}></Stack.Screen>
+    <Stack.Screen name="DanhSachNguoiDung" component={DanhSachNguoiDung}></Stack.Screen>
+    <Stack.Screen name="DanhSachTramCanhBao" component={DanhSachTramCanhBao}></Stack.Screen>
 
   </Stack.Navigator>
 );
-
-
-
-
-
 
 const CustomDrawerContent=(props)=>{
   const dataLogin=useSelector(state=>state.loginRedux)
@@ -115,8 +124,8 @@ const CustomDrawerContent=(props)=>{
   const LogoutSubmit=()=>{
     const data={
       ketQua: "Đăng Xuất Thành Công",
-      trangThai: "Flase",
-      tenDangNhap: "",
+      trangThai: 'False',
+      tenDangNhap: "Đăng Nhập", 
       matKhau: ""
       }
     //await AsyncStorage.setItem('checkLogin', JSON.stringify(data) );
@@ -124,7 +133,7 @@ const CustomDrawerContent=(props)=>{
      Alert.alert(data.ketQua)
      props.navigation.dispatch(StackActions.replace('LoginStack'))
      props.navigation.closeDrawer()
-    }
+    } 
 
   return( 
   <View style={{flex:1}}>
@@ -221,7 +230,6 @@ class Menu extends Component {
       </Drawer.Navigator>
     );
   };
-  
   render() {
     console.log(this.props)
 

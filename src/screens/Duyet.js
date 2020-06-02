@@ -33,10 +33,10 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import BackgroundHeader from '../components/BackgroundHeader';
 
 import Foundation from 'react-native-vector-icons/Foundation';
 
-import BackgroundHeader from '../components/BackgroundHeader';
 
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {Select} from 'react-native-propel-kit';
@@ -147,7 +147,6 @@ class Duyet extends Component {
               color={theme.colors.green}
             />
             </TouchableOpacity>
-
             <TouchableOpacity onPress={()=>this.ChonLoaiQuanTrac(2)}
             style={[styles.btnTab,this.state.WaterOrAir==2 && styles.btnTabActive ,{borderTopRightRadius:5,borderBottomRightRadius:5}]}>
               <Entypo
@@ -994,8 +993,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: Dimensions.get('window').width,
     height: 50,
-    borderBottomRightRadius: 0,
-    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10,
   },
   scrollView: {
     margin: 10,
@@ -1239,6 +1238,7 @@ const styles = StyleSheet.create({
     borderColor: '#EBEBEB',
     height:35,
     padding: 10,
+    height:37,
     justifyContent: 'center',
   },
   btnTabActive: {
@@ -1253,5 +1253,4 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: 'gray',
   },
-
 });

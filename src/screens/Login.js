@@ -39,7 +39,9 @@ class Login extends Component {
         console.log('=============')
         console.log(jsoncheckLogin)
         await this.props.SaveLogin(jsoncheckLogin.tenDangNhap,jsoncheckLogin.matKhau,jsoncheckLogin.trangThai) 
-        this.props.navigation.navigate('Duyet',{dataLogin:this.props.dataLogin});
+       //this.props.navigation.navigate('Duyet',{dataLogin:this.props.dataLogin});
+       this.props.navigation.navigate('User')
+
     }
     else{
         Alert.alert(jsoncheckLogin.ketQua)
