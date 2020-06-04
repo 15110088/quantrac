@@ -28,15 +28,18 @@ class DanhSachNguoiDung extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        lstNguoiDung :this.fecthDanhSachNguoiDung(),
+        lstNguoiDung :[],
         isLoadingListUser:false
     };
     
+  } 
+  UNSAFE_componentWillMount(){
+    this.fecthDanhSachNguoiDung()
   }
-
   fecthDanhSachNguoiDung= async()=>{
         var URL = ''; 
         URL = `http://${config.URLIP_API}/api/CanhBao/GetDanhSachNguoiDung`
+        console.log(URL)
         this.setState({
             isLoadingListUser: true,
         });
@@ -51,8 +54,13 @@ class DanhSachNguoiDung extends Component {
   SelectUser=(data)=>{
     this.props.navigation.navigate('Tabs', {
         screen: 'DanhSachTramCanhBao',
+        params:{
+                idnguoidung:data.ID,
+                Ten:data.TEN,
+                Phong:data.PHONG
+                }
       });
-  }
+  } 
   renderItem = ({item, index}) => { 
       return (
         <ListItem
@@ -68,7 +76,7 @@ class DanhSachNguoiDung extends Component {
           }
           bottomDivider
         />
-      );
+      );  
     
   };
  
@@ -96,7 +104,6 @@ class DanhSachNguoiDung extends Component {
                      keyExtractor={item => item.ID}
                      renderItem={this.renderItem}
                     >
-
                     </FlatList>
                     </View>
           </View>
