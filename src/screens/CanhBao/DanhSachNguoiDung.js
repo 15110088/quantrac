@@ -23,6 +23,7 @@ import {
   import {connect, useDispatch, useSelector} from 'react-redux';
   import {SearchBar, Input, ListItem,Card} from 'react-native-elements';
 import config from '../../ultilities/config';
+import Loading from '../Loading'
 
 class DanhSachNguoiDung extends Component {
   constructor(props) {
@@ -98,13 +99,14 @@ class DanhSachNguoiDung extends Component {
               </TouchableOpacity>
             </View>
                 <View style={styles.cardBody}>
+                  {this.state.isLoadingListUser?<Loading/>:
                     <FlatList 
                      scrollEnabled={true}
                      data={this.state.lstNguoiDung}
                      keyExtractor={item => item.ID}
                      renderItem={this.renderItem}
                     >
-                    </FlatList>
+                    </FlatList>}
                     </View>
           </View>
           </SafeAreaView>
@@ -152,6 +154,7 @@ const styles = StyleSheet.create({
     header: {
       marginTop: 0,
       padding: 5,
+      flex:1,
     },
     headerBody: {
       flexDirection: 'row',
@@ -178,7 +181,9 @@ const styles = StyleSheet.create({
         shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.2,
         shadowRadius: 4,
-        marginHorizontal:5
+        marginHorizontal:5,
+        flex:1
+
        // height:windowHeight/2
       },
     iconMenu: {

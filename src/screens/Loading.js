@@ -10,8 +10,11 @@ class Loading extends Component {
 
   render() {
     return (
-        <ActivityIndicator size="large" color="#0000fr" />
-    );
+      <View style={{flex:1,justifyContent:"center",alignItems:'center'}}>
+<ActivityIndicator size="large" color="#0000fr" />
+   
+      </View>
+         );
   }
 }
 

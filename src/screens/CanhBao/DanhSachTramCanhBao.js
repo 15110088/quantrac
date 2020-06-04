@@ -27,7 +27,7 @@ import config from '../../ultilities/config';
 import Accordian from '../../components/Accordian';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Layout, Toggle } from '@ui-kitten/components';
-
+import Loading from '../Loading'
 
 class DanhSachTramCanhBao extends Component {
   constructor(props) {
@@ -153,6 +153,7 @@ XuLyThongBao= async(dataTram)=>{
   .then((data) => console.log(data));
   console.log(this.state.lstTram)
 }
+
   render() {
     console.log(this.state.isLoadingListTram);
     console.log(this.props.route.params.Phong)
@@ -186,7 +187,6 @@ XuLyThongBao= async(dataTram)=>{
               </View>
              
             </View>
-           
             {/* <Button title="OK" onPress={() => this.clickAll(3)}></Button> */}
             {/* <View style={styles.cardBody}><ScrollView>{!this.state.isLoadingListTram && this.renderAccordians()}</ScrollView></View> */}
           <View style={styles.cardBody}>
@@ -203,15 +203,17 @@ XuLyThongBao= async(dataTram)=>{
             renderItem={this.renderItemTram}>
 
               </VirtualizedList> */}
-
-
-              <FlatList 
-                data={this.state.lstTram} 
-               keyExtractor={(item) => {item.ID}} 
-                renderItem={this.renderItemTram}>
-              </FlatList>
+  
+              {this.state.isLoadingListTram?<Loading/>:
+                 <FlatList 
+                 data={this.state.lstTram} 
+                keyExtractor={(item) => {item.ID}} 
+                 renderItem={this.renderItemTram}>
+               </FlatList>
+              }
+           
             </View>
-
+           
           </View>
         </SafeAreaView>
       </>
