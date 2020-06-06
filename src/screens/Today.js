@@ -108,12 +108,7 @@ class Today extends Component {
               backgroundColor: colorPiont,
               flex: 0.2,
             }}>
-            {/* <Block flex={1} center middle style={{ marginRight: 20 }}>
-                    <Text light  color={'white'} height={43} size={36} spacing={-0.45}>0</Text>
-                    <Text ligth color={'white'} caption center style={{ paddingHorizontal: 16, marginTop: 3 }}>
-                        WQI
-                    </Text>
-                </Block> */}
+           
             <Block flex={2} center middle>
               <Text size={22} paragraph ligth color="white">
                 {tenTram}
@@ -127,7 +122,7 @@ class Today extends Component {
           <Block row style={[styles.margin, {marginTop: 5, flex: 0.35}]}>
             <Card middle style={{marginRight: 7}}>
               <Text h3 style={{marginTop: 0}}>
-                {PH}
+                {PH.GiaTri}
               </Text>
               <Block row center style={{marginTop: 5}}>
                 <Label purple />
@@ -138,7 +133,7 @@ class Today extends Component {
             </Card>
             <Card middle style={{marginLeft: 7}}>
               <Text h3 style={{marginTop: 0}}>
-                {DO}
+                {DO.GiaTri}
               </Text>
 
               <Block row center style={{marginTop: 5}}>

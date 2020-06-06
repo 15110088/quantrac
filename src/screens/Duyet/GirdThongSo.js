@@ -68,7 +68,7 @@ export const GridThongSo = (props) => {
       <View style={styles.cardContainer}>
 
         <TouchableWithoutFeedback onPress={props.ClickTime}> 
-                 <View
+        <View
           style={{
             flex: 1,
             height: 50,
@@ -124,12 +124,12 @@ export const GridThongSo = (props) => {
             <Text style={styles.textHeaderTime}>{props.timeTo}</Text>
           </View>
         </View>
-</TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
 
 
         <View style={styles.cardBody}>
           {props.isDataNull ?<View style={{flex:1,justifyContent:'center',alignItems:'center'}}><MaterialIcons name='sentiment-very-dissatisfied' size={60}></MaterialIcons><Text style={styles.cardGroupIcon}>Không có dữ liệu</Text></View>:!props.isLoadingGird?
-          
+
           <View
             // contentContainerStyle={{flexDirection: 'row'}}
             style={{

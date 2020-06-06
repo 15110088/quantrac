@@ -92,13 +92,13 @@ const TabMenu = () => (
     >  
     <Tab.Screen  name="Map" component={mapContainer}></Tab.Screen> 
     {/* <Tab.Screen name="Map" component={StackMenu}></Tab.Screen> */}
-    <Tab.Screen name="List" component={C}></Tab.Screen>
-    <Tab.Screen name="History" component={Chart}></Tab.Screen>
+    {/* <Tab.Screen name="List" component={C}></Tab.Screen>
+    <Tab.Screen name="History" component={Chart}></Tab.Screen> */}
     <Tab.Screen name="User" component={UserInfo}></Tab.Screen>
   </Tab.Navigator>
 );
 
-const StackMenu = () => (
+const StackMenu = () => ( 
   <Stack.Navigator headerMode="none">
    <Stack.Screen name="Splash" component={Splash}></Stack.Screen> 
     <Stack.Screen name="MapStack" component={TabMenu}></Stack.Screen>
