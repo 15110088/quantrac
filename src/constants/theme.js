@@ -21,6 +21,8 @@ const colors = {
   border: '#D6DDF6',
   card: 'rgba(46,91,255,0.08)',
   shadow: 'rgba(46,91,255,0.07)',
+  redPH:'#D63649',
+  blueDO:'#00C1D4'
   
 };
 

@@ -1,15 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet,Text,View} from 'react-native';
-import {
- 
-  Dialog,
-  Colors,
-  PanningProvider,
-  RadioGroup,
-  RadioButton,
-  Switch,
-  Constants,
-} from 'react-native-ui-lib';
+
 import {Icon} from 'react-native-elements';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as theme from '../../constants/theme';
@@ -17,79 +8,6 @@ import * as theme from '../../constants/theme';
 const DialogWQI = (props) => {
   console.log(props)
   return (
-    //   <View>
-    //   <View style={{backgroundColor: props.colorPoint}}>
-    //     <Text
-    //       style={{
-    //         color: '#fff',
-    //         alignSelf: 'center',
-    //         fontWeight: 'bold',
-    //         fontSize: 20,
-    //       }}>
-    //       {' '}
-    //       {props.maTram}
-    //     </Text>
-    //   </View>
-    //   <View height={2} bg-dark70 />
-
-    //   <View row>
-    //     <View flex-1 style={styles.shadown}>
-    //       <View
-    //         style={{
-    //           width: 40,
-    //           height: 40,
-    //           backgroundColor: props.colorPoint,
-    //           borderRadius: 20,
-    //           top: 5,
-    //           alignSelf: 'center',
-    //         }}></View>
-    //       <View centerH style={{top: 5}}>
-    //         <Text style={{color: props.colorPoint}}>GOOD</Text>
-    //       </View>
-    //     </View>
-    //     <View flex-2>
-    //       <View row marginL-0>
-    //         <Icon name="clock" type="evilicon" color="#517fa4" />
-    //       <Text text90>{props.NgayTinh}</Text>
-    //       </View>
-
-    //       <View row>
-    //         <View flex-1>
-    //           <View centerH style={{top: 10}}>
-    //             <Text
-    //               style={{
-    //                 top: -10,
-    //                 color: 'gray',
-    //                 fontSize: 20,
-    //                 fontWeight: 'bold',
-    //               }}>
-    //               {props.PH}
-    //             </Text>
-    //             <Text style={{color: 'gray', top: -15, left: 5}}>
-    //               PH{' '}
-    //             </Text>
-    //           </View>
-    //         </View>
-    //         <View flex-1>
-    //           <View centerH style={{top: 10}}>
-    //             <Text
-    //               style={{
-    //                 top: -10,
-    //                 color: 'gray',
-    //                 fontSize: 20,
-    //                 fontWeight: 'bold',
-    //               }}>
-    //               {props.DO}
-    //             </Text>
-    //             <Text style={{color: 'gray', top: -15, left: 5}}>
-    //               DO{' '}
-    //             </Text>
-    //           </View>
-    //         </View>
-    //       </View>
-    //     </View>
-    //   </View>
-    // </View>
     <>
       <View style={{height: 50, flexDirection: 'row' }}>
         <MaterialCommunityIcons
@@ -97,11 +15,17 @@ const DialogWQI = (props) => {
           style={{padding: 12}}
           name="air-filter"></MaterialCommunityIcons>
         <View style={{padding: 7, flex: 1}}>
-  <Text style={{fontSize: 16, fontWeight: 'bold'}}>{props.tenTram}</Text>
-  <Text style={{color: 'gray'}}>{props.maTram}</Text>
-        </View>
-      </View>
+            <Text style={{fontSize: 16, fontWeight: 'bold'}}>{props.tenTram}</Text>
+            <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+            <Text style={{color: 'gray'}}>{props.maTram}</Text>
+            <Text style={{color: 'gray'}}>{props.NgayTinh.substr(13)}</Text>
 
+            </View>
+
+        </View>
+      
+      </View>
+     
       <View
         style={{
           height: 100,
@@ -114,19 +38,19 @@ const DialogWQI = (props) => {
         <View style={[styles.shadow]}>
         <MaterialCommunityIcons
             size={50}
-            color={ props.PH.VuotNguong?"#cb0000":"#4cb5f5"}
+            color={ props.PH.VuotNguong?theme.colors.redPH:theme.colors.blueDO}
             name= {props.PH.VuotNguong?"emoticon-sad":"emoticon-excited"}>
             </MaterialCommunityIcons>
-            <Text style={{marginTop:50,marginLeft:-35,color:'#2A2123',fontWeight:'bold'}}>PH </Text>
-      <Text style={{alignSelf:'center',marginTop:15,marginLeft:20,fontSize:28,fontWeight:'bold'}}>{props.PH.GiaTri}</Text>
+            <Text style={{marginTop:50,marginLeft:-35,color:'#2A2123',fontWeight:'bold',color:props.PH.VuotNguong?theme.colors.redPH:theme.colors.blueDO}}>PH </Text>
+      <Text style={{alignSelf:'center',marginTop:15,marginLeft:20,fontSize:28,fontWeight:'bold',color:props.PH.VuotNguong?theme.colors.redPH:theme.colors.blueDO}}>{props.PH.GiaTri}</Text>
         </View>
         <View style={([styles.shadow])}>
         <MaterialCommunityIcons
             size={50}
-            color={ props.DO.VuotNguong?"#cb0000":"#4cb5f5"}
-            name= {props.PH.VuotNguong?"emoticon-sad":"emoticon-excited"}></MaterialCommunityIcons>
-             <Text style={{marginTop:50,marginLeft:-30,color:'#2A2123',fontWeight:'bold'}}>D0 </Text>
-      <Text style={{alignSelf:'center',marginTop:15,marginLeft:20,fontSize:28,fontWeight:'bold'}}>{props.DO.GiaTri}</Text>
+            color={ props.DO.VuotNguong?theme.colors.redPH:theme.colors.blueDO}
+            name= {props.DO.VuotNguong?"emoticon-sad":"emoticon-excited"}></MaterialCommunityIcons>
+             <Text style={{marginTop:50,marginLeft:-30,color:'#2A2123',fontWeight:'bold',color:props.DO.VuotNguong?theme.colors.redPH:theme.colors.blueDO}}>D0 </Text>
+      <Text style={{alignSelf:'center',marginTop:15,marginLeft:20,fontSize:28,fontWeight:'bold',color:props.DO.VuotNguong?theme.colors.redPH:theme.colors.blueDO}}>{props.DO.GiaTri}</Text>
         </View>
 
         
@@ -139,16 +63,8 @@ export default DialogWQI;
 
 const styles = StyleSheet.create({
   container: {flex: 1},
-  dialog: {
-    backgroundColor: Colors.white,
-  },
-  roundedDialog: {
-    backgroundColor: Colors.white,
-    marginBottom: Constants.isIphoneX ? 0 : 20,
-    borderRadius: 12,
-    borderBottomWidth: 10,
-    borderBottomColor: '#fff123',
-  },
+ 
+
   button: {
     margin: 5,
     alignSelf: 'flex-start',

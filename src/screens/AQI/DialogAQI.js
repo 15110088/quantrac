@@ -44,18 +44,18 @@ class DialogAQI extends Component {
     }
     if(color=="#00BFFF")
     {
-       
       return  <MaterialCommunityIcons
       size={50}
       color="white"
       style={{paddingVertical: 20, paddingLeft: 20}}
       name="emoticon"></MaterialCommunityIcons>
-      
-      
     }
     else{
-      return "#10d60f"
-
+      return <MaterialCommunityIcons
+      size={50}
+      color="#5A6801"
+      style={{paddingVertical: 20, paddingLeft: 20}}
+      name="emoticon-neutral"></MaterialCommunityIcons>
     }
   }
   render() {
@@ -89,9 +89,10 @@ class DialogAQI extends Component {
             backgroundColor: keyColor,//'#27e726',
             flexDirection: 'row',
           }}>
-          <View style={[styles.shadow,{backgroundColor:this.setColorChiSo(keyColor)}]}>
-            {this.setIcon(keyColor)}
-            
+          {/* <View style={[styles.shadow,{backgroundColor:this.setColorChiSo(keyColor)}]}>
+            {this.setIcon(keyColor)} */}
+            <View style={[styles.shadow,{backgroundColor:this.setColorChiSo(keyColor)}]}>
+             {this.setIcon(keyColor)} 
             <View style={{paddingLeft: 5}}>
               <Text
                 style={{
